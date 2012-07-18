@@ -140,6 +140,7 @@ import com.android.systemui.statusbar.CommandQueue;
 import com.android.systemui.statusbar.GestureRecorder;
 import com.android.systemui.statusbar.NotificationData;
 import com.android.systemui.statusbar.NotificationData.Entry;
+import com.android.systemui.statusbar.SignalClusterTextView;
 import com.android.systemui.statusbar.SignalClusterView;
 import com.android.systemui.statusbar.StatusBarIconView;
 import com.android.systemui.statusbar.phone.ShortcutsWidget;
@@ -340,8 +341,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
     private int mHideLabels;
     private boolean mCarrierAndWifiViewBlocked = false;
-
     private boolean mRecreating = false;
+    private SignalClusterView mSignalClusterView;
+    private SignalClusterTextView mSignalTextView;
 
     // position
     int[] mPositionTmp = new int[2];
@@ -514,9 +516,11 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     Settings.System.NOTIFICATION_SHORTCUTS_COLOR_MODE),
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.CUSTOM_SYSTEM_ICON_COLOR), false, this, UserHandle.USER_ALL);
+                    Settings.System.CUSTOM_SYSTEM_ICON_COLOR), 
+		    false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.SYSTEM_ICON_COLOR), false, this, UserHandle.USER_ALL);
+                    Settings.System.SYSTEM_ICON_COLOR),
+		    false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.LOCKSCREEN_CAMERA_WIDGET),
                     false, this, UserHandle.USER_ALL);
@@ -589,6 +593,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.VOLUME_KEY_CURSOR_CONTROL), false, this,
                     UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_SIGNAL_TEXT), false, this);
             update();
         }
 
@@ -628,10 +634,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 if (mSettingsPanel != null) {
                     mSettingsPanel.setBackgroundDrawables();
                 }
-            }else if (uri.equals(Settings.System.getUriFor(
+            } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.NOTIFICATION_ALPHA))) {
                 setNotificationAlpha();
-            }else if (uri.equals(Settings.System.getUriFor(
+            } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.LOCKSCREEN_CAMERA_WIDGET))
                 || uri.equals(Settings.System.getUriFor(
                     Settings.System.LOCKSCREEN_USE_WIDGET_CONTAINER_CAROUSEL))) {
@@ -757,6 +763,12 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 }
                 enableOrDisableReminder();
             }
+
+            int signalStyle = Settings.System.getIntForUser(resolver,
+                    Settings.System.STATUS_BAR_SIGNAL_TEXT,
+                    SignalClusterView.STYLE_NORMAL, mCurrentUserId);
+                mSignalClusterView.setStyle(signalStyle);
+                mSignalTextView.setStyle(signalStyle);
         }
     }
 
