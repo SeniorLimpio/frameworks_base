@@ -195,4 +195,9 @@
     <string name="permdesc_changeHeadsUpState">Allows the application to change whether another application is allowed to show normal notifications as heads up notification.</string>
 
 
+    <!-- Permission: Intercept SMS -->
+    <string name="permlab_interceptSmsSent">intercept outgoing SMS</string>
+    <!-- Permission: Description for the Intercept SMS permission used by VoicePlus -->
+    <string name="permdesc_interceptSmsSent">Allows the app to intercept an outgoing SMS. Malicious apps may use this to prevent outgoing SMS messages.</string>
+
 </resources>
