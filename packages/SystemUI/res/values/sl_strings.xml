@@ -81,4 +81,10 @@
     <!-- Title shown in recents popup for showing app in floating mode -->
     <string name="status_bar_recent_floating_item_title">Floating mode</string>
 
+    <!-- Dialog Cancel/OK -->
+    <string name="cancel">Cancel</string>
+    <string name="dlg_ok">Ok</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+
 </resources>

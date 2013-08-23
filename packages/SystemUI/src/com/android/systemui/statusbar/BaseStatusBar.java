@@ -646,6 +646,7 @@ public abstract class BaseStatusBar extends SystemUI implements
                 StatusBarNotification sbn = entry.notification;
 
                 final String packageNameF = (String) v.getTag();
+
                 final PendingIntent contentIntent = sbn.getNotification().contentIntent;
                 boolean expanded = Settings.System.getInt(mContext.getContentResolver(),
                         Settings.System.EXPANDED_DESKTOP_STATE, 0) == 1;
@@ -1048,7 +1049,7 @@ public abstract class BaseStatusBar extends SystemUI implements
                 R.layout.status_bar_notification_row, parent, false);
 
         // for blaming (see SwipeHelper.setLongPressListener)
-        row.setTag(sbn.getPackageName());
+        row.setTag(entry);
 
         workAroundBadLayerDrawableOpacity(row);
         View vetoButton = updateNotificationVetoButton(row, sbn);
