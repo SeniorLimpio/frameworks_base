@@ -22,10 +22,4 @@
     <!-- Description of the Random button in a KeyboardView. [CHAR LIMIT=NONE] -->
     <string name="keyboardview_keycode_random">Reload random buttons</string>
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/sidebar_float_item" android:title="@string/app_float_item_title" />
-    <item android:id="@+id/sidebar_inspect_item" android:title="@string/status_bar_recent_inspect_item_title" />
-    <item android:id="@+id/sidebar_stop_item" android:title="@string/app_stop_item_title" />
-</menu>
-
 </resources>
