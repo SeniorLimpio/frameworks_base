@@ -62,6 +62,7 @@ import static com.android.internal.util.ldroid.QSConstants.TILE_ONTHEGO;
 import static com.android.internal.util.ldroid.QSConstants.TILE_FCHARGE;
 import static com.android.internal.util.ldroid.QSConstants.TILE_PROFILE;
 import static com.android.internal.util.ldroid.QSConstants.TILE_HOVER;
+import static com.android.internal.util.ldroid.QSConstants.TILE_NETWORKADB;
 
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
@@ -99,6 +100,7 @@ import com.android.systemui.quicksettings.LteTile;
 import com.android.systemui.quicksettings.MobileNetworkTile;
 import com.android.systemui.quicksettings.MobileNetworkTypeTile;
 import com.android.systemui.quicksettings.MusicTile;
+import com.android.systemui.quicksettings.NetworkAdbTile;
 import com.android.systemui.quicksettings.NfcTile;
 import com.android.systemui.quicksettings.PreferencesTile;
 import com.android.systemui.quicksettings.QuickSettingsTile;
@@ -292,6 +294,11 @@ public class QuickSettingsController {
                 qs = new ProfileTile(mContext, this);
             } else if (tile.equals(TILE_HOVER)) {
                 qs = new HoverTile(mContext, this);
+            } else if (tile.equals(TILE_NETWORKADB)) {
+                mTileStatusUris.add(Settings.Global.getUriFor(Settings.Global.ADB_ENABLED));
+                if (DeviceUtils.adbEnabled(resolver)) {
+                    qs = new NetworkAdbTile(mContext, this);
+                }
             }
 
             if (qs != null) {
