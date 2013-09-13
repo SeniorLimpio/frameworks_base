@@ -2027,6 +2027,12 @@ public final class Settings {
         public static final String VOLUME_MASTER = "volume_master";
 
         /**
+         * Whether or not to launch default music player when headset is connected
+         * @hide
+         */
+        public static final String HEADSET_CONNECT_PLAYER = "headset_connect_player";
+
+        /**
          * Master volume mute (int 1 = mute, 0 = not muted).
          *
          * @hide

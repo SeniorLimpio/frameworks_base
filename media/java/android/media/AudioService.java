@@ -68,6 +68,7 @@ import android.provider.Settings;
 import android.provider.Settings.System;
 import android.speech.RecognizerIntent;
 import android.telephony.PhoneStateListener;
+import android.provider.Settings.SettingNotFoundException;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -79,9 +80,14 @@ import android.view.WindowManager;
 import com.android.internal.telephony.ITelephony;
 import com.android.internal.util.XmlUtils;
 
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserFactory;
 import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.File;
 import java.io.FileDescriptor;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Field;
@@ -127,6 +133,8 @@ public class AudioService extends IAudioService.Stub {
 
     /** The UI */
     private VolumePanel mVolumePanel;
+    private Context mUiContext;
+    private Handler mHandler;
 
     // sendMsg() flags
     /** If the msg is already queued, replace it with this one. */
@@ -4173,13 +4181,19 @@ public class AudioService extends IAudioService.Stub {
                     adjustCurrentStreamVolume();
                     // TODO: Cap volume at safe levels
 
-                    Intent playerIntent = new Intent(Intent.ACTION_MAIN);
-                    playerIntent.addCategory(Intent.CATEGORY_APP_MUSIC);
-                    playerIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    try {
-                        context.startActivity(playerIntent);
-                    } catch (ActivityNotFoundException e) {
-                        Log.w(TAG, "No music player found to start after headset connection");
+                    boolean launchPlayer = Settings.System.getIntForUser(
+                            context.getContentResolver(),
+                            Settings.System.HEADSET_CONNECT_PLAYER,
+                            0, UserHandle.USER_CURRENT) != 0;
+                    if (launchPlayer) {
+                        Intent playerIntent = new Intent(Intent.ACTION_MAIN);
+                        playerIntent.addCategory(Intent.CATEGORY_APP_MUSIC);
+                        playerIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        try {
+                            context.startActivity(playerIntent);
+                        } catch (ActivityNotFoundException e) {
+                            Log.w(TAG, "No music player found to start after headset connection");
+                        }
                     }
 
                 } else {
@@ -4321,23 +4335,6 @@ public class AudioService extends IAudioService.Stub {
             }
         }
     }
-
-        private void adjustCurrentStreamVolume() {
-            VolumeStreamState streamState;
-            int device;
-
-            for (int stream = 0; stream < AudioSystem.getNumStreamTypes(); stream++) {
-                if (stream == mStreamVolumeAlias[stream]) {
-                    streamState = mStreamStates[mStreamVolumeAlias[stream]];
-                    device = getDeviceForStream(stream);
-                    // apply stored value for device
-                    streamState.applyDeviceVolume(device);
-                }
-            }
-        }
-
-    }
-
     //==========================================================================================
     // RemoteControlDisplay / RemoteControlClient / Remote info
     //==========================================================================================
