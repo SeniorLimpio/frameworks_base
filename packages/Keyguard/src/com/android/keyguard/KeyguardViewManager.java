@@ -712,11 +712,11 @@ public class KeyguardViewManager {
 
         final IBinder token;
 
-        // If keyguard is disabled or not showing, we need to inform PhoneWindowManager with a null
+        // If keyguard is disabled, we need to inform PhoneWindowManager with a null
         // token so it doesn't wait for us to draw...
         final boolean disabled =
                 mLockPatternUtils.isLockScreenDisabled() && !mLockPatternUtils.isSecure();
-        if (!isShowing() || disabled) {
+        if (mKeyguardHost == null || disabled) {
             token = null;
         } else {
             token = mKeyguardHost.getWindowToken();
