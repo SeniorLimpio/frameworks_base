@@ -550,6 +550,7 @@ public class AudioService extends IAudioService.Stub {
         intentFilter.addAction(Intent.ACTION_SCREEN_ON);
         intentFilter.addAction(Intent.ACTION_SCREEN_OFF);
         intentFilter.addAction(Intent.ACTION_USER_SWITCHED);
+        intentFilter.addAction(Intent.ACTION_HEADSET_PLUG);
 
         intentFilter.addAction(Intent.ACTION_CONFIGURATION_CHANGED);
         // TODO merge orientation and rotation
@@ -4180,6 +4181,7 @@ public class AudioService extends IAudioService.Stub {
                     } catch (ActivityNotFoundException e) {
                         Log.w(TAG, "No music player found to start after headset connection");
                     }
+
                 } else {
                     // Headset disconnected
                     adjustCurrentStreamVolume();
@@ -4304,6 +4306,21 @@ public class AudioService extends IAudioService.Stub {
                         mStreamStates[AudioSystem.STREAM_MUSIC], 0);
             }
         }
+
+        private void adjustCurrentStreamVolume() {
+            VolumeStreamState streamState;
+            int device;
+
+            for (int stream = 0; stream < AudioSystem.getNumStreamTypes(); stream++) {
+                if (stream == mStreamVolumeAlias[stream]) {
+                    streamState = mStreamStates[mStreamVolumeAlias[stream]];
+                    device = getDeviceForStream(stream);
+                    // apply stored value for device
+                    streamState.applyDeviceVolume(device);
+                }
+            }
+        }
+    }
 
         private void adjustCurrentStreamVolume() {
             VolumeStreamState streamState;
