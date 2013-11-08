@@ -3648,7 +3648,13 @@ public final class Settings {
          * Network stats Color style
          * @hide
          */
-        public static final String STATUS_BAR_NETWORK_COLOR = "status_bar_network_usage_color";   
+        public static final String STATUS_BAR_NETWORK_COLOR = "status_bar_network_usage_color"; 
+
+	/**
+         * Network stats hide if there's no traffic
+         * @hide
+         */
+        public static final String STATUS_BAR_NETWORK_HIDE = "status_bar_network_hide";  
 
         /**
          * Custom navigation bar intent and action configuration
