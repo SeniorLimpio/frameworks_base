@@ -32,7 +32,6 @@
     <drawable name="recents_callout_line">#99ffffff</drawable>
     <drawable name="notification_item_background_legacy_color">#ffaaaaaa</drawable>
     <drawable name="heads_up_notification_bg_pressed">#ff33B5E5</drawable>
-    <drawable name="notification_header_bg">#FF000000</drawable>
     <drawable name="reminder_bg_pressed">#FF191919</drawable>
     <color name="notification_panel_scrim_color">#B0000000</color>
     <color name="batterymeter_frame_color">#66FFFFFF</color><!-- 40% white -->
@@ -60,6 +59,17 @@
     <color name="qs_background_color">#FF212121</color>
     <color name="qs_background_pressed_color">#FF161616</color>
     <color name="ad_notification_background_color">#3fff</color>
+
+    <!-- app sidebar -->
+    <color name="app_sidebar_info_bubble_text_color">#ff0099cc</color>
+    <color name="app_sidebar_info_bubble_text_shadow_color">#ff333333</color>
+    <color name="trigger_region_color">#8015a0e5</color>
+    <color name="sidebar_item_text_color">#ffffffff</color>
+    <color name="sidebar_item_text_shadow_color">#ff000000</color>
+
+    <!-- Gesture Anywhere specific colors -->
+    <color name="gesture_overlay_background_fill_color">#80000000</color>
+    <color name="gesture_color">@android:color/holo_blue_light</color>
 
     <!-- Pie controls -->
     <color name="pie_overlay_color">#ff000000</color>
