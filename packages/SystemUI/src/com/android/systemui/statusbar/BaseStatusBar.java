@@ -16,16 +16,8 @@
 
 package com.android.systemui.statusbar;
 
-import android.service.notification.StatusBarNotification;
-import android.content.res.Configuration;
-import com.android.internal.statusbar.IStatusBarService;
-import com.android.internal.statusbar.StatusBarIcon;
-import com.android.internal.statusbar.StatusBarIconList;
-import com.android.internal.widget.SizeAdaptiveLayout;
-import com.android.systemui.SystemUI;
-import com.android.systemui.recent.RecentTasksLoader;
-import com.android.systemui.recent.RecentsActivity;
-import com.android.systemui.recent.TaskDescription;
+import android.annotation.ChaosLab;
+import android.annotation.ChaosLab.Classification;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningAppProcessInfo;
@@ -53,9 +45,6 @@ import android.graphics.PixelFormat;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
-import android.annotation.ChaosLab;
-import android.annotation.ChaosLab.Classification;
-import com.android.systemui.limpio.lab.gestureanywhere.GestureAnywhereView;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
@@ -97,16 +86,19 @@ import com.android.internal.statusbar.StatusBarIconList;
 import com.android.internal.widget.SizeAdaptiveLayout;
 import com.android.internal.util.slim.ButtonConfig;
 import com.android.internal.util.slim.DeviceUtils;
+import com.android.systemui.limpio.lab.gestureanywhere.GestureAnywhereView;
 import com.android.systemui.R;
 import com.android.systemui.RecentsComponent;
 import com.android.systemui.SearchPanelView;
 import com.android.systemui.SystemUI;
 import com.android.systemui.slimrecent.RecentController;
+import com.android.systemui.statusbar.phone.Ticker;
 import com.android.systemui.statusbar.phone.KeyguardTouchDelegate;
 import com.android.systemui.statusbar.phone.NavigationBarOverlay;
 import com.android.systemui.statusbar.phone.PhoneStatusBar;
 import com.android.systemui.statusbar.policy.NotificationRowLayout;
 import com.android.systemui.statusbar.policy.PieController;
+import com.android.systemui.statusbar.policy.activedisplay.ActiveDisplayView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -243,6 +235,9 @@ public abstract class BaseStatusBar extends SystemUI implements
     public NotificationData getNotificationData() {
         return mNotificationData;
     }
+
+    // Active dispay
+    protected ActiveDisplayView mActiveDisplayView;
 
     public IStatusBarService getStatusBarService() {
         return mBarService;
@@ -1390,6 +1385,48 @@ public abstract class BaseStatusBar extends SystemUI implements
             mWindowManager.removeViewImmediate(mSearchPanelView);
         }
         mContext.unregisterReceiver(mBroadcastReceiver);
+    }
+
+    protected static void setSystemUIVisibility(View v, int visibility) {
+        v.setSystemUiVisibility(visibility);
+    }
+
+    protected void addActiveDisplayView() {
+        if (mActiveDisplayView == null) {
+            mActiveDisplayView = (ActiveDisplayView) View.inflate(mContext, R.layout.active_display, null);
+            mActiveDisplayView.setBar(this);
+            mWindowManager.addView(mActiveDisplayView, getActiveDisplayViewLayoutParams());
+        }
+    }
+
+    protected void removeActiveDisplayView() {
+        if (mActiveDisplayView != null) {
+            mWindowManager.removeView(mActiveDisplayView);
+        }
+    }
+
+    protected WindowManager.LayoutParams getActiveDisplayViewLayoutParams() {
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams(
+                LayoutParams.MATCH_PARENT,
+                LayoutParams.MATCH_PARENT,
+                WindowManager.LayoutParams.TYPE_NAVIGATION_BAR_PANEL,
+                0
+                | WindowManager.LayoutParams.FLAG_FULLSCREEN
+                | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+                | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+                | WindowManager.LayoutParams.FLAG_TOUCHABLE_WHEN_WAKING
+                | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
+                | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
+                | WindowManager.LayoutParams.FLAG_SPLIT_TOUCH,
+                PixelFormat.OPAQUE);
+        if (ActivityManager.isHighEndGfx()) {
+            lp.flags |= WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED;
+        }
+        lp.gravity = Gravity.BOTTOM | Gravity.START;
+        lp.setTitle("ActiveDisplayView");
+
+        return lp;
     }
 
     protected void setIconHiddenByUser(String iconPackage, boolean hide) {
