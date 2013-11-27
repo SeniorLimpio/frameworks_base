@@ -6958,6 +6958,13 @@ public final class Settings {
                 "default_theme_applied_on_first_boot";
 
         /**
+         * Whether to display the 'Wipe data' and 'Force close' options in the notification
+         * area and in the recent app list
+         * @hide
+         */
+        public static final String DEVELOPMENT_SHORTCUT = "development_shortcut";
+
+        /**
          * This are the settings to be backed up.
          *
          * NOTE: Settings are backed up and restored in the order they appear
@@ -7010,7 +7017,8 @@ public final class Settings {
             UI_THEME_AUTO_MODE,
             PRIVACY_GUARD_DEFAULT,
             PRIVACY_GUARD_NOTIFICATION,
-            ADVANCED_REBOOT
+            ADVANCED_REBOOT,
+            DEVELOPMENT_SHORTCUT
         };
 
         /**
