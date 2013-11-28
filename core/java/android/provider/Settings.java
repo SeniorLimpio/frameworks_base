@@ -4144,6 +4144,18 @@ public final class Settings {
         public static final String KEY_HOME_ACTION = "key_home_action";
 
         /**
+         * Status bar color
+         * @hide
+         */
+        public static final String CUSTOM_STATUS_BAR_COLOR = "custom_status_bar_color";
+
+        /** @hide */
+        public static final String STATUS_BAR_OPAQUE_COLOR = "status_bar_opaque_color";
+
+        /** @hide */
+        public static final String STATUS_BAR_SEMI_TRANS_COLOR = "status_bar_semi_trans_color";
+
+        /**
          * Action to perform when the home key is long-pressed. (default: ACTION_RECENTS)
          * (See ButtonsConstants.java for valid values)
          * @hide
