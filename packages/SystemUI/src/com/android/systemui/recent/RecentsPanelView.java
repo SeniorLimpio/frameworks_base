@@ -39,6 +39,7 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Rect;
 import android.graphics.Shader.TileMode;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.BitmapDrawable;
@@ -1053,6 +1054,34 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
             bottom += getBottomPaddingOffset();
         }
         mRecentsContainer.drawFadedEdges(canvas, left, right, top, bottom);
+    }
+
+    @Override
+    protected boolean fitSystemWindows(Rect insets) {
+        if (mClearAllRecents != null) {
+            MarginLayoutParams lp = (MarginLayoutParams) mClearAllRecents.getLayoutParams();
+            switch (clearAllButton) {
+                case Constants.CLEAR_ALL_BUTTON_TOP_LEFT:
+                    lp.topMargin = insets.top;
+                    lp.leftMargin = insets.left;
+                    break;
+                case Constants.CLEAR_ALL_BUTTON_TOP_RIGHT:
+                    lp.topMargin = insets.top;
+                    lp.rightMargin = insets.right;
+                    break;
+                case Constants.CLEAR_ALL_BUTTON_BOTTOM_LEFT:
+                    lp.bottomMargin = insets.bottom;
+                    lp.leftMargin = insets.left;
+                    break;
+                case Constants.CLEAR_ALL_BUTTON_BOTTOM_RIGHT:
+                    lp.bottomMargin = insets.bottom;
+                    lp.rightMargin = insets.right;
+                    break;
+            }
+            mClearAllRecents.setLayoutParams(lp);
+        }
+
+        return super.fitSystemWindows(insets);
     }
 
     class FakeClearUserDataObserver extends IPackageDataObserver.Stub {
