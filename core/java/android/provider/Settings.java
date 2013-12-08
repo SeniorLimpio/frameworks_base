@@ -4048,10 +4048,19 @@ public final class Settings {
         public static final String KEY_HOME_ACTION = "key_home_action";
 
         /**
-         * Action to perform when the home key is long-pressed. (default: ACTION_RECENTS)
-         * (See ButtonsConstants.java for valid values)
+         * Status icon color
          * @hide
          */
+        public static final String CUSTOM_SYSTEM_ICON_COLOR = "custom_system_icon_color";
+
+        /** @hide */
+        public static final String SYSTEM_ICON_COLOR = "system_icon_color";
+
+        /**
+         * @hide
+         * Action to perform when the home key is long-pressed. (default: ACTION_RECENTS)
+         * (See ButtonsConstants.java for valid values)
+	*/
         public static final String KEY_HOME_LONG_PRESS_ACTION = "key_home_long_press_action";
 
         /**
