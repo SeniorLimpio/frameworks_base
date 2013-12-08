@@ -3422,6 +3422,17 @@ public final class Settings {
          * 2: show signal text numbers w/small dBm appended
 
         /**
+         * Whether to show the signal text or signal bars.
+         * default: 0
+         * 0: show signal bars
+         * 1: show signal text numbers
+         * 2: show signal text numbers w/small dBm appended
+         * @hide
+         */
+        public static final String STATUS_BAR_SIGNAL_TEXT = "status_bar_signal";
+
+
+        /**
          * Pie button outline color
          * @hide
          */
@@ -4156,10 +4167,19 @@ public final class Settings {
         public static final String STATUS_BAR_SEMI_TRANS_COLOR = "status_bar_semi_trans_color";
 
         /**
-         * Action to perform when the home key is long-pressed. (default: ACTION_RECENTS)
-         * (See ButtonsConstants.java for valid values)
+         * Status icon color
          * @hide
          */
+        public static final String CUSTOM_SYSTEM_ICON_COLOR = "custom_system_icon_color";
+
+        /** @hide */
+        public static final String SYSTEM_ICON_COLOR = "system_icon_color";
+
+        /**
+         * @hide
+         * Action to perform when the home key is long-pressed. (default: ACTION_RECENTS)
+         * (See ButtonsConstants.java for valid values)
+	*/
         public static final String KEY_HOME_LONG_PRESS_ACTION = "key_home_long_press_action";
 
         /**

@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.hardware.SensorManager;
 import android.net.ConnectivityManager;
 import android.nfc.NfcAdapter;
@@ -34,6 +35,8 @@ import com.android.internal.telephony.PhoneConstants;
 import static android.hardware.Sensor.TYPE_LIGHT;
 import static android.hardware.Sensor.TYPE_PROXIMITY;
 
+import java.lang.Math;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -181,4 +184,12 @@ public class DeviceUtils {
         return getScreenType(con) == DEVICE_TABLET;
     }
 
+    /** Extract the color into RGB instead ARGB **/
+    public static int extractRGB(int color) {
+        return color & 0x00FFFFFF;
+    }
+
+    public static int extractAlpha(int color) {
+        return (color >> 24) & 0x000000FF;
+    }
 }
