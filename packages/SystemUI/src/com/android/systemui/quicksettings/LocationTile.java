@@ -51,6 +51,8 @@ public class LocationTile extends QuickSettingsTile implements LocationSettingsC
             @Override
             public void onClick(View v) {
                 mLocationController.setLocationEnabled(!mLocationEnabled);
+                if (isFlipTilesEnabled()) {
+                    flipTile(0);
             }
         };
 
