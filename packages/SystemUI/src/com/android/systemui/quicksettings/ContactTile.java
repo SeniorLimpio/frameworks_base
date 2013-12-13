@@ -73,6 +73,9 @@ public class ContactTile extends QuickSettingsTile {
                         mContext, v, res, ContactsContract.QuickContact.MODE_LARGE, null);
                     startSettingsActivity(intent);
                 }
+                if (isFlipTilesEnabled()) {
+                    flipTile(0);
+                }
             }
         };
         mOnLongClick = new View.OnLongClickListener() {

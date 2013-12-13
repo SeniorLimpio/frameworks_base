@@ -49,6 +49,7 @@ public class TorchTile extends QuickSettingsTile {
                 SlimActions.processAction(mContext, ButtonsConstants.ACTION_TORCH, false);
                 if (isFlipTilesEnabled()) {
                     flipTile(0);
+                }
             }
         };
 

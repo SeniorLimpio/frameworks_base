@@ -53,6 +53,7 @@ public class LocationTile extends QuickSettingsTile implements LocationSettingsC
                 mLocationController.setLocationEnabled(!mLocationEnabled);
                 if (isFlipTilesEnabled()) {
                     flipTile(0);
+                }
             }
                 if (isFlipTilesEnabled()) {
                     flipTile(0);
