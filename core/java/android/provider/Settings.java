@@ -3023,6 +3023,19 @@ public final class Settings {
         public static final String PIE_BUTTON_LONG_PRESSED_COLOR = "pie_button_long_pressed_color";
 
         /**
+         * Settings for clock font style
+         * @hide
+         */
+        public static final String STATUSBAR_CLOCK_FONT_STYLE = "statusbar_clock_font_style";
+
+        /**
+         * Whether to show the signal text or signal bars.
+         * default: 0
+         * 0: show signal bars
+         * 1: show signal text numbers
+         * 2: show signal text numbers w/small dBm appended
+
+        /**
          * Pie button outline color
          * @hide
          */
