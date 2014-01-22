@@ -1560,7 +1560,7 @@ public final class Settings {
 
         /** @hide */
         public static boolean hasInterestingConfigurationChanges(int changes) {
-            return (changes&ActivityInfo.CONFIG_FONT_SCALE) != 0;
+            return (changes & ActivityInfo.CONFIG_FONT_SCALE) != 0;
         }
 
         /** @deprecated - Do not use */
@@ -3658,6 +3658,12 @@ public final class Settings {
          */
         public static final String POWER_UI_LOW_BATTERY_WARNING_POLICY =
                 "power_ui_low_battery_warning_policy";
+
+        /**
+         * Show brightness slider in notification panel
+         * @hide
+         */
+        public static final String NOTIFICATION_BRIGHTNESS_SLIDER = "notification_brightness_slider";
 
         /**
          * Volume key controls ringtone or media sound stream
