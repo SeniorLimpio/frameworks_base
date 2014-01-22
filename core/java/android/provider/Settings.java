@@ -3976,6 +3976,18 @@ public final class Settings {
         public static final String KEY_APP_SWITCH_DOUBLE_TAP_ACTION =
                 "key_app_switch_double_tap_action";
 
+        /**
+         * show clear all recents button
+         *  @hide
+         */
+        public static final String SHOW_CLEAR_RECENTS_BUTTON = "clear_recents_button";
+
+        /**
+         * location of the clear all rectents button
+         * @hide
+         */
+        public static final String CLEAR_RECENTS_BUTTON_LOCATION = "clear_recents_button_location";
+
 	/**
          * Enables/disables lockscreen notifications
          * @hide
