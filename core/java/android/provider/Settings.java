@@ -4013,6 +4013,12 @@ public final class Settings {
          */
         public static final String WAKELOCK_BLOCKING_LIST = "wakelock_blocking_list";
 
+        /**
+         * Defines the custom path to use for UI sound effects (null for default)
+         * @hide
+         */
+        public static final String CUSTOM_SOUND_EFFECTS_PATH = "custom_sound_effects_path";
+
         /**  
          *
          * @hide
