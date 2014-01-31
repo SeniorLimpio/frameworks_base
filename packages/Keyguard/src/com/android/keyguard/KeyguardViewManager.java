@@ -26,6 +26,9 @@ import com.android.internal.policy.IKeyguardShowCallback;
 import com.android.internal.widget.LockPatternUtils;
 
 import android.app.Activity;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+
 import android.app.ActivityManager;
 import android.appwidget.AppWidgetManager;
 import android.content.ContentResolver;
@@ -110,6 +113,8 @@ public class KeyguardViewManager {
     private int mBlurRadius = 12;
     private boolean mSeeThrough = false;
     private boolean mIsCoverflow = true;
+    private boolean mLoadWallpaper;
+    private String mWallpaperFile;
 
     private boolean mUnlockKeyDown = false;
 
@@ -189,6 +194,9 @@ public class KeyguardViewManager {
         SettingsObserver observer = new SettingsObserver(new Handler());
         observer.observe();
         updateSettings();
+
+        mWallpaperFile = mContext.getFilesDir() + "/wallpaper.png";
+        mLoadWallpaper = Settings.System.getInt(mContext.getContentResolver(), Settings.System.LOCKSCREEN_WALLPAPER, 0) == 1;
     }
 
     /**
@@ -245,13 +253,24 @@ public class KeyguardViewManager {
     }
 
     public void setBackgroundBitmap(Bitmap bmp) {
-        if (bmp != null && mSeeThrough) {
-            if (mBlurRadius > 0) {
-                mCustomImage = blurBitmap(bmp, mBlurRadius);
-            } else {
-                mCustomImage = bmp;
+        if (bmp != null && mSeeThrough && mBlurRadius > 0) {
+            mCustomImage = blurBitmap(bmp, mBlurRadius);
+        } else {
+            mCustomImage = bmp;
+        }
+    }
+
+    public void setWallpaper(Bitmap bmp) {
+        Settings.System.putInt(mContext.getContentResolver(), Settings.System.LOCKSCREEN_WALLPAPER, bmp != null ? 1 : 0);
+        if (bmp != null) {
+            try {
+                FileOutputStream fos = new FileOutputStream(mWallpaperFile);
+                bmp.compress(CompressFormat.JPEG, 100, fos);
+            } catch (FileNotFoundException ex) {
+                Log.e(TAG, "Could not write file: " + mWallpaperFile + "\nError: " + ex.toString());
             }
         }
+        setBackgroundBitmap(bmp);
     }
 
     private Bitmap blurBitmap(Bitmap bmp, int radius) {
@@ -506,19 +525,31 @@ public class KeyguardViewManager {
             inflateKeyguardView(options);
             mKeyguardView.requestFocus();
         }
+
         updateUserActivityTimeoutInWindowLayoutParams();
         mViewManager.updateViewLayout(mKeyguardHost, mWindowLayoutParams);
 
         mKeyguardHost.restoreHierarchyState(mStateContainer);
-        if (mCustomImage != null) {
-            int currentRotation = mKeyguardView.getDisplay().getRotation() * 90;
-            mCustomImage = rotateBmp(mCustomImage, mLastRotation - currentRotation);
-            mLastRotation = currentRotation;
-            mIsCoverflow = false;
-            setCustomBackground(mCustomImage);
+
+        if((mCustomImage != null || (mSeeThrough && mBlurRadius == 0))) {
+            if (mCustomImage != null) {
+                if (mSeeThrough) {
+                    int currentRotation = mKeyguardView.getDisplay().getRotation() * 90;
+                    mCustomImage = rotateBmp(mCustomImage, mLastRotation - currentRotation);
+                    mLastRotation = currentRotation;
+                }
+                mIsCoverflow = false;
+                setCustomBackground(mCustomImage);
+            } else {
+                updateShowWallpaper(false);
+            }
         } else {
-            updateShowWallpaper(true);
             mIsCoverflow = true;
+        }
+
+        if (mLoadWallpaper) {
+            setWallpaper(BitmapFactory.decodeFile(mWallpaperFile));
+            mLoadWallpaper = false;
         }
     }
 
