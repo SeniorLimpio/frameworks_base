@@ -118,6 +118,7 @@ public class KeyguardViewManager {
 
     private boolean mUnlockKeyDown = false;
 
+
     private NotificationHostView mNotificationView;
     private NotificationViewManager mNotificationViewManager;
     private boolean mLockscreenNotifications = true;
@@ -258,6 +259,19 @@ public class KeyguardViewManager {
         } else {
             mCustomImage = bmp;
         }
+    }
+
+    public void setWallpaper(Bitmap bmp) {
+        Settings.System.putInt(mContext.getContentResolver(), Settings.System.LOCKSCREEN_WALLPAPER, bmp != null ? 1 : 0);
+        if (bmp != null) {
+            try {
+                FileOutputStream fos = new FileOutputStream(mWallpaperFile);
+                bmp.compress(CompressFormat.JPEG, 100, fos);
+            } catch (FileNotFoundException ex) {
+                Log.e(TAG, "Could not write file: " + mWallpaperFile + "\nError: " + ex.toString());
+            }
+        }
+        setBackgroundBitmap(bmp);
     }
 
     public void setWallpaper(Bitmap bmp) {

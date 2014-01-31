@@ -2757,6 +2757,12 @@ public final class Settings {
         public static final String UNLOCK_SOUND = Global.UNLOCK_SOUND;
 
         /**
+         * Whether a custom lockscreen wallpaper is enabled
+         * @hide
+         */
+        public static final String LOCKSCREEN_WALLPAPER = "lockscreen_wallpaper";
+
+	/**
          * Receive incoming SIP calls?
          * 0 = no
          * 1 = yes
@@ -3371,6 +3377,7 @@ public final class Settings {
          * Allows setting the radius for blur
          * @hide
          */
+        public static final String LOCKSCREEN_BLUR_BEHIND = "lockscreen_blur_behind";
         public static final String LOCKSCREEN_BLUR_RADIUS = "lockscreen_blur_radius";
 
 	/**
