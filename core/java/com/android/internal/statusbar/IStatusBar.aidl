@@ -47,4 +47,6 @@ oneway interface IStatusBar
     void toggleScreenshot();
     void toggleLastApp();
     void toggleKillApp();
+    void setAutoRotate(boolean enabled);
+    void setButtonDrawable(int buttonId, int iconId);
 }
