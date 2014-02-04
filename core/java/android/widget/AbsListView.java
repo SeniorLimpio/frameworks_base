@@ -2430,6 +2430,14 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
                 anim.setInterpolator(AnimationUtils.loadInterpolator(
                     mContext, android.R.anim.bounce_interpolator));
                 break;
+            case 8:
+                anim.setInterpolator(AnimationUtils.loadInterpolator(
+                    mContext, android.R.anim.cycle_interpolator));
+                break;
+            case 9:
+                anim.setInterpolator(AnimationUtils.loadInterpolator(
+                    mContext, android.R.anim.linear_interpolator));
+                break;
         }
         return applyAnimationToView(view, anim);
     }
@@ -4349,8 +4357,9 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
             removeCallbacks(mCheckFlywheel);
 
             reportScrollStateChange(OnScrollListener.SCROLL_STATE_IDLE);
-            if (clearCache)
+            if (clearCache) {
                 clearScrollingCache();
+            }
             mScroller.abortAnimation();
 
             if (mFlingStrictSpan != null) {

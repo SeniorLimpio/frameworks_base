@@ -26,7 +26,7 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
 import com.android.internal.R;
 
-public class AwesomeAnimationHelper {
+public class AnimationHelper {
 
     public final static int ANIMATION_RANDOM = -1;
     public final static int ANIMATION_DEFAULT = 0;
@@ -85,7 +85,7 @@ public class AwesomeAnimationHelper {
             mAnim = (new Random()).nextInt(14);
             // Random number from 0 to 13
         }
-        int[] anim = new int[2];
+         int[] anim = new int[2];
         switch (mAnim) {
             case ANIMATION_FADE:
                 anim[0] = R.anim.animcontrol_slow_fade_out;
