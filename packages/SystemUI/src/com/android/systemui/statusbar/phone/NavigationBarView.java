@@ -113,6 +113,8 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
 
     private Drawable mBackIcon, mBackAltIcon;
 
+    private Drawable mRecentAltIcon, mRecentAltLandIcon;
+
     protected DelegateViewHelper mDelegateHelper;
     private DeadZone mDeadZone;
     private final NavigationBarTransitions mBarTransitions;
@@ -257,6 +259,8 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
         mShowMenu = false;
         mDelegateHelper = new DelegateViewHelper(this);
 
+        getIcons(res);
+
         mBarTransitions = new NavigationBarTransitions(this);
 
         disableCameraByUser();
@@ -354,6 +358,11 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
     // shown when keyguard is visible and camera is available
     public View getCameraButton() {
         return mCurrentView.findViewById(R.id.camera_button);
+    }
+
+    private void getIcons(Resources res) {
+        mRecentAltIcon = res.getDrawable(R.drawable.ic_sysbar_recent_clear);
+        mRecentAltLandIcon = res.getDrawable(R.drawable.ic_sysbar_recent_clear_land);
     }
 
     @Override
