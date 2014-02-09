@@ -27,6 +27,8 @@ public class DessertCaseDream extends DreamService {
         super.onAttachedToWindow();
         setInteractive(true);
         setFullscreen(true);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        final boolean isCM = prefs.getBoolean("dessert_case_cm", false);
 
         mView = new DessertCaseView(this);
 
