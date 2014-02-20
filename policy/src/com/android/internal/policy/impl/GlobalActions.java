@@ -151,6 +151,10 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                 context.getSystemService(Context.CONNECTIVITY_SERVICE);
         mHasTelephony = cm.isNetworkSupported(ConnectivityManager.TYPE_MOBILE);
 
+        ConnectivityManager cm = (ConnectivityManager)
+                context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        mHasTelephony = cm.isNetworkSupported(ConnectivityManager.TYPE_MOBILE);
+
         // get notified of phone state changes
         TelephonyManager telephonyManager =
                 (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
