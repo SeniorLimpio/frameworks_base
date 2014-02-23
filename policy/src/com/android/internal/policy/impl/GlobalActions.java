@@ -35,6 +35,7 @@ import android.content.pm.UserInfo;
 import android.database.ContentObserver;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.Manifest;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.net.Uri;
@@ -349,6 +350,26 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                             return true;
                         }
                     });
+        // next: screenrecord
+        // only shown if enabled, disabled by default
+        boolean showScreenrecord = Settings.System.getIntForUser(cr,
+                Settings.System.POWER_MENU_SCREENRECORD_ENABLED, 0, UserHandle.USER_CURRENT) == 1;
+        if (showScreenrecord) {
+            mItems.add(
+                new SinglePressAction(R.drawable.ic_lock_screen_record, R.string.global_action_screen_record) {
+                    public void onPress() {
+                        toggleScreenRecord();
+                    }
+
+                    public boolean showDuringKeyguard() {
+                        return true;
+                    }
+
+                    public boolean showBeforeProvisioning() {
+                        return true;
+                    }
+                });
+        }
             // airplane mode
             } else if (config.getClickAction().equals(PolicyConstants.ACTION_AIRPLANE)) {
                 constructAirPlaneModeToggle(PolicyHelper.getPowerMenuIconImage(mContext,
@@ -592,6 +613,11 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                 items.add(switchToUser);
             }
         }
+    }
+
+    private void toggleScreenRecord() {
+        final Intent recordIntent = new Intent("org.chameleonos.action.NOTIFY_RECORD_SERVICE");
+        mContext.sendBroadcast(recordIntent, Manifest.permission.RECORD_SCREEN);
     }
 
     private void prepareDialog() {
