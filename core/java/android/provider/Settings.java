@@ -3827,6 +3827,18 @@ public final class Settings {
         public static final String KEY_BACK_LONG_PRESS_ACTION = "key_back_long_press_action";
 
         /**
+         * Width and height of output video expressed in WxH
+         * @hide
+         */
+        public static final String SCREEN_RECORDER_OUTPUT_DIMENSIONS = "screen_recorder_output_dimensions";
+
+        /**
+         * Screen recorder framerate in bits per second
+         * @hide
+         */
+        public static final String SCREEN_RECORDER_BITRATE = "screen_recorder_bitrate";
+
+        /**
          * Action to perform when the back key is double tapped. (default: ACTION_NULL)
          * (See ButtonsConstants.java for valid values)
          * @hide
