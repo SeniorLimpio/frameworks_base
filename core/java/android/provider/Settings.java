@@ -3839,6 +3839,12 @@ public final class Settings {
         public static final String SCREEN_RECORDER_BITRATE = "screen_recorder_bitrate";
 
         /**
+         * Whether to include audio when recording a video
+         * @hide
+         */
+        public static final String SCREEN_RECORDER_RECORD_AUDIO = "screen_recorder_record_audio";
+
+        /**
          * Action to perform when the back key is double tapped. (default: ACTION_NULL)
          * (See ButtonsConstants.java for valid values)
          * @hide
