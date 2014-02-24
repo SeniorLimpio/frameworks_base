@@ -3322,6 +3322,18 @@ public final class Settings {
         public static final String STATUS_BAR_BATTERY_COLOR = "status_bar_battery_color";
 
         /**
+         * Allows to show the background activity back the lockscreen
+         * @hide
+         */
+        public static final String LOCKSCREEN_SEE_THROUGH = "lockscreen_see_through";
+
+        /**
+         * Allows setting the radius for blur
+         * @hide
+         */
+        public static final String LOCKSCREEN_BLUR_RADIUS = "lockscreen_blur_radius";
+
+	/**
          * Battery icon text color
          * in statusbar
          * @hide
