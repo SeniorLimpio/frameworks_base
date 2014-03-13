@@ -3769,6 +3769,11 @@ public final class Settings {
         public static final String NOTIFICATION_BACKGROUND_LANDSCAPE =
                 "notification_background_landscape";
 
+        /**
+         * @hide
+         */
+        public static final String RECENTS_PANEL_COLOR = "recents_panel_color";
+
        /**
         * Sets the alpha (transparency) of notification wallpaper
         * @hide
