@@ -1409,7 +1409,6 @@ public abstract class BaseStatusBar extends SystemUI implements
                 || iconPackage.isEmpty()
                 || iconPackage.equals("android")) {
             return false;
-
         }
 
         final boolean hide = mContext.getSharedPreferences("hidden_statusbar_icon_packages", 0)
@@ -1633,7 +1632,8 @@ public abstract class BaseStatusBar extends SystemUI implements
                     resolver, Settings.System.APP_SIDEBAR_POSITION, AppSidebar.SIDEBAR_POSITION_LEFT);
             if (sidebarPosition != mSidebarPosition) {
                 mSidebarPosition = sidebarPosition;
-                mWindowManager.updateViewLayout(mAppSidebar, getAppSidebarLayoutParams(sidebarPosition));
+                removeSidebarView();
+                addSidebarView();
             }
         }
     }
