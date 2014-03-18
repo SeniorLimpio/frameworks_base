@@ -1309,6 +1309,30 @@ public abstract class BaseStatusBar extends SystemUI implements
         mContext.unregisterReceiver(mBroadcastReceiver);
     }
 
+    protected void setIconHiddenByUser(String iconPackage, boolean hide) {
+        if (iconPackage == null
+                || iconPackage.isEmpty()
+                || iconPackage.equals("android")) {
+            return;
+        }
+        mContext.getSharedPreferences("hidden_statusbar_icon_packages", 0)
+                .edit()
+                .putBoolean(iconPackage, hide)
+                .apply();
+    }
+
+    protected boolean isIconHiddenByUser(String iconPackage) {
+        if (iconPackage == null
+                || iconPackage.isEmpty()
+                || iconPackage.equals("android")) {
+            return false;
+
+        }
+        final boolean hide = mContext.getSharedPreferences("hidden_statusbar_icon_packages", 0)
+                .getBoolean(iconPackage, false);
+        return hide;
+    }
+
     public void addNavigationBarCallback(NavigationBarCallback callback) {
         mNavigationCallbacks.add(callback);
     }
@@ -1500,27 +1524,5 @@ public abstract class BaseStatusBar extends SystemUI implements
         if (lastAppId != 0) {
             am.moveTaskToFront(lastAppId, am.MOVE_TASK_NO_USER_ACTION);
         }
-    protected void setIconHiddenByUser(String iconPackage, boolean hide) {
-        if (iconPackage == null
-                || iconPackage.isEmpty()
-                || iconPackage.equals("android")) {
-            return;
-        }
-        mContext.getSharedPreferences("hidden_statusbar_icon_packages", 0)
-                .edit()
-                .putBoolean(iconPackage, hide)
-                .apply();
-    }
-
-    protected boolean isIconHiddenByUser(String iconPackage) {
-        if (iconPackage == null
-                || iconPackage.isEmpty()
-                || iconPackage.equals("android")) {
-            return false;
-
-        }
-        final boolean hide = mContext.getSharedPreferences("hidden_statusbar_icon_packages", 0)
-                .getBoolean(iconPackage, false);
-        return hide;
     }
 }
