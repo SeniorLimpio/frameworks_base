@@ -3752,6 +3752,12 @@ public final class Settings {
         public static final String MENU_UNLOCK_SCREEN = "menu_unlock_screen";
 
         /**
+         * Whether or not to show circle battery around the lockscreen ring
+         * @hide
+         */
+        public static final String BATTERY_AROUND_LOCKSCREEN_RING = "battery_around_lockscreen_ring";
+
+	/**
          * Whether recent panel gravity is left or right (default = Gravity.RIGHT).
          * @hide
          */
