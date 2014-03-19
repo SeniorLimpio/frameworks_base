@@ -195,6 +195,7 @@ public class KeyguardServiceWrapper implements IKeyguardService {
         } catch (RemoteException e) {
             Slog.w(TAG , "Remote Exception", e);
 	}
+}
     public void setBackgroundBitmap(Bitmap bmp) {
         try {
             mService.setBackgroundBitmap(bmp);
