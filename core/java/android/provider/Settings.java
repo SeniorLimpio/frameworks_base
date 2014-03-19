@@ -3372,7 +3372,6 @@ public final class Settings {
 	*/
         public static final String ON_THE_GO_SERVICE_RESTART = "on_the_go_service_restart";
 
-
 	/**
          * Quick Settings Quick access ribbon
          *

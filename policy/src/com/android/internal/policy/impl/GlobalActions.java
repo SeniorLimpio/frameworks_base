@@ -73,6 +73,9 @@ import android.widget.ImageView.ScaleType;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.android.internal.app.ThemeUtils;
+import com.android.internal.util.limpio.LimpioActions;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -397,6 +400,34 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             }
         }
 
+        // next: On-The-Go, if enabled
+        boolean showOnTheGo = Settings.System.getBoolean(mContext.getContentResolver(),
+                Settings.System.POWER_MENU_ONTHEGO_ENABLED, false);
+        if (showOnTheGo) {
+            mItems.add(
+                new SinglePressAction(com.android.internal.R.drawable.ic_lock_onthego,
+                        R.string.global_action_onthego) {
+
+                        public void onPress() {
+                            LimpioActions.processAction(mContext,
+                                    LimpioActions.ACTION_ONTHEGO_TOGGLE);
+                        }
+
+                        public boolean onLongPress() {
+                            return false;
+                        }
+
+                        public boolean showDuringKeyguard() {
+                            return true;
+                        }
+
+                        public boolean showBeforeProvisioning() {
+                            return true;
+                        }
+                    }
+            );
+        }
+
         // one more thing: optionally add a list of users to switch to
         if (SystemProperties.getBoolean("fw.power_user_switcher", false)) {
             addUsersToMenu(mItems);
@@ -593,6 +624,15 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             }
         }
     }
+
+    //private void startOnTheGo() {
+      //  final ComponentName cn = new ComponentName("com.android.systemui",
+        //        "com.android.systemui.limpio.onthego.OnTheGoService");
+        //final Intent startIntent = new Intent();
+        //startIntent.setComponent(cn);
+        //startIntent.setAction("start");
+        //mContext.startService(startIntent);
+    //}
 
     private void prepareDialog() {
         refreshSilentMode();
