@@ -16,12 +16,6 @@
 
 <resources>    
 
-    <!-- Slim recent app screen animation -->
-    <style name="Animation.RecentScreen">
-        <item name="windowEnterAnimation">@anim/recent_screen_enter</item>
-        <item name="windowExitAnimation">@anim/recent_screen_exit</item>
-    </style>
-
     <style name="Animation.Toast">
         <item name="windowEnterAnimation">@anim/toast_enter</item>
         <item name="windowExitAnimation">@anim/toast_exit</item>
