@@ -16,44 +16,45 @@
 
 package com.android.systemui.statusbar.phone;
 
-import static com.android.internal.util.slim.QSConstants.TILES_DEFAULT;
-import static com.android.internal.util.slim.QSConstants.DYNAMIC_TILES_DEFAULT;
-import static com.android.internal.util.slim.QSConstants.TILE_AIRPLANE;
-import static com.android.internal.util.slim.QSConstants.TILE_ALARM;
-import static com.android.internal.util.slim.QSConstants.TILE_AUTOROTATE;
-import static com.android.internal.util.slim.QSConstants.TILE_BATTERY;
-import static com.android.internal.util.slim.QSConstants.TILE_BLUETOOTH;
-import static com.android.internal.util.slim.QSConstants.TILE_BRIGHTNESS;
-import static com.android.internal.util.slim.QSConstants.TILE_BUGREPORT;
-import static com.android.internal.util.slim.QSConstants.TILE_CONTACT;
-import static com.android.internal.util.slim.QSConstants.TILE_CUSTOM;
-import static com.android.internal.util.slim.QSConstants.TILE_CUSTOM_KEY;
-import static com.android.internal.util.slim.QSConstants.TILE_DELIMITER;
-import static com.android.internal.util.slim.QSConstants.TILE_EXPANDEDDESKTOP;
-import static com.android.internal.util.slim.QSConstants.TILE_IMESWITCHER;
-import static com.android.internal.util.slim.QSConstants.TILE_LOCATION;
-import static com.android.internal.util.slim.QSConstants.TILE_LOCKSCREEN;
-import static com.android.internal.util.slim.QSConstants.TILE_LTE;
-import static com.android.internal.util.slim.QSConstants.TILE_MOBILEDATA;
-import static com.android.internal.util.slim.QSConstants.TILE_MUSIC;
-import static com.android.internal.util.slim.QSConstants.TILE_NETWORKMODE;
-import static com.android.internal.util.slim.QSConstants.TILE_NFC;
-import static com.android.internal.util.slim.QSConstants.TILE_QUICKRECORD;
-import static com.android.internal.util.slim.QSConstants.TILE_QUIETHOURS;
-import static com.android.internal.util.slim.QSConstants.TILE_RINGER;
-import static com.android.internal.util.slim.QSConstants.TILE_SCREENTIMEOUT;
-import static com.android.internal.util.slim.QSConstants.TILE_SETTINGS;
-import static com.android.internal.util.slim.QSConstants.TILE_SHAKE;
-import static com.android.internal.util.slim.QSConstants.TILE_SLEEP;
-import static com.android.internal.util.slim.QSConstants.TILE_SYNC;
-import static com.android.internal.util.slim.QSConstants.TILE_THEME;
-import static com.android.internal.util.slim.QSConstants.TILE_TORCH;
-import static com.android.internal.util.slim.QSConstants.TILE_USBTETHER;
-import static com.android.internal.util.slim.QSConstants.TILE_USER;
-import static com.android.internal.util.slim.QSConstants.TILE_VOLUME;
-import static com.android.internal.util.slim.QSConstants.TILE_WIFI;
-import static com.android.internal.util.slim.QSConstants.TILE_WIFIAP;
-import static com.android.internal.util.slim.QSConstants.TILE_REBOOT;
+import static com.android.internal.util.liquid.QSConstants.TILES_DEFAULT;
+import static com.android.internal.util.liquid.QSConstants.DYNAMIC_TILES_DEFAULT;
+import static com.android.internal.util.liquid.QSConstants.TILE_AIRPLANE;
+import static com.android.internal.util.liquid.QSConstants.TILE_ALARM;
+import static com.android.internal.util.liquid.QSConstants.TILE_AUTOROTATE;
+import static com.android.internal.util.liquid.QSConstants.TILE_BATTERY;
+import static com.android.internal.util.liquid.QSConstants.TILE_BLUETOOTH;
+import static com.android.internal.util.liquid.QSConstants.TILE_BRIGHTNESS;
+import static com.android.internal.util.liquid.QSConstants.TILE_BUGREPORT;
+import static com.android.internal.util.liquid.QSConstants.TILE_CONTACT;
+import static com.android.internal.util.liquid.QSConstants.TILE_CUSTOM;
+import static com.android.internal.util.liquid.QSConstants.TILE_CUSTOM_KEY;
+import static com.android.internal.util.liquid.QSConstants.TILE_DELIMITER;
+import static com.android.internal.util.liquid.QSConstants.TILE_EXPANDEDDESKTOP;
+import static com.android.internal.util.liquid.QSConstants.TILE_IMESWITCHER;
+import static com.android.internal.util.liquid.QSConstants.TILE_LOCATION;
+import static com.android.internal.util.liquid.QSConstants.TILE_LOCKSCREEN;
+import static com.android.internal.util.liquid.QSConstants.TILE_LTE;
+import static com.android.internal.util.liquid.QSConstants.TILE_MOBILEDATA;
+import static com.android.internal.util.liquid.QSConstants.TILE_MUSIC;
+import static com.android.internal.util.liquid.QSConstants.TILE_NETWORKMODE;
+import static com.android.internal.util.liquid.QSConstants.TILE_NFC;
+import static com.android.internal.util.liquid.QSConstants.TILE_QUICKRECORD;
+import static com.android.internal.util.liquid.QSConstants.TILE_QUIETHOURS;
+import static com.android.internal.util.liquid.QSConstants.TILE_RINGER;
+import static com.android.internal.util.liquid.QSConstants.TILE_SCREENTIMEOUT;
+import static com.android.internal.util.liquid.QSConstants.TILE_SETTINGS;
+import static com.android.internal.util.liquid.QSConstants.TILE_SHAKE;
+import static com.android.internal.util.liquid.QSConstants.TILE_SLEEP;
+import static com.android.internal.util.liquid.QSConstants.TILE_SYNC;
+import static com.android.internal.util.liquid.QSConstants.TILE_THEME;
+import static com.android.internal.util.liquid.QSConstants.TILE_TORCH;
+import static com.android.internal.util.liquid.QSConstants.TILE_USBTETHER;
+import static com.android.internal.util.liquid.QSConstants.TILE_USER;
+import static com.android.internal.util.liquid.QSConstants.TILE_VOLUME;
+import static com.android.internal.util.liquid.QSConstants.TILE_WIFI;
+import static com.android.internal.util.liquid.QSConstants.TILE_WIFIAP;
+import static com.android.internal.util.liquid.QSConstants.TILE_REBOOT;
+import static com.android.internal.util.liquid.QSConstants.TILE_ONTHEGO;
 
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
@@ -107,6 +108,7 @@ import com.android.systemui.quicksettings.VolumeTile;
 import com.android.systemui.quicksettings.WiFiTile;
 import com.android.systemui.quicksettings.WifiAPTile;
 import com.android.systemui.quicksettings.RebootTile;
+import com.android.systemui.quicksettings.OnTheGoTile;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -114,7 +116,7 @@ import java.util.HashSet;
 import java.util.List;
 
 public class QuickSettingsController {
-    private static String TAG = "QuickSettingsController";
+    private static final String TAG = "QuickSettingsController";
 
     // Stores the broadcast receivers and content observers
     // quick tiles register for.
@@ -259,6 +261,8 @@ public class QuickSettingsController {
                 qs = new CustomTile(mContext, this, findCustomKey(tile));
             } else if (tile.contains(TILE_CONTACT)) {
                 qs = new ContactTile(mContext, this, findCustomKey(tile));
+            } else if (tile.contains(TILE_ONTHEGO)) {
+                qs = new OnTheGoTile(mContext, this);
             }
 
             if (qs != null) {
