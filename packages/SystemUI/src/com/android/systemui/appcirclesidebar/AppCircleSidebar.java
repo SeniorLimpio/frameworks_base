@@ -18,6 +18,7 @@ import android.net.Uri;
 import android.os.IBinder;
 import android.os.Handler;
 import android.os.RemoteException;
+import android.os.Handler;
 import android.os.UserHandle;
 import android.provider.Settings;
 import android.util.AttributeSet;
@@ -61,6 +62,11 @@ public class AppCircleSidebar extends FrameLayout implements PackageAdapter.OnCi
     private WindowManager mWM;
     private AlarmManager mAM;
 
+    private SettingsObserver mSettingsObserver;
+
+    private PopupMenu mPopup;
+    private WindowManager mWM;
+
     public AppCircleSidebar(Context context) {
         this(context, null);
     }
@@ -82,8 +88,10 @@ public class AppCircleSidebar extends FrameLayout implements PackageAdapter.OnCi
         super.onFinishInflate();
 
         IntentFilter filter = new IntentFilter();
+
         filter.addAction(Intent.ACTION_ACTIVITY_LAUNCH_DETECTOR);
         filter.addAction(Intent.ACTION_ACTIVITY_END_DETECTOR);
+
         filter.addAction(Intent.ACTION_SCREEN_OFF);
         filter.addAction(ACTION_HIDE_APP_CONTAINER);
         mContext.registerReceiver(mBroadcastReceiver, filter);
