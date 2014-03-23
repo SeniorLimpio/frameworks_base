@@ -2676,6 +2676,13 @@ public final class Settings {
                 "lockscreen_use_widget_container_carousel";
 
         /**
+         * Whether to hide the frame behind lockscreen widgets
+         * @hide
+         */
+        public static final String LOCKSCREEN_WIDGET_FRAME_ENABLED =
+                "lockscreen_widget_frame_enabled";
+
+        /**
          * Whether double-tap and hold on the lock glowpad starts the torch
          * @hide
          */
@@ -3528,6 +3535,12 @@ public final class Settings {
         public static final String QUIET_HOURS_ENABLED = "quiet_hours_enabled";
 
         /**
+         * Whether quiet hours will enable or disable themselves on volume change
+         * @hide
+         */
+        public static final String QUIET_HOURS_AUTOMATIC = "quiet_hours_automatic";
+
+        /**
          * Sets when quiet hours starts. This is stored in minutes from the start of the day.
          * @hide
          */
@@ -3568,6 +3581,13 @@ public final class Settings {
          * @hide
          */
         public static final String QUIET_HOURS_DIM = "quiet_hours_dim";
+
+        /**
+         * Whether lockscreen rotation is enabled
+         * 0 = off, 1 = on, 2 = portrait, 3 = landscape
+         * @hide
+         */
+        public static final String LOCKSCREEN_ROTATION_ENABLED = "lockscreen_rotation_enabled";
 
         /**
           * Always show the battery status on the lockscreen
