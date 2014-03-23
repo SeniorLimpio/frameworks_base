@@ -37,9 +37,14 @@ import android.app.StatusBarManager;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.ContentUris;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.content.Intent;
+import android.content.IContentProvider;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -527,17 +532,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.QUICK_SETTINGS_RIBBON_TILES),
                     false, this, UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_SIGNAL_TEXT),
-                    false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.STATUSBAR_WEATHER_STYLE),
-                    false, this, UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.USE_WEATHER),
-                    false, this, UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.APP_SIDEBAR_POSITION), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.PIE_CONTROLS), false, this,
                     UserHandle.USER_ALL);
@@ -2714,7 +2708,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             mRibbonView.setVisibility(View.GONE);
             mRibbonView.setScaleX(0f);
         }
-        mPowerWidget.setVisibility(View.GONE);
         mNotificationButton.setVisibility(View.VISIBLE);
         mNotificationButton.setAlpha(1f);
         mClearButton.setVisibility(View.GONE);
@@ -2748,7 +2741,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             mSettingsButton.setVisibility(View.VISIBLE);
             mSettingsButton.setAlpha(-percent);
             mScrollView.setVisibility(View.VISIBLE);
-            mScrollView.setScaleX(-percent);
+            mScrollView.setScaleX(-progress);
             if (mRibbonView != null && mHasQuickAccessSettings) {
                 mRibbonView.setVisibility(View.VISIBLE);
                 mRibbonView.setScaleX(-progress);
@@ -2884,7 +2877,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 mRibbonView.setScaleX(1f);
                 mRibbonView.setVisibility(View.VISIBLE);
             }
-            mPowerWidget.updateVisibility();
             mSettingsButton.setAlpha(1f);
             mSettingsButton.setVisibility(View.VISIBLE);
             mNotificationPanel.setVisibility(View.GONE);
