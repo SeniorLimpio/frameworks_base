@@ -31,6 +31,7 @@ import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.app.ActivityManager;
 import android.app.ActivityManagerNative;
+import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.StatusBarManager;
@@ -51,6 +52,8 @@ import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.ContentObserver;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
 import android.graphics.PixelFormat;
@@ -59,6 +62,7 @@ import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
+import android.graphics.drawable.BitmapDrawable;
 import android.inputmethodservice.InputMethodService;
 import android.net.Uri;
 import android.os.Bundle;
@@ -106,6 +110,8 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.TabHost;
+import android.widget.TabHost.TabSpec;
 import android.widget.ViewFlipper;
 
 import com.android.internal.statusbar.StatusBarIcon;
@@ -113,6 +119,7 @@ import com.android.internal.util.slim.ButtonConfig;
 import com.android.internal.util.slim.ButtonsConstants;
 import com.android.internal.util.slim.ButtonsHelper;
 import com.android.internal.util.slim.DeviceUtils;
+import com.android.internal.util.slim.QuietHoursHelper;
 
 import com.android.systemui.BatteryMeterView;
 import com.android.systemui.BatteryCircleMeterView;
@@ -120,6 +127,7 @@ import com.android.systemui.DemoMode;
 import com.android.systemui.EventLogTags;
 import com.android.systemui.R;
 import com.android.systemui.ReminderMessageView;
+import com.android.systemui.service.ReminderService;
 import com.android.systemui.statusbar.BaseStatusBar;
 import com.android.systemui.statusbar.CommandQueue;
 import com.android.systemui.statusbar.GestureRecorder;
@@ -180,6 +188,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     private static final int MSG_FLIP_TO_QS_PANEL = 1005;
     private static final int MSG_SMART_PULLDOWN = 1006;
     // 1020-1030 reserved for BaseStatusBar
+
+    private static final int NOTI_ID = 254;
 
     private static final boolean CLOSE_PANEL_WHEN_EMPTIED = true;
 
@@ -336,6 +346,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     private int mNavigationBarWindowState = WINDOW_STATE_SHOWING;
     private boolean mNavigationBarCanMove;
     private ArrayList<ButtonConfig> mNavigationRingConfig;
+
+    private boolean mAnimatingFlip = false;
 
     // the tracker view
     int mTrackingPosition; // the position of the top of the tracking view.
@@ -1465,6 +1477,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 mQS.setBar(mStatusBarView);
                 mQS.setupQuickSettings();
 
+                final ContentResolver resolver = mContext.getContentResolver();
                 mHasQuickAccessSettings = Settings.System.getIntForUser(
                         resolver, Settings.System.QS_QUICK_ACCESS,
                         0, UserHandle.USER_CURRENT) == 1;
@@ -2570,6 +2583,17 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         return a;
     }
 
+    public Animator setVisibilityOnStart(
+            final Animator a, final View v, final int vis) {
+        a.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                v.setVisibility(vis);
+            }
+        });
+        return a;
+    }
+
     public Animator interpolator(TimeInterpolator ti, Animator a) {
         a.setInterpolator(ti);
         return a;
@@ -2629,6 +2653,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             mFlipSettingsView.setScaleX(1f);
         }
 
+        mAnimatingFlip = true;
         mScrollView.setVisibility(View.VISIBLE);
         mScrollViewAnim = start(
             startDelay(FLIP_DURATION_OUT * zeroOutDelays,
@@ -2749,10 +2774,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             mSettingsButton.setVisibility(View.VISIBLE);
             mSettingsButton.setAlpha(-percent);
             mScrollView.setVisibility(View.VISIBLE);
-            mScrollView.setScaleX(-progress);
+            mScrollView.setScaleX(-percent);
             if (mRibbonView != null && mHasQuickAccessSettings) {
                 mRibbonView.setVisibility(View.VISIBLE);
-                mRibbonView.setScaleX(-progress);
+                mRibbonView.setScaleX(-percent);
             }
             mNotificationButton.setVisibility(View.GONE);
             updateCarrierAndWifiLabelVisibility(false);
