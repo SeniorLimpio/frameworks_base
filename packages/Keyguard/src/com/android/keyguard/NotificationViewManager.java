@@ -41,7 +41,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.android.internal.util.cm.QuietHoursUtils;
+import com.android.internal.util.slim.QuietHoursHelper;
 
 public class NotificationViewManager {
     private final static String TAG = "Keyguard:NotificationViewManager";
@@ -163,7 +163,7 @@ public class NotificationViewManager {
                     if (event.values[0] >= ProximitySensor.getMaximumRange()) {
                         if (config.pocketMode && mTimeCovered != 0 && (config.showAlways || mHostView.getNotificationCount() > 0)
                                 && System.currentTimeMillis() - mTimeCovered > MIN_TIME_COVERED
-                                && !QuietHoursUtils.inQuietHours(mContext, Settings.System.QUIET_HOURS_DIM)) {
+                                && !QuietHoursHelper.inQuietHours(mContext, Settings.System.QUIET_HOURS_DIM)) {
                             wakeDevice();
                             mWokenByPocketMode = true;
                             mHostView.showAllNotifications();
@@ -192,7 +192,7 @@ public class NotificationViewManager {
                     config.forceExpandedView);
             if (added && config.wakeOnNotification && screenOffAndNotCovered
                       && showNotification && mTimeCovered == 0 
-                      && !QuietHoursUtils.inQuietHours(mContext, Settings.System.QUIET_HOURS_DIM)) {   
+                      && !QuietHoursHelper.inQuietHours(mContext, Settings.System.QUIET_HOURS_DIM)) {   
                 wakeDevice();
             }
         }
