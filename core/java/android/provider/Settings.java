@@ -3788,6 +3788,13 @@ public final class Settings {
                 "navigation_bar_button_tint_mode";
 
         /**
+         * Circle memory indicator in recents panel view
+         * 0 - off, 1 - top left, 2 - top right, 3 - bottom left, 4 - bottom right
+         * @hide
+         */
+        public static final String CIRCLE_MEM_BUTTON = "circle_mem_button";
+
+        /**
          * Navigation bar glow color
          * @hide
          */
