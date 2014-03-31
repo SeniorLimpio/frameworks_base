@@ -274,19 +274,6 @@ public class KeyguardViewManager {
         setBackgroundBitmap(bmp);
     }
 
-    public void setWallpaper(Bitmap bmp) {
-        Settings.System.putInt(mContext.getContentResolver(), Settings.System.LOCKSCREEN_WALLPAPER, bmp != null ? 1 : 0);
-        if (bmp != null) {
-            try {
-                FileOutputStream fos = new FileOutputStream(mWallpaperFile);
-                bmp.compress(CompressFormat.JPEG, 100, fos);
-            } catch (FileNotFoundException ex) {
-                Log.e(TAG, "Could not write file: " + mWallpaperFile + "\nError: " + ex.toString());
-            }
-        }
-        setBackgroundBitmap(bmp);
-    }
-
     private Bitmap blurBitmap(Bitmap bmp, int radius) {
         Bitmap out = Bitmap.createBitmap(bmp);
         RenderScript rs = RenderScript.create(mContext);

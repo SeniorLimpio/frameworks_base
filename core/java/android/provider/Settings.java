@@ -2756,12 +2756,6 @@ public final class Settings {
         @Deprecated
         public static final String UNLOCK_SOUND = Global.UNLOCK_SOUND;
 
-        /**
-         * Whether a custom lockscreen wallpaper is enabled
-         * @hide
-         */
-        public static final String LOCKSCREEN_WALLPAPER = "lockscreen_wallpaper";
-
 	/**
          * Receive incoming SIP calls?
          * 0 = no

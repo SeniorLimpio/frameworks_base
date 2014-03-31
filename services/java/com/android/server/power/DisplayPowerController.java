@@ -611,6 +611,9 @@ final class DisplayPowerController {
     public boolean requestPowerState(DisplayPowerRequest request,
             boolean waitForNegativeProximity) {
 
+        final int MAX_BLUR_WIDTH = 900;
+        final int MAX_BLUR_HEIGHT = 1600;
+
         if (DEBUG) {
             Slog.d(TAG, "requestPowerState: "
                     + request + ", waitForNegativeProximity=" + waitForNegativeProximity);
@@ -637,6 +640,10 @@ final class DisplayPowerController {
                 mDisplayReadyLocked = false;
             }
 
+            boolean seeThrough = Settings.System.getInt(mContext.getContentResolver(),
+                    Settings.System.LOCKSCREEN_SEE_THROUGH, 0) == 1;
+            int blurRadius = Settings.System.getInt(mContext.getContentResolver(),
+                    Settings.System.LOCKSCREEN_BLUR_RADIUS, 12);
             if (changed && !mPendingRequestChangedLocked) {
                 if ((mKeyguardService == null || !mKeyguardService.isShowing()) &&
                             request.screenState == DisplayPowerRequest.SCREEN_STATE_OFF &&
