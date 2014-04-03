@@ -2369,6 +2369,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     mHomeConsumed = false;
                     return -1;
                 }
+                if (!virtualKey && mDoubleTapOnHomeBehavior != KEY_ACTION_APP_SWITCH) {
+                    cancelPreloadRecentApps();
+                }
 
                 if (canceled) {
                     Log.i(TAG, "Ignoring HOME; event canceled.");

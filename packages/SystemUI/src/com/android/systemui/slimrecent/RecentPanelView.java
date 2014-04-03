@@ -86,11 +86,11 @@ public class RecentPanelView {
     private static final int EXPANDED_MODE_NEVER  = 2;
 
     private static final int MENU_APP_DETAILS_ID   = 0;
-    private static final int MENU_APP_WIPE_ID      = 1;
-    private static final int MENU_APP_STOP_ID      = 2;
-    private static final int MENU_APP_PLAYSTORE_ID = 3;
-    private static final int MENU_APP_AMAZON_ID    = 4;
-    private static final int MENU_APP_POPUP_ID     = 5;
+    private static final int MENU_APP_FLOATING_ID  = 1;
+    private static final int MENU_APP_WIPE_ID      = 2;
+    private static final int MENU_APP_STOP_ID      = 3;
+    private static final int MENU_APP_PLAYSTORE_ID = 4;
+    private static final int MENU_APP_AMAZON_ID    = 5;
 
     private static final String PLAYSTORE_REFERENCE = "com.android.vending";
     private static final String AMAZON_REFERENCE    = "com.amazon.venezia";
@@ -302,8 +302,6 @@ public class RecentPanelView {
                 mContext.getResources().getString(R.string.status_bar_recent_inspect_item_title));
         popup.getMenu().add(0, MENU_APP_POPUP_ID, 0,
                 mContext.getResources().getString(R.string.status_bar_recent_floating_item_title));
-
-
 
         if (Settings.Secure.getInt(mContext.getContentResolver(),
                 Settings.Secure.DEVELOPMENT_SHORTCUT, 0) == 1) {
