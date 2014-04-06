@@ -2,10 +2,6 @@
 
 <resources>
 
-    <!-- Power menu colors -->
-    <color name="power_menu_icon_default_color">#ffffffff</color>
-    <color name="power_menu_text_default_color">#ffffffff</color>
-
     <!-- progress bar color -->
     <integer-array name="pgcolors">
         <item>@color/holo_blue_dark</item>

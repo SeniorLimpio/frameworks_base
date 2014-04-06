@@ -297,7 +297,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     View mDateViewExpanded;
     View mClearButton;
     ImageView mSettingsButton, mNotificationButton;
-    View mSpacer;
 
     // carrier/wifi label
     private TextView mCarrierLabel;
