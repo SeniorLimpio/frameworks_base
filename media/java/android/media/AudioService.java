@@ -590,11 +590,6 @@ public class AudioService extends IAudioService.Stub {
         mMasterVolumeRamp = context.getResources().getIntArray(
                 com.android.internal.R.array.config_masterVolumeRamp);
 
-        mForceAnalogDeskDock = mContext.getResources().getBoolean(
-                com.android.internal.R.bool.config_forceAnalogDeskDock);
-
-        mForceAnalogCarDock = mContext.getResources().getBoolean(
-                com.android.internal.R.bool.config_forceAnalogCarDock);
     }
     
     private void initVolumeSteps(){
@@ -4325,7 +4320,7 @@ public class AudioService extends IAudioService.Stub {
                         Intent.EXTRA_DOCK_STATE_UNDOCKED);
                 int config;
                 switch (dockState) {
-                    case Intent.EXTRA_DOCK_STATE_DESK:
+                   case Intent.EXTRA_DOCK_STATE_DESK:
                         config = AudioSystem.FORCE_BT_DESK_DOCK;
                         break;
                     case Intent.EXTRA_DOCK_STATE_CAR:
