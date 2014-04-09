@@ -2919,12 +2919,6 @@ public final class Settings {
         public static final String POWER_MENU_ICON_COLOR_MODE = "power_menu_icon_color_mode";
 
         /**
-         * Whether power menu screen record is enabled
-         * @hide
-         */
-        public static final String POWER_MENU_SCREENRECORD_ENABLED = "power_menu_screenrecord_enabled";
-
-        /**
          * Expanded desktop on/off state
          * @hide
          */
@@ -3756,6 +3750,7 @@ public final class Settings {
         public static final String CALL_UI_IN_BACKGROUND = "call_ui_in_background";
 
         /**
+<<<<<<< HEAD
          * Whether flip action during incomming call should mute or dismiss
          * the call (mute = 0, dismiss = 1, nothing = 2 (default))
          *
@@ -3764,6 +3759,8 @@ public final class Settings {
         public static final String CALL_FLIP_ACTION_KEY = "call_flip_action_key";
 
         /**
+=======
+>>>>>>> parent of e458a4f... Add global action for screen recording. [1/2]
          * Enable Stylus Gestures
          *
          * @hide
