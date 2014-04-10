@@ -2324,6 +2324,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             }
         }
 
+
         // If we think we might have a volume up & power key chord on the way
         // but we're not sure, then tell the dispatcher to wait a little while and
         // try again later before dispatching.
@@ -2343,6 +2344,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 return -1;
             }
         }
+
+
+
 
         // First we always handle the home key here, so applications
         // can never break it, although if keyguard is on, we do let
@@ -4575,7 +4579,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             if (down && isWakeKey && isWakeKeyWhenScreenOff(keyCode)) {
                 if ((keyCode != KeyEvent.KEYCODE_VOLUME_UP) && (keyCode != KeyEvent.KEYCODE_VOLUME_DOWN)) {
                     // Wake the device.
-                    result |= ACTION_WAKE_UP;
+                    mPowerManager.wakeUp(SystemClock.uptimeMillis());
                 }
             }
         }

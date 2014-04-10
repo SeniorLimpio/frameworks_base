@@ -33,6 +33,9 @@ import com.android.systemui.statusbar.phone.QuickSettingsController;
 
 public class QuietHoursTile extends QuickSettingsTile {
 
+    private static final String SCHEDULE_SERVICE_COMMAND =
+            "com.android.settings.fusion.service.SCHEDULE_SERVICE_COMMAND";
+
     private boolean mEnabled;
 
     public QuietHoursTile(Context context, QuickSettingsController qsc) {
@@ -44,6 +47,10 @@ public class QuietHoursTile extends QuickSettingsTile {
                 Settings.System.putIntForUser(mContext.getContentResolver(),
                         Settings.System.QUIET_HOURS_ENABLED,
                         mEnabled ? 0 : 1, UserHandle.USER_CURRENT);
+                autoSmsIntentBroadcast(mContext);
+                if (isFlipTilesEnabled()) {
+                    flipTile(0);
+                }
             }
         };
         mOnLongClick = new View.OnLongClickListener() {
@@ -72,6 +79,12 @@ public class QuietHoursTile extends QuickSettingsTile {
         super.updateResources();
     }
 
+    private void autoSmsIntentBroadcast(Context context) {
+        Intent scheduleSms = new Intent();
+        scheduleSms.setAction(SCHEDULE_SERVICE_COMMAND);
+        context.sendBroadcast(scheduleSms);
+    }
+
     private synchronized void updateTile() {
         mEnabled = Settings.System.getIntForUser(mContext.getContentResolver(),
                 Settings.System.QUIET_HOURS_ENABLED, 0, UserHandle.USER_CURRENT) == 1;
@@ -88,5 +101,4 @@ public class QuietHoursTile extends QuickSettingsTile {
     public void onChangeUri(ContentResolver resolver, Uri uri) {
         updateResources();
     }
-
 }

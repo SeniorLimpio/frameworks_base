@@ -37,7 +37,7 @@ import com.android.systemui.statusbar.phone.QuickSettingsContainerView;
 import com.android.systemui.statusbar.policy.NetworkController;
 import com.android.systemui.statusbar.policy.NetworkController.NetworkSignalChangedCallback;
 
-import static com.android.internal.util.slim.DeviceUtils.deviceSupportsMobileData;
+import static com.android.internal.util.fusion.DeviceUtils.deviceSupportsMobileData;
 
 public class MobileNetworkTile extends NetworkTile {
     private static final int NO_OVERLAY = 0;
@@ -69,6 +69,9 @@ public class MobileNetworkTile extends NetworkTile {
                 } else {
                     updateOverlayImage(DISABLED_OVERLAY);
                     mCm.setMobileDataEnabled(false);
+                }
+                if (isFlipTilesEnabled()) {
+                    flipTile(0);
                 }
             }
         };
@@ -180,5 +183,4 @@ public class MobileNetworkTile extends NetworkTile {
         }
         return string;
     }
-
 }

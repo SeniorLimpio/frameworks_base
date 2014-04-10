@@ -26,8 +26,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 
-import com.android.internal.util.slim.ButtonsConstants;
-import com.android.internal.util.slim.SlimActions;
+import com.android.internal.util.fusion.ButtonsConstants;
+import com.android.internal.util.fusion.SlimActions;
 
 import com.android.systemui.R;
 import com.android.systemui.statusbar.phone.QuickSettingsController;
@@ -45,6 +45,9 @@ public class SleepScreenTile extends QuickSettingsTile {
             public void onClick(View v) {
                 qsc.mBar.collapseAllPanels(true);
                 pm.goToSleep(SystemClock.uptimeMillis());
+                if (isFlipTilesEnabled()) {
+                    flipTile(0);
+                }
             }
         };
         mOnLongClick = new OnLongClickListener() {

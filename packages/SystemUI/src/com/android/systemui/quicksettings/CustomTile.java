@@ -17,8 +17,8 @@
 
 package com.android.systemui.quicksettings;
 
-import static com.android.internal.util.slim.QSConstants.TILE_CUSTOM_KEY;
-import static com.android.internal.util.slim.QSConstants.TILE_CUSTOM_DELIMITER;
+import static com.android.internal.util.fusion.QSConstants.TILE_CUSTOM_KEY;
+import static com.android.internal.util.fusion.QSConstants.TILE_CUSTOM_DELIMITER;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -35,10 +35,10 @@ import android.view.LayoutInflater;
 import android.util.Log;
 import android.view.View;
 
-import com.android.internal.util.slim.AppHelper;
-import com.android.internal.util.slim.Converter;
-import com.android.internal.util.slim.ImageHelper;
-import com.android.internal.util.slim.SlimActions;
+import com.android.internal.util.fusion.AppHelper;
+import com.android.internal.util.fusion.Converter;
+import com.android.internal.util.fusion.ImageHelper;
+import com.android.internal.util.fusion.SlimActions;
 import com.android.systemui.R;
 import com.android.systemui.statusbar.phone.QuickSettingsContainerView;
 import com.android.systemui.statusbar.phone.QuickSettingsController;
@@ -188,7 +188,7 @@ public class CustomTile extends QuickSettingsTile {
 
     private String returnFriendlyName(String uri) {
         if (uri != null) {
-            return AppHelper.getShortcutPreferred(
+            return AppHelper.getFriendlyNameForUri(
                     mContext, mContext.getPackageManager(), uri);
         }
         return null;
@@ -450,5 +450,4 @@ public class CustomTile extends QuickSettingsTile {
             updateSettings();
         }
     }
-
 }
