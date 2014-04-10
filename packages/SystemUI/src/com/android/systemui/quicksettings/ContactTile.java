@@ -17,7 +17,7 @@
 
 package com.android.systemui.quicksettings;
 
-import static com.android.internal.util.fusion.QSConstants.TILE_CUSTOM_KEY;
+import static com.android.internal.util.slim.QSConstants.TILE_CUSTOM_KEY;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -72,6 +72,9 @@ public class ContactTile extends QuickSettingsTile {
                     Intent intent = ContactsContract.QuickContact.composeQuickContactsIntent(
                         mContext, v, res, ContactsContract.QuickContact.MODE_LARGE, null);
                     startSettingsActivity(intent);
+                }
+                if (isFlipTilesEnabled()) {
+                    flipTile(0);
                 }
             }
         };

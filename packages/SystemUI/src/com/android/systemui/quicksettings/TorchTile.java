@@ -28,9 +28,9 @@ import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 
-import com.android.internal.util.fusion.ButtonsConstants;
-import com.android.internal.util.fusion.SlimActions;
-import com.android.internal.util.fusion.TorchConstants;
+import com.android.internal.util.slim.ButtonsConstants;
+import com.android.internal.util.slim.SlimActions;
+import com.android.internal.util.slim.TorchConstants;
 
 import com.android.systemui.R;
 import com.android.systemui.statusbar.phone.QuickSettingsContainerView;

@@ -39,6 +39,9 @@ public class PreferencesTile extends QuickSettingsTile{
             public void onClick(View v) {
                 startSettingsActivity(android.provider.Settings.ACTION_SETTINGS);
             }
+                if (isFlipTilesEnabled()) {
+                    flipTile(0);
+                }
         };
 
         mOnLongClick = new View.OnLongClickListener() {
