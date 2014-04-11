@@ -24,7 +24,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 
-public class FusionActions {
+public class LimpioActions {
 
     public static final String ACTION_ONTHEGO_TOGGLE = "action_onthego_toggle";
 

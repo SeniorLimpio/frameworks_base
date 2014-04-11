@@ -32,7 +32,7 @@ import android.view.View.OnLongClickListener;
 import com.android.internal.util.limpio.LimpioActions;
 import com.android.internal.util.limpio.LimpioUtils;
 import com.android.systemui.R;
-import com.android.systemui.fusion.onthego.OnTheGoDialog;
+import com.android.systemui.limpio.onthego.OnTheGoDialog;
 import com.android.systemui.statusbar.phone.QuickSettingsController;
 import com.android.systemui.statusbar.phone.QuickSettingsContainerView;
 
@@ -47,7 +47,7 @@ public class OnTheGoTile extends QuickSettingsTile {
         mOnClick = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FusionActions.processAction(mContext, FusionActions.ACTION_ONTHEGO_TOGGLE);
+                LimpioActions.processAction(mContext, LimpioActions.ACTION_ONTHEGO_TOGGLE);
             }
         };
 
@@ -104,7 +104,7 @@ public class OnTheGoTile extends QuickSettingsTile {
 
         int cameraMode;
 
-        if (FusionUtils.hasFrontCamera(mContext)) {
+        if (LimpioUtils.hasFrontCamera(mContext)) {
             cameraMode = Settings.System.getInt(mContext.getContentResolver(),
                     Settings.System.ON_THE_GO_CAMERA,
                     CAMERA_BACK);

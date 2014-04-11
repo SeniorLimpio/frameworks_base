@@ -16,7 +16,6 @@
 
 package com.android.systemui.statusbar.phone;
 
-<<<<<<< HEAD
 import static com.android.internal.util.slim.QSConstants.TILES_DEFAULT;
 import static com.android.internal.util.slim.QSConstants.DYNAMIC_TILES_DEFAULT;
 import static com.android.internal.util.slim.QSConstants.TILE_AIRPLANE;

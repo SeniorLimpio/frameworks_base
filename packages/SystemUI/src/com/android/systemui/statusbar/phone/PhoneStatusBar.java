@@ -557,7 +557,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     Settings.System.QUICK_SETTINGS_RIBBON_TILES),
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.getUriFor(Settings.System.NOTIFICATION_BRIGHTNESS_SLIDER),
+                    Settings.System.NOTIFICATION_BRIGHTNESS_SLIDER),
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.PIE_CONTROLS), false, this,
@@ -1565,9 +1565,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     mRibbonView = null;
                     inflateRibbon();
                 }
-            } else {
-                mQS = null; // fly away, be free
-            }
 
             // TODO: make multiuser aware
             mBrightnessSliderEnabled = Settings.System.getBoolean(resolver,
@@ -1576,6 +1573,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 cleanupBrightnessSlider();
                 mBrightnessView = null;
                 inflateBrightnessSlider();
+            }
+            } else {
+                mQS = null; // fly away, be free
             }
         }
 
@@ -2881,7 +2881,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             }
             if (mBrightnessView != null && mBrightnessSliderEnabled) {
                 mBrightnessView.setVisibility(View.VISIBLE);
-                mBrightnessView.setScaleX(-progress);
+                mBrightnessView.setScaleX(-percent);
             }
             mNotificationButton.setVisibility(View.GONE);
             updateCarrierAndWifiLabelVisibility(false);

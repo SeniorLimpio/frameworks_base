@@ -28,7 +28,7 @@ import android.util.Log;
 
 import java.util.List;
 
-public class FusionUtils {
+public class LimpioUtils {
 
     private static final String TAG = "LimpioUtils";
 
