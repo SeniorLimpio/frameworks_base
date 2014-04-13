@@ -16,6 +16,16 @@
 
 package com.android.systemui.statusbar;
 
+import android.service.notification.StatusBarNotification;
+import android.content.res.Configuration;
+import com.android.internal.statusbar.IStatusBarService;
+import com.android.internal.statusbar.StatusBarIcon;
+import com.android.internal.statusbar.StatusBarIconList;
+import com.android.internal.widget.SizeAdaptiveLayout;
+import com.android.systemui.SystemUI;
+import com.android.systemui.recent.RecentTasksLoader;
+import com.android.systemui.recent.RecentsActivity;
+import com.android.systemui.recent.TaskDescription;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningAppProcessInfo;
@@ -59,6 +69,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.Slog;
 import android.view.Display;
+import android.view.Gravity;
 import android.view.IWindowManager;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -149,6 +160,10 @@ public abstract class BaseStatusBar extends SystemUI implements
 
     protected int mCurrentUserId = 0;
 
+    // Recents toggle controller
+    private RecentController slimRecents;
+    private RecentsComponent stockRecents;
+
     protected FrameLayout mStatusBarContainer;
 
     protected int mLayoutDirection = -1; // invalid
@@ -210,14 +225,6 @@ public abstract class BaseStatusBar extends SystemUI implements
     private int mExpandedDesktopStyle = 0;
 
     private boolean mCustomRecent = false;
-
-    // Recents toggle controller
-    private RecentController slimRecents;
-    private RecentsComponent stockRecents;
-
-    public Ticker getTicker() {
-        return mTicker;
-    }
 
     public IStatusBarService getService() {
         return mBarService;
@@ -315,10 +322,11 @@ public abstract class BaseStatusBar extends SystemUI implements
                         mContext.getContentResolver(), Settings.System.CUSTOM_RECENT_TOGGLE, false);
 
         if (mCustomRecent) {
-            slimRecents = new RecentController(mContext);
+            slimRecents = new RecentController(mContext, mLayoutDirection);
         } else {
             stockRecents = getComponent(RecentsComponent.class);
         }
+
         mLocale = mContext.getResources().getConfiguration().locale;
         mLayoutDirection = TextUtils.getLayoutDirectionFromLocale(mLocale);
 
