@@ -254,8 +254,8 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                         R.string.global_action_onthego) {
 
                         public void onPress() {
-                            FusionActions.processAction(mContext,
-                                    FusionActions.ACTION_ONTHEGO_TOGGLE);
+                            LimpioActions.processAction(mContext,
+                                    LimpioActions.ACTION_ONTHEGO_TOGGLE);
                         }
 
                         public boolean onLongPress() {
@@ -671,7 +671,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
 
     private void startOnTheGo() {
         final ComponentName cn = new ComponentName("com.android.systemui",
-                "com.android.systemui.fusion.onthego.OnTheGoService");
+                "com.android.systemui.limpio.onthego.OnTheGoService");
         final Intent startIntent = new Intent();
         startIntent.setComponent(cn);
         startIntent.setAction("start");
