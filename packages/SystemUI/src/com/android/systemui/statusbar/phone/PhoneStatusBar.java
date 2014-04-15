@@ -289,7 +289,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     private boolean mQuickAccessLayoutLinked = true;
     private QuickSettingsHorizontalScrollView mRibbonView;
     private QuickSettingsController mRibbonQS;
-    private SettingsObserver mSettingsObserver;
+
 
     // Brightness slider
     private boolean mBrightnessSliderEnabled;
@@ -996,11 +996,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         updateDisplaySize();
 
         mCurrUiThemeMode = mContext.getResources().getConfiguration().uiThemeMode;
-
-        mLocationController = new LocationController(mContext); // will post a notification
-        mBatteryController = new BatteryController(mContext);
-        mNetworkController = new NetworkController(mContext);
-        mBluetoothController = new BluetoothController(mContext);
 
         mLocationController = new LocationController(mContext); // will post a notification
         mBatteryController = new BatteryController(mContext);
