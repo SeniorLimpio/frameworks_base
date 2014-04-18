@@ -1762,6 +1762,10 @@
   <!-- Config.xml entries -->
   <java-symbol type="bool" name="config_samsung_stk" />
   <java-symbol type="string" name="config_legacyUmsLunFile" />
+  <java-symbol type="bool" name="config_hasRemovableLid" />
+  <java-symbol type="string" name="config_deviceKeyHandlerLib" />
+  <java-symbol type="string" name="config_deviceKeyHandlerClass" />
+  <java-symbol type="bool" name="config_batterySdCardAccessibility" />
   <java-symbol type="bool" name="config_smsSamsungCdmaAlternateMessageIDEncoding" />
 
 </resources>
