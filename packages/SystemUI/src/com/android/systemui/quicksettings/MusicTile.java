@@ -89,6 +89,9 @@ public class MusicTile extends QuickSettingsTile {
                 } else {
                     sendMediaButtonClick(KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE);
                 }
+                if (isFlipTilesEnabled()) {
+                    flipTile(0);
+                }
             }
         };
 

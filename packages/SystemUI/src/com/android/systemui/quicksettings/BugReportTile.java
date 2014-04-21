@@ -55,6 +55,9 @@ public class BugReportTile extends QuickSettingsTile{
             public void onClick(View v) {
                 mQsc.mBar.collapseAllPanels(true);
                 showBugreportDialog();
+                if (isFlipTilesEnabled()) {
+                    flipTile(0);
+                }
             }
         };
         qsc.registerObservedContent(Settings.Global.getUriFor(

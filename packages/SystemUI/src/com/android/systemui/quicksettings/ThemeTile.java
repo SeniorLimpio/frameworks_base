@@ -49,6 +49,9 @@ public class ThemeTile extends QuickSettingsTile {
             @Override
             public void onClick(View v) {
                 SlimActions.processAction(mContext, ButtonsConstants.ACTION_THEME_SWITCH, false);
+                if (isFlipTilesEnabled()) {
+                    flipTile(0);
+                }
             }
         };
 
