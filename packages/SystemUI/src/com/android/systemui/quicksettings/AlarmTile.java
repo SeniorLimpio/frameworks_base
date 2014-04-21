@@ -44,6 +44,9 @@ public class AlarmTile extends QuickSettingsTile {
             @Override
             public void onClick(View v) {
                 startSettingsActivity(new Intent(AlarmClock.ACTION_SHOW_ALARMS));
+                if (isFlipTilesEnabled()) {
+                    flipTile(0);
+                }
             }
         };
 

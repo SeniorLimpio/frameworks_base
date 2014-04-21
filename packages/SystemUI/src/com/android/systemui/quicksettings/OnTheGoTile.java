@@ -48,6 +48,9 @@ public class OnTheGoTile extends QuickSettingsTile {
             @Override
             public void onClick(View v) {
                 LimpioActions.processAction(mContext, LimpioActions.ACTION_ONTHEGO_TOGGLE);
+                if (isFlipTilesEnabled()) {
+                    flipTile(0);
+                }
             }
         };
 
