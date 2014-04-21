@@ -16,7 +16,7 @@
  *
  */
 
-package com.android.internal.util.liquid;
+package com.android.internal.util.limpio;
 
 import android.content.Context;
 import android.content.Intent;
