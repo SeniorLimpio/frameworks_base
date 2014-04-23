@@ -47,7 +47,7 @@ import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.TranslateAnimation;
 import com.android.systemui.R;
-import com.android.systemui.limpio.TriggerOverlayView;
+import com.android.systemui.chaos.TriggerOverlayView;
 
 import static android.view.KeyEvent.ACTION_DOWN;
 import static android.view.KeyEvent.KEYCODE_BACK;
