@@ -55,7 +55,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.annotation.ChaosLab;
 import android.annotation.ChaosLab.Classification;
-import com.android.systemui.chaos.lab.gestureanywhere.GestureAnywhereView;
+import com.android.systemui.limpio.lab.gestureanywhere.GestureAnywhereView;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
