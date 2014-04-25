@@ -325,6 +325,8 @@ public class RecentPanelView {
             }
         }
 
+        popup.getMenu().add(0, MENU_APP_FLOATING_ID, 0,
+                mContext.getResources().getString(R.string.status_bar_recent_floating_item_title));
 
         if (Settings.Secure.getInt(mContext.getContentResolver(),
                 Settings.Secure.DEVELOPMENT_SHORTCUT, 0) == 1) {
@@ -362,6 +364,19 @@ public class RecentPanelView {
             public boolean onMenuItemClick(MenuItem item) {
                 if (item.getItemId() == MENU_APP_DETAILS_ID) {
                     startApplicationDetailsActivity(td.packageName, null, null);
+                } else if (item.getItemId() == MENU_APP_FLOATING_ID) {
+                    Intent transparent = new Intent(mContext, com.android.systemui.Transparent.class);
+                    transparent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                            | Intent.FLAG_FLOATING_WINDOW
+                            | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+                    mContext.startActivity(transparent);
+                    Intent intent = new Intent(Intent.ACTION_MAIN);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                            | Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            | Intent.FLAG_FLOATING_WINDOW);
+                    intent.setComponent(td.intent.getComponent());
+                    mContext.startActivity(intent);
+                    exit();
                 } else if (item.getItemId() == MENU_APP_STOP_ID) {
                     ActivityManager am = (ActivityManager)mContext.getSystemService(
                             Context.ACTIVITY_SERVICE);
