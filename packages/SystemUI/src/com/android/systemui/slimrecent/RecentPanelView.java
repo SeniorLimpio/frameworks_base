@@ -325,6 +325,29 @@ public class RecentPanelView {
             }
         }
 
+
+        if (Settings.Secure.getInt(mContext.getContentResolver(),
+                Settings.Secure.DEVELOPMENT_SHORTCUT, 0) == 1) {
+            popup.getMenu().add(0, MENU_APP_STOP_ID, 0,
+                    mContext.getResources().getString(R.string.advanced_dev_option_force_stop));
+            try {
+                PackageManager pm = (PackageManager) mContext.getPackageManager();
+                ApplicationInfo mAppInfo = pm.getApplicationInfo(td.packageName, 0);
+                DevicePolicyManager mDpm = (DevicePolicyManager) mContext.
+                        getSystemService(Context.DEVICE_POLICY_SERVICE);
+                if (!((mAppInfo.flags&(ApplicationInfo.FLAG_SYSTEM
+                        | ApplicationInfo.FLAG_ALLOW_CLEAR_USER_DATA))
+                        == ApplicationInfo.FLAG_SYSTEM
+                        || mDpm.packageHasActiveAdmins(td.packageName))) {
+                    popup.getMenu().add(0, MENU_APP_WIPE_ID, 0,
+                            mContext.getResources().getString(R.string.advanced_dev_option_wipe_app));
+                    Log.d(TAG, "Not a 'special' application");
+                }
+            } catch (NameNotFoundException ex) {
+                Log.e(TAG, "Failed looking up ApplicationInfo for " + td.packageName, ex);
+            }
+        }
+
         // Add playstore or amazon entry if it is provided by the application.
         if (checkAppInstaller(td.packageName, PLAYSTORE_REFERENCE)) {
             popup.getMenu().add(0, MENU_APP_PLAYSTORE_ID, 0,
@@ -350,8 +373,6 @@ public class RecentPanelView {
                     am.clearApplicationUserData(td.packageName,
                             new FakeClearUserDataObserver());
                     removeApplication(td);
-                } else if (item.getItemId() == MENU_APP_POPUP_ID) {
-                    startApplicationPopup(td);
                 } else if (item.getItemId() == MENU_APP_PLAYSTORE_ID) {
                     startApplicationDetailsActivity(null,
                             PLAYSTORE_APP_URI_QUERY + td.packageName, PLAYSTORE_REFERENCE);
