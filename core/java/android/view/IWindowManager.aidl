@@ -314,6 +314,11 @@ interface IWindowManager
     int getCurrentNavigationBarSize();
 
     /**
+     * @hide
+     */
+    void updateSettings();
+
+    /**
      * Toggle global menu
      *
      * @hide

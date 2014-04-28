@@ -151,6 +151,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.List;
 
 /** {@hide} */
@@ -10952,4 +10953,8 @@ public class WindowManagerService extends IWindowManager.Stub
         return mLastStatusBarVisibility;
     }
 
+    /* @hide */
+    @Override
+    public void updateSettings() {
+    }
 }
