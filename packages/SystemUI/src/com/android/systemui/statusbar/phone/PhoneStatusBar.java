@@ -237,6 +237,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     Display mDisplay;
     Point mCurrentDisplaySize = new Point();
     int mCurrUiThemeMode;
+    int mCurrentDensity;
     int mCurrOrientation;
     private float mHeadsUpVerticalOffset;
     private int[] mPilePosition = new int[2];
@@ -998,6 +999,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         updateDisplaySize();
 
         mCurrUiThemeMode = mContext.getResources().getConfiguration().uiThemeMode;
+        mCurrentDensity = mContext.getResources().getConfiguration().densityDpi;
 
         mLocationController = new LocationController(mContext); // will post a notification
         mBatteryController = new BatteryController(mContext);
@@ -3545,6 +3547,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
     }
 
+
     private class MyTicker extends Ticker {
         MyTicker(Context context, View sb) {
             super(context, sb);
@@ -4243,15 +4246,24 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         int uiThemeMode = res.getConfiguration().uiThemeMode;
         if (uiThemeMode != mCurrUiThemeMode) {
             mCurrUiThemeMode = uiThemeMode;
-                 rebuildRecentsScreen();
+                 //rebuildRecentsScreen();
 
-        } else {
+        }else {
             if (mClearButton instanceof TextView) {
                 ((TextView)mClearButton).setText(
                         context.getText(R.string.status_bar_clear_all_button));
             }
             loadDimens();
         }
+
+        // detect density change
+        int density = res.getConfiguration().densityDpi;
+        if (density != mCurrentDensity) {
+            mCurrentDensity = density;
+            recreateStatusBar(true);
+            recreatePie(isPieEnabled());
+            return;
+	}
 
         // check for orientation change and update only the container layout
         // for all other configuration changes update complete QS
@@ -4275,7 +4287,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 mQS.updateResources();
             }
         }
-
     }
 
     protected void loadDimens() {

@@ -218,6 +218,7 @@ public class DisplayMetrics {
         noncompatScaledDensity = o.noncompatScaledDensity;
         noncompatXdpi = o.noncompatXdpi;
         noncompatYdpi = o.noncompatYdpi;
+        updateDensity();
     }
     
     public void setToDefaults() {
@@ -236,6 +237,20 @@ public class DisplayMetrics {
         noncompatXdpi = xdpi;
         noncompatYdpi = ydpi;
     }
+
+    public void updateDensity() {
+        density = getCurrentDensity() / (float) DENSITY_DEFAULT;
+        densityDpi = getCurrentDensity();
+        scaledDensity = density;
+        xdpi = getCurrentDensity();
+        ydpi = getCurrentDensity();
+        noncompatDensity = density;
+        noncompatDensityDpi = densityDpi;
+        noncompatScaledDensity = scaledDensity;
+        noncompatXdpi = xdpi;
+        noncompatYdpi = ydpi;
+    }
+
 
     @Override
     public boolean equals(Object o) {
@@ -291,7 +306,11 @@ public class DisplayMetrics {
             ", xdpi=" + xdpi + ", ydpi=" + ydpi + "}";
     }
 
-    private static int getDeviceDensity() {
+    public static int getCurrentDensity() {
+        return SystemProperties.getInt("persist.sys.lcd_density", DENSITY_DEVICE);
+    }
+
+    public static int getDeviceDensity() {
         // qemu.sf.lcd_density can be used to override ro.sf.lcd_density
         // when running in the emulator, allowing for dynamic configurations.
         // The reason for this is that ro.sf.lcd_density is write-once and is
