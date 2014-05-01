@@ -1787,5 +1787,5 @@
 
   <!-- for wifi auto connection -->
   <java-symbol type="bool" name="wifi_autocon" />
-  
+
 </resources>
