@@ -4313,6 +4313,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         restorePieTriggerMask();
 
         mRecreating = false;
+
+        updateHalo();
     }
 
     /**
