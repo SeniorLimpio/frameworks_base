@@ -40,6 +40,7 @@ import android.os.IBinder;
 import android.os.UserHandle;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.Surface;
 import android.view.TextureView;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -306,8 +307,7 @@ public class OnTheGoService extends Service implements ShakeDetector.Listener {
         logDebug("Setup Views, restarting: " + (isRestarting ? "true" : "false"));
 
         final int cameraType = Settings.System.getInt(getContentResolver(),
-                Settings.System.ON_THE_GO_CAMERA,
-                0);
+                Settings.System.ON_THE_GO_CAMERA, 0);
 
         try {
             getCameraInstance(cameraType);
@@ -318,13 +318,14 @@ public class OnTheGoService extends Service implements ShakeDetector.Listener {
             stopOnTheGo(true);
         }
 
+        final WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
         final TextureView mTextureView = new TextureView(this);
         mTextureView.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
             @Override
             public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture, int i, int i2) {
                 try {
                     if (mCamera != null) {
-                        mCamera.setDisplayOrientation(90);
+                        mCamera.setDisplayOrientation(wm.getDefaultDisplay().getRotation() + 90);
                         mCamera.setPreviewTexture(surfaceTexture);
                         mCamera.startPreview();
                     }
@@ -335,6 +336,7 @@ public class OnTheGoService extends Service implements ShakeDetector.Listener {
 
             @Override
             public void onSurfaceTextureSizeChanged(SurfaceTexture surfaceTexture, int i, int i2) {
+                setCameraDisplayOrientation();
             }
 
             @Override
@@ -354,7 +356,6 @@ public class OnTheGoService extends Service implements ShakeDetector.Listener {
         );
         mOverlay.addView(mTextureView);
 
-        final WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
         final WindowManager.LayoutParams params = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY,
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |
@@ -444,6 +445,42 @@ public class OnTheGoService extends Service implements ShakeDetector.Listener {
         if (DEBUG) {
             Log.e(TAG, msg);
         }
+    }
+
+    private void setCameraDisplayOrientation() {
+        if (mCamera == null) return;
+
+        final Camera.CameraInfo info = new Camera.CameraInfo();
+        final int cameraType = Settings.System.getInt(getContentResolver(),
+                Settings.System.ON_THE_GO_CAMERA, 0);
+        Camera.getCameraInfo(cameraType, info);
+        final int rotation = ((WindowManager) getSystemService(Context.WINDOW_SERVICE))
+                .getDefaultDisplay().getRotation();
+
+        int degrees = 0;
+        switch (rotation) {
+            case Surface.ROTATION_0:
+                degrees = 0;
+                break;
+            case Surface.ROTATION_90:
+                degrees = 90;
+                break;
+            case Surface.ROTATION_180:
+                degrees = 180;
+                break;
+            case Surface.ROTATION_270:
+                degrees = 270;
+                break;
+        }
+
+        int result;
+        if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+            result = (info.orientation + degrees) % 360;
+            result = (360 - result) % 360;  // compensate the mirror
+        } else {  // back-facing
+            result = (info.orientation - degrees + 360) % 360;
+        }
+        mCamera.setDisplayOrientation(result);
     }
 
     private final        Object  mShakeLock     = new Object();
