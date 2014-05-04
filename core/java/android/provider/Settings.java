@@ -4373,6 +4373,72 @@ public final class Settings {
         public static final String TOAST_ANIMATION = "toast_animation";
 
         /**
+         * HALO pause activities?, defaults to 0 (no, do not pause) on devices which isLargeRAM() == true
+         * otherwise it defaults to 1 (yes, do pause)
+         * @hide
+         */
+        public static final String HALO_PAUSE = "halo_pause";
+
+        /**
+         * HALO size fraction, default is 1.0f (normal)
+         * @hide
+         */
+        public static final String HALO_SIZE = "halo_size";
+
+        /**
+         * HALO ninja?, should default to 0 (no, do not disappear when empty)
+         * @hide
+         */
+        public static final String HALO_NINJA = "halo_ninja";
+
+        /**
+         * HALO message box?, should default to 1 (yes, show message box on incoming notification)
+         * @hide
+         */
+        public static final String HALO_MSGBOX = "halo_msgbox";
+
+        /**
+         * HALO notificatoin count?, should default to 4 (both)
+         * @hide
+         */
+        public static final String HALO_NOTIFY_COUNT = "halo_notify_count";
+
+        /**
+         * HALO message box animation?, should default to 2 (flip animation)
+         * @hide
+         */
+        public static final String HALO_MSGBOX_ANIMATION = "halo_msgbox_animation";
+
+        /**
+         * HALO unlock ping?, should default to 0 (no, do not ping on unlock)
+         * @hide
+         */
+        public static final String HALO_UNLOCK_PING = "halo_unlock_ping";
+
+       /**
+         * Halo notifications on floating windows or not
+         * @hide
+         */
+        public static final String FLOATING_MODE = "floating_mode";
+
+        /**
+         * HALO Properties (Color Settings)
+         * @hide
+         */
+        public static final String HALO_PROPERTIES_COLOR = "halo_properties_color";
+
+        /** @hide **/
+        public static final String HALO_CIRCLE_COLOR = "halo_circle_color";
+        /** @hide **/
+        public static final String HALO_BUBBLE_COLOR = "halo_bubble_color";
+        /** @hide **/
+        public static final String HALO_BUBBLE_TEXT_COLOR = "halo_bubble_text_color";
+        /** @hide **/
+        public static final String HALO_NUMBER_TEXT_COLOR = "halo_number_text_color";
+        /** @hide **/
+        public static final String HALO_NUMBER_CONTAINER_COLOR = "halo_number_container_color";
+
+        /**
          *
          * @hide
          */
