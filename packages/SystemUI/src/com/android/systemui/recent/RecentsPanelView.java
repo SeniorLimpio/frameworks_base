@@ -111,13 +111,9 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
     private int mRecentItemLayoutId;
     private boolean mHighEndGfx;
 
-    private ImageView mClearAllRecents;
-    private CircleMemoryMeter mRecentsMemoryIndicator;
     private int clearAllButton;
 
     private RecentsActivity mRecentsActivity;
-
-    private static Set<Integer> sLockedTasks = new HashSet<Integer>();
 
     private ImageView mClearRecents;
     private LinearColorBar mRamUsageBar;
@@ -132,8 +128,6 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
     TextView mRamText;
 
     MemInfoReader mMemInfoReader = new MemInfoReader();
-
-    private RecentsActivity mRecentsActivity;
 
     public static interface RecentsScrollView {
         public int numItemsInOneScreenful();

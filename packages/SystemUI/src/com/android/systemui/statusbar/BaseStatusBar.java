@@ -641,7 +641,15 @@ public abstract class BaseStatusBar extends SystemUI implements
         return new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
+                NotificationData.Entry  entry = (NotificationData.Entry) v.getTag();
+                if (entry.notification == null) return false;
+                StatusBarNotification sbn = entry.notification;
+
                 final String packageNameF = (String) v.getTag();
+                final PendingIntent contentIntent = sbn.getNotification().contentIntent;
+                boolean expanded = Settings.System.getInt(mContext.getContentResolver(),
+                        Settings.System.EXPANDED_DESKTOP_STATE, 0) == 1;
+
                 if (packageNameF == null) return false;
                 if (v.getWindowToken() == null) return false;
 
@@ -656,6 +664,14 @@ public abstract class BaseStatusBar extends SystemUI implements
                 mNotificationBlamePopup.getMenuInflater().inflate(
                         R.menu.notification_popup_menu,
                         mNotificationBlamePopup.getMenu());
+                MenuItem hideIconCheck = mNotificationBlamePopup.getMenu().findItem(R.id.notification_hide_icon_packages);
+                if(hideIconCheck != null) {
+                    hideIconCheck.setChecked(isIconHiddenByUser(packageNameF));
+                    if (packageNameF.equals("android")) {
+                        // cannot set it, no one likes a liar 
+                        hideIconCheck.setVisible(false);
+                    }
+                }
                 final ContentResolver cr = mContext.getContentResolver();
                 if (Settings.Secure.getInt(cr,
                         Settings.Secure.DEVELOPMENT_SHORTCUT, 0) == 0) {
@@ -681,15 +697,6 @@ public abstract class BaseStatusBar extends SystemUI implements
                     }
                 }
 
-                MenuItem hideIconCheck = mNotificationBlamePopup.getMenu().findItem(R.id.notification_hide_icon_packages);
-                if(hideIconCheck != null) {
-                    hideIconCheck.setChecked(isIconHiddenByUser(packageNameF));
-                    if (packageNameF.equals("android")) {
-                        // cannot set it, no one likes a liar 
-                        hideIconCheck.setVisible(false);
-                    }
-                }
-
                 mNotificationBlamePopup
                 .setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     public boolean onMenuItemClick(MenuItem item) {
@@ -706,13 +713,13 @@ public abstract class BaseStatusBar extends SystemUI implements
                                     .getSystemService(Context.ACTIVITY_SERVICE);
                             am.clearApplicationUserData(packageNameF,
                                     new FakeClearUserDataObserver());
+                        } else if (item.getItemId() == R.id.notification_floating_item) {
+                            launchFloating(contentIntent, packageNameF);
+                            animateCollapsePanels(CommandQueue.FLAG_EXCLUDE_NONE);
                         } else if (item.getItemId() == R.id.notification_hide_icon_packages) {
                             item.setChecked(!item.isChecked());
                             setIconHiddenByUser(packageNameF, item.isChecked());
                             updateNotificationIcons();
-                        } else if (item.getItemId() == R.id.notification_floating_item) {
-                            launchFloating(contentIntent, packageNameF);
-                            animateCollapsePanels(CommandQueue.FLAG_EXCLUDE_NONE);
                         } else {
                             return false;
                         }
