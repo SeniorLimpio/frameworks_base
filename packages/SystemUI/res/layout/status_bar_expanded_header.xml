@@ -101,6 +101,7 @@
                 android:layout_marginLeft="4dp"
                 android:scaleType="center"
                 android:src="@drawable/ic_notify_halo"
+                android:visibility="invisible"
                 android:contentDescription="@string/accessibility_halo"
 	/>
 
