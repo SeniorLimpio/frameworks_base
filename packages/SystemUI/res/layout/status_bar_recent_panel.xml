@@ -137,7 +137,7 @@
             android:layout_gravity="bottom|right"
             android:padding="10dp"
             android:scaleType="fitCenter"
-            android:src="@drawable/ic_recents_clear" />
+            android:src="@drawable/ic_notify_clear" />
 
         </FrameLayout>
 
