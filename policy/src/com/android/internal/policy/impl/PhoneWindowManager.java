@@ -28,6 +28,7 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
@@ -39,6 +40,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.database.ContentObserver;
+import android.graphics.drawable.AnimationDrawable;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.hardware.input.InputManager;
@@ -65,8 +67,10 @@ import android.os.UEventObserver;
 import android.os.UserHandle;
 import android.os.Vibrator;
 import android.provider.Settings;
+
 import android.service.dreams.DreamService;
 import android.service.dreams.IDreamManager;
+
 import android.util.DisplayMetrics;
 import android.util.EventLog;
 import android.util.Log;
@@ -95,7 +99,11 @@ import android.view.WindowManagerPolicy;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.VolumePanel;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.android.internal.util.slim.DeviceUtils;
 import com.android.internal.R;
 import com.android.internal.policy.PolicyManager;
 import com.android.internal.policy.impl.keyguard.KeyguardServiceDelegate;
@@ -112,6 +120,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 
 import static android.view.WindowManager.LayoutParams.*;
 import static android.view.WindowManagerPolicy.WindowManagerFuncs.LID_ABSENT;
@@ -2369,9 +2378,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     mHomeConsumed = false;
                     return -1;
                 }
-                if (!virtualKey && mDoubleTapOnHomeBehavior != KEY_ACTION_APP_SWITCH) {
-                    cancelPreloadRecentApps();
-                }
 
                 if (canceled) {
                     Log.i(TAG, "Ignoring HOME; event canceled.");
@@ -2392,8 +2398,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 }
 
                 // Delay handling home if a double-tap is possible.
-                if (!virtualKey && mDoubleTapOnHomeBehavior != KEY_ACTION_NOTHING) {
-                    mHandler.removeCallbacks(mHomeDoubleTapTimeoutRunnable); // just in case
+                if (!virtualKey
+                        && !mDoubleTapOnHomeBehavior.equals(ButtonsConstants.ACTION_NULL)) {
+                    mHandler.removeCallbacks(mDoubleTapTimeoutRunnable); // just in case
                     mDisableVibration = false; // just in case
                     mHomeDoubleTapPending = true;
                     mHandler.postDelayed(mDoubleTapTimeoutRunnable,
@@ -2412,6 +2419,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 launchHomeFromHotKey();
                 return -1;
             }
+	}
 
             // If a system window has focus, then it doesn't make sense
             // right now to interact with applications.
@@ -2436,11 +2444,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             if (virtualKey && down) {
                 mHomePressed = true;
                 mHomeConsumed = false;
-                return -1;
-            }
-
+	    } else if (down) {
             // Remember that home is pressed and handle special actions.
-            if (down) {
                 if (!mPreloadedRecentApps &&
                         (mLongPressOnHomeBehavior.equals(ButtonsConstants.ACTION_RECENTS)
                          || mDoubleTapOnHomeBehavior.equals(ButtonsConstants.ACTION_RECENTS)
@@ -2455,6 +2460,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                         mHomeConsumed = true;
                         mHandler.removeCallbacks(mDoubleTapTimeoutRunnable);
                         processAction(mDoubleTapOnHomeBehavior);
+			return -1;
                     }
                 } else if (longPress) {
                     if (!keyguardOn
@@ -2462,10 +2468,12 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                         performHapticFeedbackLw(null, HapticFeedbackConstants.LONG_PRESS, false);
                         processAction(mLongPressOnHomeBehavior);
                         mHomeConsumed = true;
+			return -1;
                     }
                 }
             }
-            return -1;
+            if (!virtualKey && !keyguardOn) {
+                return -1;
         } else if (keyCode == KeyEvent.KEYCODE_MENU) {
             // Hijack modified menu keys for debugging features
             final int chordBug = KeyEvent.META_SHIFT_ON;
