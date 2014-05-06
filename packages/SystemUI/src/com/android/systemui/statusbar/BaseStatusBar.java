@@ -648,8 +648,7 @@ public abstract class BaseStatusBar extends SystemUI implements
                 if (entry.notification == null) return false;
                 StatusBarNotification sbn = entry.notification;
 
-                final String packageNameF = (String) v.getTag();
-
+                final String packageNameF = sbn.getPackageName();
                 final PendingIntent contentIntent = sbn.getNotification().contentIntent;
                 boolean expanded = Settings.System.getInt(mContext.getContentResolver(),
                         Settings.System.EXPANDED_DESKTOP_STATE, 0) == 1;
