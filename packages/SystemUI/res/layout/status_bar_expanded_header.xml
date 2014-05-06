@@ -104,6 +104,7 @@
                 android:visibility="invisible"
                 android:contentDescription="@string/accessibility_halo"
             />
+        </FrameLayout>
 
     <FrameLayout android:id="@+id/settings_button_holder"
         android:layout_width="50dp"
