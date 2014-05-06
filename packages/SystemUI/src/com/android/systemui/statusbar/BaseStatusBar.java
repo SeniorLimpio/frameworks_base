@@ -742,6 +742,14 @@ public abstract class BaseStatusBar extends SystemUI implements
                         return true;
                     }
                 });
+
+                mNotificationBlamePopup.setOnDismissListener(new PopupMenu.OnDismissListener() {
+                    @Override
+                    public void onDismiss(PopupMenu popupMenu) {
+                        mNotificationBlamePopup = null;
+                    }
+                });
+
                 mNotificationBlamePopup.show();
 
                 return true;
@@ -1155,6 +1163,7 @@ public abstract class BaseStatusBar extends SystemUI implements
         }
 
         public void makeFloating(boolean floating) {
+            if (mNotificationBlamePopup != null) return;
             mFloat = floating;
         }
 
