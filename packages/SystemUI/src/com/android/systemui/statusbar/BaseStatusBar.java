@@ -730,7 +730,7 @@ public abstract class BaseStatusBar extends SystemUI implements
                             am.clearApplicationUserData(packageNameF,
                                     new FakeClearUserDataObserver());
                         } else if (item.getItemId() == R.id.notification_floating_item) {
-                            launchFloating(contentIntent);
+                            launchFloating(contentIntent, packageNameF);
                             animateCollapsePanels(CommandQueue.FLAG_EXCLUDE_NONE);
                         } else if (item.getItemId() == R.id.notification_hide_icon_packages) {
                             item.setChecked(!item.isChecked());
