@@ -73,7 +73,7 @@ import android.widget.RemoteViews;
 import android.widget.TextView;
 
 import com.android.internal.util.slim.DeviceUtils;
-import com.android.internal.util.slim.QuietHoursHelper;
+import com.android.internal.util.cm.QuietHoursUtils;
 import com.android.internal.widget.LockPatternUtils;
 import com.android.internal.widget.multiwaveview.GlowPadView;
 import com.android.internal.widget.multiwaveview.GlowPadView.OnTriggerListener;
@@ -88,7 +88,6 @@ import com.android.systemui.widget.RoundedImageView;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -309,11 +308,12 @@ public class ActiveDisplayView extends FrameLayout
         public void onGrabbedStateChange(View v, int handle) {
         }
 
+        public void onFinishFinalAnimation() {
+        }
+
         public void onTargetChange(View v, int target) {
         }
 
-        public void onFinishFinalAnimation() {
-        }
     };
 
     /**
@@ -361,7 +361,7 @@ public class ActiveDisplayView extends FrameLayout
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.BATTERY_AROUND_LOCKSCREEN_RING), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_NOTIFICATION_COUNT), false, this);
+                    Settings.System.STATUS_BAR_NOTIF_COUNT), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.ACTIVE_DISPLAY_ANNOYING), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
@@ -432,7 +432,7 @@ public class ActiveDisplayView extends FrameLayout
                     resolver, Settings.System.BATTERY_AROUND_LOCKSCREEN_RING, 0,
                     UserHandle.USER_CURRENT_OR_SELF) != 0;
             mShowNotificationCount = Settings.System.getIntForUser(
-                    resolver, Settings.System.STATUS_BAR_NOTIFICATION_COUNT, 0,
+                    resolver, Settings.System.STATUS_BAR_NOTIF_COUNT, 0,
                     UserHandle.USER_CURRENT_OR_SELF) != 0;
             mIsAnnoyingThreshold = Settings.System.getIntForUser(
                     resolver, Settings.System.ACTIVE_DISPLAY_ANNOYING, 0,
@@ -772,7 +772,7 @@ public class ActiveDisplayView extends FrameLayout
     /**
      * Launches the pending intent for the currently selected notification
      */
-    private synchronized void launchNotificationPendingIntent() {
+    private void launchNotificationPendingIntent() {
         if (mNotification != null) {
             PendingIntent contentIntent = mNotification.getNotification().contentIntent;
             if (contentIntent != null) {
@@ -921,7 +921,6 @@ public class ActiveDisplayView extends FrameLayout
             mLightSensorManager.disable(true);
         }
         setVisibility(View.GONE);
-
     }
 
     private void handleShowNotification(boolean ping) {
@@ -962,7 +961,7 @@ public class ActiveDisplayView extends FrameLayout
         turnScreenOff();
     }
 
-    private synchronized void handleShowTime() {
+    private void handleShowTime() {
         mCurrentNotificationIcon.setImageResource(R.drawable.ic_ad_unlock);
         mCurrentNotificationIcon.placeNumber(0, false);
         mGlowPadView.setHandleText("");
@@ -989,8 +988,8 @@ public class ActiveDisplayView extends FrameLayout
     }
 
     private boolean inQuietHours() {
-        boolean isQuietHourDim = QuietHoursHelper.inQuietHours(mContext, Settings.System.QUIET_HOURS_DIM);
-        boolean isQuietHourMute = QuietHoursHelper.inQuietHours(mContext, Settings.System.QUIET_HOURS_MUTE);
+        boolean isQuietHourDim = QuietHoursUtils.inQuietHours(mContext, Settings.System.QUIET_HOURS_DIM);
+        boolean isQuietHourMute = QuietHoursUtils.inQuietHours(mContext, Settings.System.QUIET_HOURS_MUTE);
         return isQuietHourDim || isQuietHourMute;
     }
 
@@ -1061,6 +1060,7 @@ public class ActiveDisplayView extends FrameLayout
     }
 
     private final Runnable runWakeDevice = new Runnable() {
+        @Override
         public void run() {
             setBrightness(mInitialBrightness);
             wakeDevice();
@@ -1202,28 +1202,18 @@ public class ActiveDisplayView extends FrameLayout
     }
 
     private StatusBarNotification getNextAvailableNotification() {
-        // check if other notifications exist and if so display the next one
-        StatusBarNotification[] sbns = getSortedNotifications();
-        if (sbns == null) return null;
-        for (int i = sbns.length - 1; i >= 0; i--) {
-            if (sbns[i] == null)
-                continue;
-            if (isValidNotification(sbns[i])) {
-                return sbns[i];
-            }
-        }
-
-        return null;
-    }
-
-    private StatusBarNotification[] getSortedNotifications() {
         try {
             // check if other notifications exist and if so display the next one
             StatusBarNotification[] sbns = mNM
                     .getActiveNotificationsFromSystemListener(mNotificationListener);
             if (sbns == null) return null;
-            Arrays.sort(sbns, sNewestNotificationComparator);
-            return sbns;
+            for (int i = sbns.length - 1; i >= 0; i--) {
+                if (sbns[i] == null)
+                    continue;
+                if (shouldShowNotification() && isValidNotification(sbns[i])) {
+                    return sbns[i];
+                }
+            }
         } catch (RemoteException e) {
         }
         return null;
@@ -1268,15 +1258,15 @@ public class ActiveDisplayView extends FrameLayout
                             iv.setScaleType(RoundedImageView.ScaleType.FIT_CENTER);
                             if (updateOther) {
                                 mOverflowNotifications.addView(iv, mOverflowLayoutParams);
-                      }
-                  }
-              }
-           } catch (RemoteException re) {
-           } catch (NullPointerException npe) {
-           }
-         }
-      });
-   }
+                            }
+                        }
+                    }
+                } catch (RemoteException re) {
+                } catch (NullPointerException npe) {
+                }
+            }
+        });
+    }
 
     private OnTouchListener mOverflowTouchListener = new OnTouchListener() {
         int mLastChildPosition = -1;
@@ -1339,7 +1329,7 @@ public class ActiveDisplayView extends FrameLayout
      * Swaps the current StatusBarNotification with {@code sbn}
      * @param sbn The StatusBarNotification to swap with the current
      */
-    private synchronized void swapNotification(StatusBarNotification sbn) {
+    private void swapNotification(StatusBarNotification sbn) {
         mNotification = sbn;
         setActiveNotification(sbn, false);
     }
@@ -1469,7 +1459,7 @@ public class ActiveDisplayView extends FrameLayout
     }
 
     /**
-     * Determine if a call is currently in progress.
+     * Determine i a call is currently in progress.
      * @return True if a call is in progress.
      */
     private boolean isOnCall() {
@@ -1510,6 +1500,19 @@ public class ActiveDisplayView extends FrameLayout
         });
     }
 
+    private Drawable getIconDrawable(StatusBarNotification sbn) {
+        Drawable drawable = null;
+        try {
+            Context pkgContext = mContext.createPackageContext(sbn.getPackageName(), Context.CONTEXT_RESTRICTED);
+            drawable = pkgContext.getResources().getDrawable(sbn.getNotification().icon);
+        } catch (NameNotFoundException nnfe) {
+            drawable = null;
+        } catch (Resources.NotFoundException nfe) {
+            drawable = null;
+        }
+        return drawable;
+    }
+
     /**
      * Inflates the RemoteViews specified by {@code sbn}.  If bigContentView is available it will be
      * used otherwise the standard contentView will be inflated.
@@ -1539,19 +1542,6 @@ public class ActiveDisplayView extends FrameLayout
             mRemoteView.setAlpha(0f);
             mRemoteViewLayout.addView(mRemoteView, mRemoteViewLayoutParams);
         }
-    }
-
-   private Drawable getIconDrawable(StatusBarNotification sbn) {
-        Drawable drawable = null;
-        try {
-            Context pkgContext = mContext.createPackageContext(sbn.getPackageName(), Context.CONTEXT_RESTRICTED);
-            drawable = pkgContext.getResources().getDrawable(sbn.getNotification().icon);
-        } catch (NameNotFoundException nnfe) {
-	    drawable = null;
-        } catch (Resources.NotFoundException nfe) {
-            drawable = null;
-        }
-        return drawable;
     }
 
     private RemoteViews applyStandardTemplate(Notification notification, StatusBarNotification sbn) {
@@ -1671,7 +1661,7 @@ public class ActiveDisplayView extends FrameLayout
             } else if (action.equals(ACTION_PHONE_STATE)) {
                 if (isOnCall() && (getVisibility() == View.VISIBLE)) {
                     hideNotificationViewOnCall();
-                    }
+                }
             } else if (action.equals(Intent.ACTION_SCREEN_OFF)) {
                 onScreenTurnedOff();
             } else if (action.equals(Intent.ACTION_SCREEN_ON)) {
@@ -1679,9 +1669,9 @@ public class ActiveDisplayView extends FrameLayout
             } else if (action.equals(Intent.ACTION_USER_PRESENT)) {
                 if (!isLockScreenDisabled()) {
                     cancelAllState();
-                    }
+                }
             } else if (action.equals(ACTION_UNLOCK_DEVICE)) {
-                    cancelAllState();
+                cancelAllState();
                 if (mIsUnlockByUser) {
                     mIsUnlockByUser = false;
                     if (!isScreenOn()) {
@@ -1781,12 +1771,4 @@ public class ActiveDisplayView extends FrameLayout
         utils.setCurrentUser(UserHandle.USER_OWNER);
         return utils.isLockScreenDisabled();
     }
-
-    private static Comparator<StatusBarNotification> sNewestNotificationComparator
-            = new Comparator<StatusBarNotification>() {
-        @Override
-        public int compare(StatusBarNotification a, StatusBarNotification b) {
-            return (int)(a.getNotification().when - b.getNotification().when);
-        }
-    };
 }
