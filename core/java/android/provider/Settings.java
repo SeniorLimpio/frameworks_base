@@ -4225,16 +4225,11 @@ public final class Settings {
                 "key_app_switch_double_tap_action";
 
         /**
-         * show clear all recents button
-         *  @hide
-         */
-        public static final String CLEAR_RECENTS_BUTTON = "clear_recents_button";
-
-        /**
-         * location of the clear all rectents button
+         * Clear Recents button
+         * 0 - off, 1 - top left, 2 - top right, 3 - bottom left, 4 - bottom right
          * @hide
          */
-        public static final String CLEAR_RECENTS_BUTTON_LOCATION = "clear_recents_button_location";
+        public static final String CLEAR_RECENTS_BUTTON = "clear_recents_button";
 
         /**
          * whether which Ram Usage Bar mode is used on recent switcher
