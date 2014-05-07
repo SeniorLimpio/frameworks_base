@@ -73,7 +73,7 @@ import android.widget.RemoteViews;
 import android.widget.TextView;
 
 import com.android.internal.util.slim.DeviceUtils;
-import com.android.internal.util.cm.QuietHoursUtils;
+import com.android.internal.util.slim.QuietHoursHelper;
 import com.android.internal.widget.LockPatternUtils;
 import com.android.internal.widget.multiwaveview.GlowPadView;
 import com.android.internal.widget.multiwaveview.GlowPadView.OnTriggerListener;
@@ -361,7 +361,7 @@ public class ActiveDisplayView extends FrameLayout
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.BATTERY_AROUND_LOCKSCREEN_RING), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_NOTIF_COUNT), false, this);
+                    Settings.System.STATUS_BAR_NOTIFICATION_COUNT), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.ACTIVE_DISPLAY_ANNOYING), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
@@ -432,7 +432,7 @@ public class ActiveDisplayView extends FrameLayout
                     resolver, Settings.System.BATTERY_AROUND_LOCKSCREEN_RING, 0,
                     UserHandle.USER_CURRENT_OR_SELF) != 0;
             mShowNotificationCount = Settings.System.getIntForUser(
-                    resolver, Settings.System.STATUS_BAR_NOTIF_COUNT, 0,
+                    resolver, Settings.System.STATUS_BAR_NOTIFICATION_COUNT, 0,
                     UserHandle.USER_CURRENT_OR_SELF) != 0;
             mIsAnnoyingThreshold = Settings.System.getIntForUser(
                     resolver, Settings.System.ACTIVE_DISPLAY_ANNOYING, 0,
@@ -988,8 +988,8 @@ public class ActiveDisplayView extends FrameLayout
     }
 
     private boolean inQuietHours() {
-        boolean isQuietHourDim = QuietHoursUtils.inQuietHours(mContext, Settings.System.QUIET_HOURS_DIM);
-        boolean isQuietHourMute = QuietHoursUtils.inQuietHours(mContext, Settings.System.QUIET_HOURS_MUTE);
+        boolean isQuietHourDim = QuietHoursHelper.inQuietHours(mContext, Settings.System.QUIET_HOURS_DIM);
+        boolean isQuietHourMute = QuietHoursHelper.inQuietHours(mContext, Settings.System.QUIET_HOURS_MUTE);
         return isQuietHourDim || isQuietHourMute;
     }
 

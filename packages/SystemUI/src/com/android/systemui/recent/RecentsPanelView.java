@@ -581,7 +581,6 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
             mClearAllRecents.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    clearAllNonLocked();
                 }
             });
             mClearAllRecents.setOnLongClickListener(new OnLongClickListener() {
@@ -1075,33 +1074,6 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
         }
         mRecentsContainer.drawFadedEdges(canvas, left, right, top, bottom);
     }
-
-        mClearAllRecents = (ImageView) findViewById(R.id.recents_clear_all);
-        if (mClearAllRecents != null){
-            mClearAllRecents.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    clearAllNonLocked();
-                }
-            });
-            mClearAllRecents.setOnLongClickListener(new OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    mRecentsContainer.removeAllViewsInLayout();
-                    try {
-                        ProcessBuilder pb = new ProcessBuilder("su", "-c", "/system/bin/sh");
-                        OutputStreamWriter osw = new OutputStreamWriter(pb.start().getOutputStream());
-                        osw.write("sync" + "\n" + "echo 3 > /proc/sys/vm/drop_caches" + "\n");
-                        osw.write("\nexit\n");
-                        osw.flush();
-                        osw.close();
-                    } catch (Exception e) {
-                        Log.d(TAG, "Flush caches failed!");
-                    }
-                    return true;
-                }
-            });
-        }
 
     class FakeClearUserDataObserver extends IPackageDataObserver.Stub {
         public void onRemoveCompleted(final String packageName, final boolean succeeded) {
