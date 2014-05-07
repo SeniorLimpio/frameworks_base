@@ -501,9 +501,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     private boolean mScreenRecordChordEnabled = true;
     private boolean mVolumeDownKeyTriggered;
     private long mVolumeDownKeyTime;
+    private long mVolumeUpKeyTime;
     private boolean mVolumeDownKeyConsumedByScreenshotChord;
     private boolean mVolumeUpKeyTriggered;
-    private long mVolumeUpKeyTime;
     private boolean mVolumeUpKeyConsumedByScreenRecordChord;
     private boolean mPowerKeyTriggered;
     private long mPowerKeyTime;
@@ -903,7 +903,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     private void cancelPendingScreenRecordChordAction() {
         mHandler.removeCallbacks(mScreenRecordRunnable);
     }
-
 
     private final Runnable mPowerLongPress = new Runnable() {
         @Override
@@ -2419,7 +2418,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 launchHomeFromHotKey();
                 return -1;
             }
-	}
 
             // If a system window has focus, then it doesn't make sense
             // right now to interact with applications.
@@ -2472,7 +2470,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     }
                 }
             }
-            if (!virtualKey && !keyguardOn) {
                 return -1;
         } else if (keyCode == KeyEvent.KEYCODE_MENU) {
             // Hijack modified menu keys for debugging features
