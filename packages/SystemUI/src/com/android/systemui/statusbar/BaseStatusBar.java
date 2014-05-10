@@ -1395,6 +1395,9 @@ public abstract class BaseStatusBar extends SystemUI implements
     }
 
     protected void addNotificationViews(NotificationData.Entry entry) {
+        if (entry == null) {
+            return;
+        }
         // Add the expanded view and icon.
         if (mNotificationData.findByKey(entry.key) == null) {
             int pos = mNotificationData.add(entry);
