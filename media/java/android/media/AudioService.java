@@ -42,6 +42,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
@@ -89,6 +90,7 @@ import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.io.PrintWriter;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -4541,8 +4543,50 @@ public class AudioService extends IAudioService.Stub {
                         0,
                         0,
                         mStreamStates[AudioSystem.STREAM_MUSIC], 0);
+            } else if (action.equals(Intent.ACTION_HEADSET_PLUG)) {
+                // Only run when headset is inserted and is enabled at settings
+                int plugged = intent.getIntExtra("state", 0);
+
+                String headsetPlugIntenatUri = Settings.System.getStringForUser(
+                    context.getContentResolver(), Settings.System.HEADSET_PLUG_ENABLED, UserHandle.USER_CURRENT);
+
+                Intent headsetPlugIntent = null;
+
+                if(plugged == 1 && headsetPlugIntenatUri != null) {
+                    // Run default music app
+                    if(headsetPlugIntenatUri.equals(Settings.System.HEADSET_PLUG_SYSTEM_DEFAULT)){
+
+                        headsetPlugIntent = Intent.makeMainSelectorActivity(Intent.ACTION_MAIN,
+                            Intent.CATEGORY_APP_MUSIC);
+                        headsetPlugIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        context.startActivityAsUser(headsetPlugIntent, UserHandle.CURRENT);
+                    } else { // Try open a custom app
+
+                        try {
+                            headsetPlugIntent = Intent.parseUri(headsetPlugIntenatUri, 0);
+                        } catch (URISyntaxException e) {
+                            headsetPlugIntent = null;
+                        }
+
+                        if(headsetPlugIntent != null) {
+
+                            String mPackage = headsetPlugIntent.getComponent()
+                                .getPackageName();
+
+                            if (isAvailableApp(mPackage)) {
+                               headsetPlugIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                               context.startActivityAsUser(headsetPlugIntent, UserHandle.CURRENT);
+                            } else {
+                               // Disable setting
+                               Settings.System.putStringForUser(context.getContentResolver(),
+                                  Settings.System.HEADSET_PLUG_ENABLED, null, UserHandle.USER_CURRENT);
+                            }
+                        }
+                    }
+                }
             }
         }
+    }
 
         private void adjustCurrentStreamVolume() {
             VolumeStreamState streamState;
@@ -4556,8 +4600,19 @@ public class AudioService extends IAudioService.Stub {
                     streamState.applyDeviceVolume(device);
                 }
             }
-        }
-    }
+	}
+
+        private boolean isAvailableApp(String packageName) {
+            final PackageManager pm = mContext.getPackageManager();
+            try {
+                pm.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES);
+                int enabled = pm.getApplicationEnabledSetting(packageName);
+                return enabled != PackageManager.COMPONENT_ENABLED_STATE_DISABLED &&
+                    enabled != PackageManager.COMPONENT_ENABLED_STATE_DISABLED_USER;
+            } catch (NameNotFoundException e) {
+                return false;
+ 	        }
+	    }
     //==========================================================================================
     // RemoteControlDisplay / RemoteControlClient / Remote info
     //==========================================================================================

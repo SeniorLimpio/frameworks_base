@@ -4709,6 +4709,18 @@ public final class Settings {
          */
         public static final String DIALPAD_STATE = "dialpad_state";
 
+       /**
+         * Opens music app when headset is plugged.
+         * @hide
+         */
+        public static final String HEADSET_PLUG_ENABLED = "headset_plug_enabled";
+
+        /**
+         * Disable opens music app when headset is plugged.
+         * @hide
+         */
+        public static final String HEADSET_PLUG_SYSTEM_DEFAULT = "SYSTEM_DEFAULT";
+
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
