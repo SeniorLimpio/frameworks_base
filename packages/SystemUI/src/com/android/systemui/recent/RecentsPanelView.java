@@ -581,6 +581,7 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
             mClearAllRecents.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    mRecentsContainer.removeAllViewsInLayout();
                 }
             });
             mClearAllRecents.setOnLongClickListener(new OnLongClickListener() {
