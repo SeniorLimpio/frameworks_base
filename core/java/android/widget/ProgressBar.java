@@ -300,12 +300,12 @@ public class ProgressBar extends View {
 	 boolean IsReversed = Settings.System.getInt(mContext.getContentResolver(),
 		 Settings.System.PROGRESSBAR_REVERSE, 1) == 1;
 	 int tmpSpeed = Settings.System.getInt(mContext.getContentResolver(),
-		 Settings.System.PROGRESSBAR_SPEED, 0);
+		 Settings.System.PROGRESSBAR_SPEED, 5);
 	 float Speed = ((float) tmpSpeed+1 ) / 10;
 	 int Width = Settings.System.getInt(mContext.getContentResolver(),
                  Settings.System.PROGRESSBAR_WIDTH, 4);
          int Length = Settings.System.getInt(mContext.getContentResolver(),
-                 Settings.System.PROGRESSBAR_LENGTH, 10);
+                 Settings.System.PROGRESSBAR_LENGTH, 16);
          int Count = Settings.System.getInt(mContext.getContentResolver(),
                  Settings.System.PROGRESSBAR_COUNT, 6);
          int Color1 = Settings.System.getInt(mContext.getContentResolver(),

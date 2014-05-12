@@ -72,13 +72,13 @@ public class NotificationViewManager {
         public boolean showAlways = false;
         public boolean pocketMode = false;
         public boolean hideLowPriority = false;
-        public boolean hideNonClearable = false;
+        public boolean hideNonClearable = true;
         public boolean dismissAll = true;
         public boolean expandedView = true;
         public boolean forceExpandedView = false;
         public boolean wakeOnNotification = false;
         public int notificationsHeight = 4;
-        public float offsetTop = 0.3f;
+        public float offsetTop = 0.38f;
         public boolean privacyMode = false;
         public int notificationColor = 0x55555555;
 

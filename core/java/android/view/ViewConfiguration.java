@@ -63,7 +63,7 @@ public class ViewConfiguration {
      * Defines the default duration in milliseconds before a press turns into
      * a long press
      */
-    private static final int DEFAULT_LONG_PRESS_TIMEOUT = 450;
+    private static final int DEFAULT_LONG_PRESS_TIMEOUT = 400;
 
     /**
      * Defines the time between successive key repeats in milliseconds.
@@ -75,7 +75,7 @@ public class ViewConfiguration {
      * appropriate button to bring up the global actions dialog (power off,
      * lock screen, etc).
      */
-    private static final int GLOBAL_ACTIONS_KEY_TIMEOUT = 450;
+    private static final int GLOBAL_ACTIONS_KEY_TIMEOUT = 400;
 
     /**
      * Defines the duration in milliseconds we will wait to see if a touch event
@@ -89,7 +89,7 @@ public class ViewConfiguration {
      * is a jump tap. If the user does not complete the jump tap within this interval, it is
      * considered to be a tap.
      */
-    private static final int JUMP_TAP_TIMEOUT = 450;
+    private static final int JUMP_TAP_TIMEOUT = 400;
 
     /**
      * Defines the duration in milliseconds between the first tap's up event and
@@ -208,13 +208,13 @@ public class ViewConfiguration {
     /**
      * The coefficient of friction applied to flings/scrolls.
      */
-    private static float SCROLL_FRICTION = 0.011f;
+    private static float SCROLL_FRICTION = 0.009f;
 
     /**
      * The coefficient of friction applied to flings/scrolls.	
      * @hide
      */	
-    public static final float DEFAULT_SCROLL_FRICTION = 0.011f;
+    public static final float DEFAULT_SCROLL_FRICTION = 0.009f;
 
     /**
      * Max distance in dips to overscroll for edge effects
@@ -230,13 +230,13 @@ public class ViewConfiguration {
     /**
      * Max distance in dips to overfling for edge effects
      */
-    private static int OVERFLING_DISTANCE = 6;
+    private static int OVERFLING_DISTANCE = 18;
 
     /**
      * Max distance in dips to overfling for edge effects
      * @hide
      */
-    public static final int DEFAULT_OVERFLING_DISTANCE = 6;
+    public static final int DEFAULT_OVERFLING_DISTANCE = 18;
 
     private final int mEdgeSlop;
     private final int mFadingEdgeLength;
