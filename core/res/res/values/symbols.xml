@@ -1766,6 +1766,7 @@
   <java-symbol type="bool" name="config_samsung_stk" />
   <java-symbol type="string" name="config_legacyUmsLunFile" />
   <java-symbol type="bool" name="config_smsSamsungCdmaAlternateMessageIDEncoding" />
+  <java-symbol type="bool" name="config_batterySdCardAccessibility" />
 
   <!-- Label for the Android system components when they are shown to the user. -->
   <java-symbol type="string" name="android_system_label" />
