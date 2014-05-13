@@ -605,7 +605,7 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
 
         mRecentsMemoryIndicator = (CircleMemoryMeter) findViewById(R.id.circle_meter);
         int circleMemButton = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.CIRCLE_MEM_BUTTON, Constants.CIRCLE_MEM_BUTTON_BOTTOM_RIGHT);
+                Settings.System.CIRCLE_MEM_BUTTON, Constants.CIRCLE_MEM_BUTTON_OFF);
 
         if (circleMemButton != Constants.CIRCLE_MEM_BUTTON_OFF) {
             mRecentsMemoryIndicator.setVisibility(View.VISIBLE);
@@ -736,11 +736,11 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
 
     public void setColor() {
         int color = Settings.System.getIntForUser(mContext.getContentResolver(),
-                Settings.System.RECENTS_PANEL_COLOR, 00000000, UserHandle.USER_CURRENT);
+                Settings.System.RECENTS_PANEL_COLOR, 0xFF000000, UserHandle.USER_CURRENT);
 
         if (mRecentsScrim != null) {
             mHighEndGfx = ActivityManager.isHighEndGfx();
-            if (color == 00000000) {
+            if (color == 0xFF000000) {
                 if (!mHighEndGfx) {
                     mRecentsScrim.setBackground(null);
                 } else if (mRecentsScrim.getBackground() instanceof BitmapDrawable) {
