@@ -411,7 +411,7 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
     private void updateCircleMemory() {
 
         int circleMemButton = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.CIRCLE_MEM_BUTTON, Constants.CIRCLE_MEM_BUTTON_BOTTOM_RIGHT);
+                Settings.System.CIRCLE_MEM_BUTTON, Constants.CIRCLE_MEM_BUTTON_OFF);
 
         if (circleMemButton != Constants.CIRCLE_MEM_BUTTON_OFF) {
 
@@ -736,11 +736,11 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
 
     public void setColor() {
         int color = Settings.System.getIntForUser(mContext.getContentResolver(),
-                Settings.System.RECENTS_PANEL_COLOR, 0xe0000000, UserHandle.USER_CURRENT);
+                Settings.System.RECENTS_PANEL_COLOR, 00000000, UserHandle.USER_CURRENT);
 
         if (mRecentsScrim != null) {
             mHighEndGfx = ActivityManager.isHighEndGfx();
-            if (color == 0xe0000000) {
+            if (color == 00000000) {
                 if (!mHighEndGfx) {
                     mRecentsScrim.setBackground(null);
                 } else if (mRecentsScrim.getBackground() instanceof BitmapDrawable) {
@@ -1085,7 +1085,7 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
         mRamUsageBar = (LinearColorBar) findViewById(R.id.ram_usage_bar);
 
         int mRamBarMode = (Settings.System.getInt(mContext.getContentResolver(),
-                             Settings.System.RECENTS_RAM_BAR_MODE, 0));
+                             Settings.System.RECENTS_RAM_BAR_MODE, 3));
 
         if (mRamBarMode != 0 && mRamUsageBar != null) {
 
