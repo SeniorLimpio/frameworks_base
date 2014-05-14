@@ -113,6 +113,7 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
     private TaskDescriptionAdapter mListAdapter;
     private int mThumbnailWidth;
     private boolean mFitThumbnailToXY;
+    private boolean mHighEndGfx;
     private int mRecentItemLayoutId;
     private ImageView mClearAllRecents;
     private CircleMemoryMeter mRecentsMemoryIndicator;
@@ -610,6 +611,16 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
         if (circleMemButton != Constants.CIRCLE_MEM_BUTTON_OFF) {
             mRecentsMemoryIndicator.setVisibility(View.VISIBLE);
         } else mRecentsMemoryIndicator.setVisibility(View.GONE);
+
+        if (mRecentsScrim != null) {
+            mHighEndGfx = ActivityManager.isHighEndGfx();
+            if (!mHighEndGfx) {
+                mRecentsScrim.setBackground(null);
+            } else if (mRecentsScrim.getBackground() instanceof BitmapDrawable) {
+                // In order to save space, we make the background texture repeat in the Y direction
+                ((BitmapDrawable) mRecentsScrim.getBackground()).setTileModeY(TileMode.REPEAT);
+            }
+        }
     }
 
     public void setMinSwipeAlpha(float minAlpha) {
@@ -729,7 +740,17 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
                 Settings.System.RECENTS_PANEL_COLOR, 0xee111111, UserHandle.USER_CURRENT);
 
         if (mRecentsScrim != null) {
+            mHighEndGfx = ActivityManager.isHighEndGfx();
+            if (color == 0xFF000000) {
+                if (!mHighEndGfx) {
+                    mRecentsScrim.setBackground(null);
+                } else if (mRecentsScrim.getBackground() instanceof BitmapDrawable) {
+                    // In order to save space, we make the background texture repeat in the Y direction
+                    ((BitmapDrawable) mRecentsScrim.getBackground()).setTileModeY(TileMode.REPEAT);
+                }
+            } else {
                 mRecentsScrim.setBackgroundColor(color);
+            }
         }
     }
 
