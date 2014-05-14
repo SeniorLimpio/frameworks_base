@@ -26,6 +26,7 @@ import static com.android.internal.util.ldroid.QSConstants.TILE_BATTERYSAVER;
 import static com.android.internal.util.ldroid.QSConstants.TILE_BLUETOOTH;
 import static com.android.internal.util.ldroid.QSConstants.TILE_BRIGHTNESS;
 import static com.android.internal.util.ldroid.QSConstants.TILE_BUGREPORT;
+import static com.android.internal.util.ldroid.QSConstants.TILE_COMPASS;
 import static com.android.internal.util.ldroid.QSConstants.TILE_CONTACT;
 import static com.android.internal.util.ldroid.QSConstants.TILE_CUSTOM;
 import static com.android.internal.util.ldroid.QSConstants.TILE_CUSTOM_KEY;
@@ -85,6 +86,7 @@ import com.android.systemui.quicksettings.BrightnessTile;
 import com.android.systemui.quicksettings.BugReportTile;
 import com.android.systemui.quicksettings.ContactTile;
 import com.android.systemui.quicksettings.CustomTile;
+import com.android.systemui.quicksettings.CompassTile;
 import com.android.systemui.quicksettings.ExpandedDesktopTile;
 import com.android.systemui.quicksettings.LocationTile;
 import com.android.systemui.quicksettings.InputMethodTile;
@@ -273,6 +275,8 @@ public class QuickSettingsController {
                 qs = new FastChargeTile(mContext, this);
             } else if (tile.equals(TILE_BATTERYSAVER)) {
                 qs = new BatterySaverTile(mContext, this);
+            } else if (tile.equals(TILE_COMPASS)) {
+                qs = new CompassTile(mContext, this);
             }
 
             if (qs != null) {
