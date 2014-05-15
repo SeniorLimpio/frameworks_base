@@ -666,6 +666,10 @@ public class MockPackageManager extends PackageManager {
      */
     @Override
     public void updateIconMaps(String pkgName) {
+    }
+
+    @Override
+    public void setComponentProtectedSetting(ComponentName componentName, boolean newState) {
         throw new UnsupportedOperationException();
     }
 }
