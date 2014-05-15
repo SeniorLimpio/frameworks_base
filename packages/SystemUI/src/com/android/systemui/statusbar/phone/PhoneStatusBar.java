@@ -594,7 +594,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     Settings.System.VOLUME_KEY_CURSOR_CONTROL), false, this,
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_SIGNAL_TEXT), false, this);
+                    Settings.System.STATUS_BAR_SIGNAL_TEXT), false, this,
+                    UserHandle.USER_ALL);
             update();
         }
 
@@ -720,6 +721,11 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             mBrightnessControl = !autoBrightness && Settings.System.getIntForUser(
                     resolver, Settings.System.STATUS_BAR_BRIGHTNESS_CONTROL,
                     0, UserHandle.USER_CURRENT) == 1;
+            mCustomColor = Settings.System.getIntForUser(resolver,
+                    Settings.System.CUSTOM_SYSTEM_ICON_COLOR, 0, UserHandle.USER_CURRENT) == 1;
+            systemColor = Settings.System.getIntForUser(resolver,
+                    Settings.System.SYSTEM_ICON_COLOR, -2, UserHandle.USER_CURRENT);
+            updateBatteryIcons();
             String notificationShortcutsIsActive = Settings.System.getStringForUser(resolver,
                     Settings.System.NOTIFICATION_SHORTCUTS_CONFIG, UserHandle.USER_CURRENT);
             mNotificationShortcutsIsActive = !(notificationShortcutsIsActive == null
@@ -738,11 +744,11 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 updateCarrierAndWifiLabelVisibility(false);
             }
 
-            mCustomColor = Settings.System.getIntForUser(resolver,
-                    Settings.System.CUSTOM_SYSTEM_ICON_COLOR, 0, UserHandle.USER_CURRENT) == 1;
-            systemColor = Settings.System.getIntForUser(resolver,
-                    Settings.System.SYSTEM_ICON_COLOR, -2, UserHandle.USER_CURRENT);
-            updateBatteryIcons();
+            int signalStyle = Settings.System.getIntForUser(resolver, 
+		    Settings.System.STATUS_BAR_SIGNAL_TEXT, 
+		    SignalClusterView.STYLE_NORMAL, mCurrentUserId);
+                mSignalClusterView.setStyle(signalStyle);
+                mSignalTextView.setStyle(signalStyle);
 
             mFlipInterval = Settings.System.getIntForUser(mContext.getContentResolver(),
                         Settings.System.REMINDER_ALERT_INTERVAL, 1500, UserHandle.USER_CURRENT);
@@ -764,13 +770,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     }
                 }
                 enableOrDisableReminder();
-            }
-
-            int signalStyle = Settings.System.getIntForUser(resolver,
-                    Settings.System.STATUS_BAR_SIGNAL_TEXT,
-                    SignalClusterView.STYLE_NORMAL, mCurrentUserId);
-                mSignalClusterView.setStyle(signalStyle);
-                mSignalTextView.setStyle(signalStyle);
+	    }
         }
     }
 
@@ -1417,11 +1417,18 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         setAreThereNotifications();
 
         // Other icons
-        final SignalClusterView signalCluster =
-                (SignalClusterView)mStatusBarView.findViewById(R.id.signal_cluster);
 
-        mNetworkController.addSignalCluster(signalCluster);
-        signalCluster.setNetworkController(mNetworkController);
+        mCarrierAndWifiView = mStatusBarWindow.findViewById(R.id.carrier_wifi);
+        mWifiView = mStatusBarWindow.findViewById(R.id.wifi_view);
+
+        mNetworkController = new NetworkController(mContext);
+        mSignalClusterView = (SignalClusterView) mStatusBarView.findViewById(R.id.signal_cluster);
+        mSignalTextView = (SignalClusterTextView)
+                mStatusBarView.findViewById(R.id.signal_cluster_text);
+        mNetworkController.addSignalCluster(mSignalClusterView);
+        mNetworkController.addNetworkSignalChangedCallback(mSignalTextView);
+        mNetworkController.addSignalStrengthChangedCallback(mSignalTextView);
+        mSignalClusterView.setNetworkController(mNetworkController);
 
         final boolean isAPhone = mNetworkController.hasVoiceCallingFeature();
         if (isAPhone) {
@@ -1434,8 +1441,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             }
         }
 
-        mCarrierAndWifiView = mStatusBarWindow.findViewById(R.id.carrier_wifi);
-        mWifiView = mStatusBarWindow.findViewById(R.id.wifi_view);
         mCarrierLabel = (TextView)mStatusBarWindow.findViewById(R.id.carrier_label);
         if (mCarrierLabel != null) {
             mHideLabels = Settings.System.getIntForUser(mContext.getContentResolver(),
