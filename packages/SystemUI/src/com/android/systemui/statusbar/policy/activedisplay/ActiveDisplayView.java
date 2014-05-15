@@ -361,7 +361,7 @@ public class ActiveDisplayView extends FrameLayout
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.BATTERY_AROUND_LOCKSCREEN_RING), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_NOTIFICATION_COUNT), false, this);
+                    Settings.System.STATUS_BAR_NOTIF_COUNT), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.ACTIVE_DISPLAY_ANNOYING), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
@@ -432,7 +432,7 @@ public class ActiveDisplayView extends FrameLayout
                     resolver, Settings.System.BATTERY_AROUND_LOCKSCREEN_RING, 0,
                     UserHandle.USER_CURRENT_OR_SELF) != 0;
             mShowNotificationCount = Settings.System.getIntForUser(
-                    resolver, Settings.System.STATUS_BAR_NOTIFICATION_COUNT, 0,
+                    resolver, Settings.System.STATUS_BAR_NOTIF_COUNT, 0,
                     UserHandle.USER_CURRENT_OR_SELF) != 0;
             mIsAnnoyingThreshold = Settings.System.getIntForUser(
                     resolver, Settings.System.ACTIVE_DISPLAY_ANNOYING, 0,
