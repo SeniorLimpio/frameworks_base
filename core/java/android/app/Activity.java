@@ -5977,8 +5977,13 @@ public class Activity extends ContextThemeWrapper
             // Create our new window
             mWindow = PolicyManager.makeNewWindow(this);
             mWindow.mIsFloatingWindow = true;
-            mWindow.setCloseOnTouchOutsideIfNotSet(true);
-            mWindow.setGravity(Gravity.CENTER);
+            if (!isAlreadyAttachToWindow) {
+                isAlreadyAttachToWindow = true;
+                mWindow.setCloseOnTouchOutsideIfNotSet(true);
+                mWindow.setGravity(Gravity.CENTER);
+                // Scale it
+                scaleFloatingWindow();
+            }
 
             mWindow.setFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND,
                     WindowManager.LayoutParams.FLAG_DIM_BEHIND);
@@ -5987,18 +5992,15 @@ public class Activity extends ContextThemeWrapper
             params.dimAmount = 0.5f;
             mWindow.setAttributes((WindowManager.LayoutParams) params);
 
-            // Scale it
-            scaleFloatingWindow(context);
-
+            refreshAppLayoutSize();
             return true;
         } else {
             mWindow = PolicyManager.makeNewWindow(this);
-
             return false;
         }
     }
 
-    private void scaleFloatingWindow(Context context) {
+    private void scaleFloatingWindow() {
         final IWindowManager wm = (IWindowManager) WindowManagerGlobal.getWindowManagerService();
 
         try {
