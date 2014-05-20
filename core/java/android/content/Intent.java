@@ -695,6 +695,22 @@ public class Intent implements Parcelable, Cloneable {
     public static final String ACTION_CREATE_SHORTCUT = "android.intent.action.CREATE_SHORTCUT";
 
     /**
+     *  Global Action: Shows 3-way reboot menu dialog
+     *  <p>Input: nothing
+     *  <p>Output: nothing
+     *  @hide
+     */
+    public static final String ACTION_REBOOTMENU = "android.intent.action.REBOOTMENU";
+
+    /**
+     *  Global Action: Shows power menu dialog
+     *  <p>Input: nothing
+     *  <p>Output: nothing
+     *  @hide
+     */
+    public static final String ACTION_POWERMENU = "android.intent.action.POWERMENU";
+
+    /**
      * Registered and foreground services only
      * @hide
      */
@@ -708,6 +724,22 @@ public class Intent implements Parcelable, Cloneable {
     public static final String ACTION_ACTIVITY_END_DETECTOR =
             "android.intent.action.ACTIVITY_END_DETECTOR";
     
+    /**
+     * PhoneWindowManager: Take Screenshot via takeScreenshot()
+     *  <p>Input: nothing
+     *  <p>Output: nothing
+     *  @hide
+     */
+    public static final String ACTION_SCREENRECORD = "android.intent.action.SCREENSHOT";
+
+    /**
+     * PhoneWindowManager: Capture recording of screen via takeScreenrecord()
+     *  <p>Input: nothing
+     *  <p>Output: nothing
+     *  @hide
+     */
+    public static final String ACTION_SCREENSHOT = "android.intent.action.SCREENRECORD";
+   
     /**
      * The name of the extra used to define the Intent of a shortcut.
      *
