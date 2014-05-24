@@ -178,9 +178,6 @@ public abstract class BaseStatusBar extends SystemUI implements
     public boolean mHaloTaskerActive = false;
     protected ImageView mHaloButton;
 
-    // Notification peek
-    protected NotificationPeek mNotificationPeek;
-
     // Search panel
     protected SearchPanelView mSearchPanelView;
 
@@ -1541,8 +1538,6 @@ public abstract class BaseStatusBar extends SystemUI implements
         } else {
             mPeek.addNotification(entry.notification);
         }
-
-        mHandler.removeCallbacks(mPanelCollapseRunnable);
     }
 
     private void addNotificationViews(IBinder key, StatusBarNotification notification) {
