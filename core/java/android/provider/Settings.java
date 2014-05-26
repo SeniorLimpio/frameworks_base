@@ -3837,8 +3837,8 @@ public final class Settings {
          */
         public static final String QUIET_HOURS_ENABLED = "quiet_hours_enabled";
 
-         /**
-         * Action for long-pressing back button on lock screen
+        /**
+         * Whether quiet hours will enable or disable themselves on volume change
          * @hide
          */
         public static final String QUIET_HOURS_AUTOMATIC = "quiet_hours_automatic";
