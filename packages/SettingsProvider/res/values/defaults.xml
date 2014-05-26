@@ -187,6 +187,4 @@
     <!-- Default value of Settings.System.NOISE_SUPPRESSION -->
     <bool name="def_noise_suppression">false</bool>
 
-    <!-- Default value of Settings.System.QUICK_SETTINGS_RIBBON_TILES -->
-    <string name="def_quick_settings_ribbon_tiles"></string>
 </resources>
