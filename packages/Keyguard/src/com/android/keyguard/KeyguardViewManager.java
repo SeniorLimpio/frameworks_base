@@ -116,6 +116,7 @@ public class KeyguardViewManager {
     private int mBlurRadius = 12;
     private boolean mSeeThrough = false;
     private boolean mIsCoverflow = true;
+    private Drawable mCustomBackground;
 
     private NotificationHostView mNotificationView;
     private NotificationViewManager mNotificationViewManager;
@@ -286,7 +287,6 @@ public class KeyguardViewManager {
         private static final int BACKGROUND_COLOR = 0x70000000;
 
         private Drawable mUserBackground;
-        private Drawable mCustomBackground;
 
         // This is a faster way to draw the background on devices without hardware acceleration
         private final Drawable mBackgroundDrawable = new Drawable() {
