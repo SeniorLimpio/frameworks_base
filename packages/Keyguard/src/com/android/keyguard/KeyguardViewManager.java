@@ -16,6 +16,7 @@
 
 package com.android.keyguard;
 
+import android.app.PendingIntent;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.drawable.BitmapDrawable;

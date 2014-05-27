@@ -185,6 +185,7 @@ public class GlowPadView extends View {
     private Paint mArcPaint;
     private RectF mArcRect;
     private float mArcAngle = 0f;
+
     private ArrayList<TargetDrawable> mNewTargetDrawables;
 
     private class AnimationBundle extends ArrayList<Tweener> {
@@ -352,6 +353,7 @@ public class GlowPadView extends View {
                                  mHandleDrawable.getPositionY() - mHandleDrawable.getHeight()/2,
                                  mHandleDrawable.getPositionX() + mHandleDrawable.getWidth()/2,
                                  mHandleDrawable.getPositionY() + mHandleDrawable.getHeight()/2);
+
         mPaintText = new Paint();
         mPaintText.setAntiAlias(true);
         mPaintText.setColor(res.getColor(android.R.color.white));
@@ -520,6 +522,7 @@ public class GlowPadView extends View {
             setRingDrawable(mRingDrawable);
         }
     }
+
     private void showGlow(int duration, int delay, float finalAlpha,
             AnimatorListener finishListener) {
         mGlowAnimations.cancel();
@@ -1404,9 +1407,9 @@ public class GlowPadView extends View {
                     mHandleDrawable.getPositionY() - mHandleDrawable.getHeight()/3,
                     mHandleDrawable.getPositionX() + mHandleDrawable.getWidth()/3,
                     mHandleDrawable.getPositionY() + mHandleDrawable.getHeight()/3);
-
             canvas.drawArc(mArcRect, -90, mArcAngle, false, mArcPaint);
         }
+
         if (!TextUtils.isEmpty(mHandleText) && mPaintText.getAlpha() != 0) {
             float x = mHandleDrawable.getPositionX();
             float y = mHandleDrawable.getPositionY();
