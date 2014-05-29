@@ -116,7 +116,7 @@ public class Build {
          * the device is on
          * @hide
          */
-        public static final String L_DROID = getString("ro.ldroid.version");
+        public static final String LDROID = getString("ro.ldroid.version");
 
         /**
          * The SDK version to use when accessing resources.
