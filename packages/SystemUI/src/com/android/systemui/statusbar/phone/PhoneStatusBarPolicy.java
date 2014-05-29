@@ -53,7 +53,7 @@ public class PhoneStatusBarPolicy {
     private static final int INET_CONDITION_THRESHOLD = 50;
 
     private static final String SCHEDULE_SERVICE_COMMAND =
-            "com.android.settings.slim.service.SCHEDULE_SERVICE_COMMAND";
+            "com.android.settings.ldroid.service.SCHEDULE_SERVICE_COMMAND";
 
     private static final boolean SHOW_SYNC_ICON = false;
 

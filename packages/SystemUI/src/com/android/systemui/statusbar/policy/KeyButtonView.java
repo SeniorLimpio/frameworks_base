@@ -43,8 +43,8 @@ import android.view.accessibility.AccessibilityEvent;
 import android.widget.ImageView;
 
 import com.android.internal.statusbar.IStatusBarService;
-import com.android.internal.util.slim.ButtonsConstants;
-import com.android.internal.util.slim.SlimActions;
+import com.android.internal.util.ldroid.ButtonsConstants;
+import com.android.internal.util.ldroid.SlimActions;
 
 import com.android.systemui.R;
 

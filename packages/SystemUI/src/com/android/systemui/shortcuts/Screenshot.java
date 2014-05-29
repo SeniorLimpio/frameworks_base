@@ -20,8 +20,8 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 
-import com.android.internal.util.slim.ButtonsConstants;
-import com.android.internal.util.slim.SlimActions;
+import com.android.internal.util.ldroid.ButtonsConstants;
+import com.android.internal.util.ldroid.SlimActions;
 
 public class Screenshot extends Activity  {
 

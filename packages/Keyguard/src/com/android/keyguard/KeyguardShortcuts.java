@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2012 ParanoidAndroid Project
- * Copyright (C) 2013 Slimroms
+ * Copyright (C) 2013 ldroidroms
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,12 +37,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.internal.R;
-import com.android.internal.util.slim.AppHelper;
-import com.android.internal.util.slim.ButtonsHelper;
-import com.android.internal.util.slim.ButtonConfig;
-import com.android.internal.util.slim.DeviceUtils;
-import com.android.internal.util.slim.LockscreenTargetUtils;
-import com.android.internal.util.slim.SlimActions;
+import com.android.internal.util.ldroid.AppHelper;
+import com.android.internal.util.ldroid.ButtonsHelper;
+import com.android.internal.util.ldroid.ButtonConfig;
+import com.android.internal.util.ldroid.DeviceUtils;
+import com.android.internal.util.ldroid.LockscreenTargetUtils;
+import com.android.internal.util.ldroid.SlimActions;
 import com.android.internal.widget.LockPatternUtils;
 
 import java.net.URISyntaxException;

@@ -25,7 +25,7 @@ import android.provider.Settings;
 public class QuietHours extends Activity  {
 
     private static final String SCHEDULE_SERVICE_COMMAND =
-            "com.android.settings.slim.service.SCHEDULE_SERVICE_COMMAND";
+            "com.android.settings.ldroid.service.SCHEDULE_SERVICE_COMMAND";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
