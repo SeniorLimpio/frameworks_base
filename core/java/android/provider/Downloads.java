@@ -734,6 +734,7 @@ public final class Downloads {
                 case STATUS_WAITING_TO_RETRY: return "WAITING_TO_RETRY";
                 case STATUS_WAITING_FOR_NETWORK: return "WAITING_FOR_NETWORK";
                 case STATUS_QUEUED_FOR_WIFI: return "QUEUED_FOR_WIFI";
+                case STATUS_PAUSED_BY_MANUAL: return "PAUSED_BY_MANUAL";
                 case STATUS_INSUFFICIENT_SPACE_ERROR: return "INSUFFICIENT_SPACE_ERROR";
                 case STATUS_DEVICE_NOT_FOUND_ERROR: return "DEVICE_NOT_FOUND_ERROR";
                 case STATUS_SUCCESS: return "SUCCESS";
