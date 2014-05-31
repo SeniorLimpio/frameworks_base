@@ -67,6 +67,7 @@ import android.os.UserHandle;
 import android.os.Vibrator;
 import android.provider.Settings;
 import android.provider.Settings.System;
+import android.provider.Settings.SettingNotFoundException;
 import android.speech.RecognizerIntent;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
@@ -4422,7 +4423,7 @@ public class AudioService extends IAudioService.Stub {
                     adjustCurrentStreamVolume();
                     // TODO: Cap volume at safe levels
 
-                    Intent playerIntent = new Intent(Intent.ACTION_MAIN);
+                     Intent playerIntent = new Intent(Intent.ACTION_MAIN);
                     playerIntent.addCategory(Intent.CATEGORY_APP_MUSIC);
                     playerIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     try {
@@ -4568,7 +4569,6 @@ public class AudioService extends IAudioService.Stub {
                 }
             }
         }
-
     }
 
     private void showVolumeChangeUi(final int streamType, final int flags) {
