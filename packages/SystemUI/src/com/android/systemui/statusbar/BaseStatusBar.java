@@ -193,9 +193,6 @@ public abstract class BaseStatusBar extends SystemUI implements
     protected ImageView mHaloButton;
     protected boolean mHaloButtonVisible = true;
 
-    // left-hand icons 
-    public LinearLayout mStatusIcons;
-
     /**
      * An interface for navigation key bars to allow status bars to signal which keys are
      * currently of interest to the user.<br>
@@ -218,8 +215,6 @@ public abstract class BaseStatusBar extends SystemUI implements
          * {@see View}
          */
         public void setDisabledFlags(int disabledFlags);
-
-
     };
     private ArrayList<NavigationBarCallback> mNavigationCallbacks =
             new ArrayList<NavigationBarCallback>();
@@ -299,26 +294,6 @@ public abstract class BaseStatusBar extends SystemUI implements
             }
         }
     };
-
-    private class SettingsObserver extends ContentObserver {
-        public SettingsObserver(Handler handler) {
-            super(handler);
-        }
-        public void observe() {
-            update();
-        }
-
-        @Override
-        public void onChange(boolean selfChange) {
-            update();
-        }
-
-        private void update() {
-            ContentResolver resolver = mContext.getContentResolver();
-        }
-    };
-
-    private SettingsObserver mSettingsObserver = new SettingsObserver(mHandler);
 
     private RemoteViews.OnClickHandler mOnClickHandler = new RemoteViews.OnClickHandler() {
         @Override
@@ -480,39 +455,6 @@ public abstract class BaseStatusBar extends SystemUI implements
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_USER_SWITCHED);
         mContext.registerReceiver(mBroadcastReceiver, filter);
-
-        // Listen for status bar icon color changes
-        mContext.getContentResolver().registerContentObserver(
-            Settings.System.getUriFor(Settings.System.SYSTEM_ICON_COLOR), false, new ContentObserver(new Handler()) {
-                @Override
-                public void onChange(boolean selfChange) {
-                    updateIconColor();
-            }});
-
-        updateIconColor();
-
-        SettingsObserver settingsObserver = new SettingsObserver(new Handler());
-        settingsObserver.observe();
-    }
-
-    private void updateIconColor() {
-        ContentResolver resolver = mContext.getContentResolver();
-
-        boolean mCustomColor = Settings.System.getIntForUser(resolver,
-                Settings.System.CUSTOM_SYSTEM_ICON_COLOR, 0, UserHandle.USER_CURRENT) == 1;
-        int systemColor = Settings.System.getIntForUser(resolver,
-                Settings.System.SYSTEM_ICON_COLOR, -2, UserHandle.USER_CURRENT);
-
-        if (mStatusIcons != null) {
-            for(int i = 0; i < mStatusIcons.getChildCount(); i++) {
-                Drawable iconDrawable = ((ImageView)mStatusIcons.getChildAt(i)).getDrawable();
-                if (mCustomColor) {
-                    iconDrawable.setColorFilter(systemColor, PorterDuff.Mode.SRC_ATOP);
-                } else {
-                    iconDrawable.clearColorFilter();
-                }
-            }
-        }
 
         // Listen for HALO enabled
         mContext.getContentResolver().registerContentObserver(
