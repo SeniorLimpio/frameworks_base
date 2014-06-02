@@ -208,7 +208,7 @@ public class ViewConfiguration {
     /**
      * The coefficient of friction applied to flings/scrolls.
      */
-    private static float SCROLL_FRICTION = 0.011f;
+    private static float SCROLL_FRICTION = 0.009f;
 
     /**
      * The coefficient of friction applied to flings/scrolls.
@@ -229,13 +229,13 @@ public class ViewConfiguration {
     /**
      * Max distance in dips to overfling for edge effects
      */
-    private static int OVERFLING_DISTANCE = 6;
+    private static int OVERFLING_DISTANCE = 18;
 
     /**
      * Max distance in dips to overfling for edge effects
      * @hide
      */
-    public static final int DEFAULT_OVERFLING_DISTANCE = 6;
+    public static final int DEFAULT_OVERFLING_DISTANCE = 18;
 
     private final int mEdgeSlop;
     private final int mFadingEdgeLength;
