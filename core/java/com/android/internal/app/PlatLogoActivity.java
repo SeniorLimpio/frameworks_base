@@ -44,7 +44,7 @@ import android.widget.Toast;
 public class PlatLogoActivity extends Activity {
     FrameLayout mContent;
     int mCount;
-    private boolean mIsSlim;
+    private boolean mIsLDroid;
     final Handler mHandler = new Handler();
     static final int BGCOLOR = 0xffed1d24;
 
@@ -87,7 +87,7 @@ public class PlatLogoActivity extends Activity {
 
         final TextView tv = new TextView(this);
 
-        mIsSlim = SystemProperties.get("ro.slim.version") != null;
+        mIsLDroid = SystemProperties.get("ro.ldroid.version") != null;
 
         if (light != null) tv.setTypeface(light);
         tv.setTextSize(30);
@@ -95,7 +95,7 @@ public class PlatLogoActivity extends Activity {
         tv.setTextColor(0xFFFFFFFF);
         tv.setGravity(Gravity.CENTER);
         tv.setTransformationMethod(new AllCapsTransformationMethod(this));
-        tv.setText((mIsSlim ? "SlimKAT " : "Android ") + Build.VERSION.RELEASE);
+        tv.setText((mIsLDroid ? "L-Droid " : "Android ") + Build.VERSION.RELEASE);
         tv.setVisibility(View.INVISIBLE);
 
         mContent.addView(bg);
