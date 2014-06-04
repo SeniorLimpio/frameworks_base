@@ -556,7 +556,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     Settings.System.VOLUME_KEY_CURSOR_CONTROL),
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.getUriFor(Settings.System.NOTIFICATION_BRIGHTNESS_SLIDER),
+                    Settings.System.NOTIFICATION_BRIGHTNESS_SLIDER),
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.SHAKE_LISTENER_ENABLED),
@@ -1112,7 +1112,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     public void onClick(View view) {
                         Intent intent = new Intent();
                         intent.setClassName("com.android.settings",
-                                "com.android.settings.fusion.AutoBrightnessSetup");
+                                "com.android.settings.ldroid.AutoBrightnessSetup");
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                                 | Intent.FLAG_ACTIVITY_SINGLE_TOP
                                 | Intent.FLAG_ACTIVITY_CLEAR_TOP
@@ -1577,6 +1577,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 mQS.setService(this);
                 mQS.setBar(mStatusBarView);
                 mQS.setupQuickSettings();
+            } else {
+                mQS = null; // fly away, be free
+            }
 
             final ContentResolver resolver = mContext.getContentResolver();
             mHasQuickAccessSettings = Settings.System.getIntForUser(resolver,
@@ -1587,9 +1590,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 cleanupRibbon();
                 mRibbonView = null;
                 inflateRibbon();
-                }
-	    } else {
-                mQS = null; // fly away, be free
             }
 
             // TODO: make multiuser aware
@@ -2967,7 +2967,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             }
             if (mBrightnessView != null && mBrightnessSliderEnabled) {
                 mBrightnessView.setVisibility(View.VISIBLE);
-                mBrightnessView.setScaleX(-progress);
+                mBrightnessView.setScaleX(-percent);
             }
             mNotificationButton.setVisibility(View.GONE);
             updateCarrierAndWifiLabelVisibility(false);
