@@ -89,4 +89,9 @@
 
     <!-- Wifi -->
     <dimen name="wifi_combo_margin_end">-6dp</dimen>
+
+    <!-- Hover dimens -->
+    <dimen name="hover_height">64dp</dimen>
+    <dimen name="hover_cling_width">-1px</dimen>
+
 </resources>
