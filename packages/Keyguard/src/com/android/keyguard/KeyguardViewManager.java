@@ -355,6 +355,7 @@ public class KeyguardViewManager {
                     android.Manifest.permission.CONTROL_KEYGUARD, null);        }
 
         public void setCustomBackground(Drawable d) {
+            if (!isLaidOut()) return;
             if (!ActivityManager.isHighEndGfx()) {
                 mCustomBackground = d;
                 if (d != null) {
