@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.internal.util.limpio.identicons;
+package com.android.internal.util.ldroid.identicons;
 
 import android.annotation.ChaosLab;
 import android.annotation.ChaosLab.Classification;
