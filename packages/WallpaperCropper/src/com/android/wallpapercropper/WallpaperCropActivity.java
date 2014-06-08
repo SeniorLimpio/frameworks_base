@@ -129,6 +129,7 @@ public class WallpaperCropActivity extends Activity {
                         cropImageAndSetWallpaper(imageUri, null, finishActivityWhenDone);
                     }
                 });
+    }
 
     public boolean enableRotation() {
         return getResources().getBoolean(R.bool.allow_rotation);
@@ -553,8 +554,6 @@ public class WallpaperCropActivity extends Activity {
                 Rect roundedTrueCrop = new Rect();
                 Matrix rotateMatrix = new Matrix();
                 Matrix inverseRotateMatrix = new Matrix();
-
-                Point bounds = getImageBounds();
                 if (mRotation > 0) {
                     rotateMatrix.setRotate(mRotation);
                     inverseRotateMatrix.setRotate(-mRotation);
@@ -619,8 +618,6 @@ public class WallpaperCropActivity extends Activity {
                         fullSize = BitmapFactory.decodeStream(mInStream, null, options);
                     }
                     if (fullSize != null) {
-                        // Find out the true sample size that was used by the decoder
-                        scaleDownSampleSize = bounds.x / fullSize.getWidth();
                         mCropBounds.left /= scaleDownSampleSize;
                         mCropBounds.top /= scaleDownSampleSize;
                         mCropBounds.bottom /= scaleDownSampleSize;
