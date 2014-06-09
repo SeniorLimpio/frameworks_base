@@ -825,7 +825,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                             UserHandle.USER_CURRENT) == 1;
                     updateHeadsUpPosition(mStatusBarShows);
             }
-
             update();
         }
 
@@ -1383,17 +1382,17 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             });
         }
 
-        // Setup pie container if enabled
-        attachPieContainer(isPieEnabled());
-
         if (mRecreating) {
             removeSidebarView();
         } else {
             addActiveDisplayView();
             addGestureAnywhereView();
             addAppCircleSidebar();
-            addSidebarView();
         }
+        addSidebarView();
+
+        // Setup pie container if enabled
+        attachPieContainer(isPieEnabled());
 
         // figure out which pixel-format to use for the status bar.
         mPixelFormat = PixelFormat.OPAQUE;
