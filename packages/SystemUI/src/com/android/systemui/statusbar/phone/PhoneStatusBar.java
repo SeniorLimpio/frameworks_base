@@ -4322,7 +4322,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                             .orientation == Configuration.ORIENTATION_LANDSCAPE
                     && mNavigationBarCanMove);
         }
-
+        final ContentResolver resolver = mContext.getContentResolver();
         int sidebarPosition = Settings.System.getInt(resolver,
                 Settings.System.APP_SIDEBAR_POSITION, 
                 AppSidebar.SIDEBAR_POSITION_LEFT);
