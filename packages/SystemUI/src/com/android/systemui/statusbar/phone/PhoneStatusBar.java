@@ -577,7 +577,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.APP_SIDEBAR_POSITION), 
 		    false, this, UserHandle.USER_ALL);
-            updateSettings();
             update();
         }
 
@@ -741,7 +740,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     mRibbonQS.setupQuickSettings();
                 }
             }
-
             update();
         }
 
@@ -1271,17 +1269,17 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             });
         }
 
-        // Setup pie container if enabled
-        attachPieContainer(isPieEnabled());
-
         if (mRecreating) {
             removeSidebarView();
         } else {
             addActiveDisplayView();
             addGestureAnywhereView();
             addAppCircleSidebar();
-            addSidebarView();
         }
+        addSidebarView();
+
+        // Setup pie container if enabled
+        attachPieContainer(isPieEnabled());
 
         // figure out which pixel-format to use for the status bar.
         mPixelFormat = PixelFormat.OPAQUE;
