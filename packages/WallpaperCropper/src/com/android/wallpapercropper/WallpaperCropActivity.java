@@ -73,7 +73,6 @@ public class WallpaperCropActivity extends Activity {
 
     protected CropView mCropView;
     protected Uri mUri;
-    private View mSetWallpaperButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
