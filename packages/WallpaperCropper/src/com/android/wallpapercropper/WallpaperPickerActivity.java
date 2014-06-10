@@ -487,7 +487,6 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
             mWallpaperStrip.setAlpha(1f);
             mWallpaperStrip.setVisibility(View.VISIBLE);
         }
-        mCropView.destroy();
     }
 
     protected void onSaveInstanceState(Bundle outState) {
