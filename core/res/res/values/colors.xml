@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?xml version="1.0" encoding="utf-8"?>
 <!--
 /* //device/apps/common/assets/res/any/colors.xml
@@ -210,6 +211,10 @@
     <!-- Power menu colors -->
     <color name="power_menu_icon_default_color">#ffffffff</color>
     <color name="power_menu_text_default_color">#ffffffff</color>
+
+    <!-- TRDS colors -->
+    <color name="trds_background">#ffffffff</color>
+    <color name="trds_text">#ff000000</color>
 
     <!-- Progress bar color -->
     <integer-array name="pgcolors">
