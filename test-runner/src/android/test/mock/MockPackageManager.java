@@ -668,6 +668,9 @@ public class MockPackageManager extends PackageManager {
     public void updateIconMaps(String pkgName) {
     }
 
+    /**
+     * @hide
+     */
     @Override
     public void setComponentProtectedSetting(ComponentName componentName, boolean newState) {
         throw new UnsupportedOperationException();
