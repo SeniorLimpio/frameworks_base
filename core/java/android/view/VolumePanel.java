@@ -296,6 +296,9 @@ public class VolumePanel extends Handler implements OnSeekBarChangeListener, Vie
 
     public VolumePanel(final Context context, AudioService volumeService) {
         mContext = context;
+        // Preserve system context to let on the spot read/write from/to system
+        mSystemContext = system != null ? system : context;
+
         mAudioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
         mAudioService = volumeService;
         mTranslucentDialog = ActivityManager.isHighEndGfx();

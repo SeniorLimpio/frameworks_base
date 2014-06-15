@@ -19,6 +19,7 @@ package android.util;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.pm.ThemeUtils;
 import android.graphics.drawable.Drawable;
 import android.provider.Settings;
 import android.view.LayoutInflater;
@@ -44,6 +45,8 @@ public class SettingConfirmationHelper {
     private static final boolean DEBUG_SHOW_RESET_HELP_ALL_TIME = false;
     private static boolean mFirstRun;
 
+    private static Context mUiContext; /* theme engine context for getting just resources */
+
     /**
      * @hide
      */
@@ -56,7 +59,9 @@ public class SettingConfirmationHelper {
      */
     public static void showConfirmationDialogForSetting(final Context mContext, String title, String msg, Drawable hint,
                                                         final String setting, final OnSelectListener mListener) {
-        int mCurrentStatus = Settings.System.getInt(mContext.getContentResolver(), setting, NOT_SET);
+        mUiContext = ThemeUtils.createUiContext(mContext); // avoid package mismatch
+
+        int mCurrentStatus = Settings.System.getInt(/*use system context to read*/mContext.getContentResolver(), setting, NOT_SET);
         if (mCurrentStatus == ENABLED || mCurrentStatus == DISABLED) return;
 
         mFirstRun = Settings.System.getInt(mContext.getContentResolver(), Settings.System.ON_THE_SPOT_FIRST_TIME, 1) == 1;
@@ -83,7 +88,7 @@ public class SettingConfirmationHelper {
         builder.setNeutralButton(R.string.setting_confirmation_ask_me_later,
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        Settings.System.putInt(mContext.getContentResolver(), setting, ASK_LATER);
+                        Settings.System.putInt(/*use system context to write*/mContext.getContentResolver(), setting, ASK_LATER);
                         if (mListener == null) return;
                         mListener.onSelect(false);
                     }
