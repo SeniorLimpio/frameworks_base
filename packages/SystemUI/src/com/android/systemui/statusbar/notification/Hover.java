@@ -631,7 +631,6 @@ public class Hover {
         } catch (android.os.RemoteException ex) {
             // System is dead
         }
-        if (!allowed || !isforeground) {
 
         //Check for fullscreen mode
         if (requireFullscreenMode()) {
@@ -654,7 +653,7 @@ public class Hover {
         if (excludeLowPriority() && entry.notification.getNotification().priority < Notification.PRIORITY_LOW)
             allowed = false;
 
-        if (!allowed) {
+        if (!allowed || !isforeground) {
             addStatusBarNotification(entry.notification);
             return;
         }
