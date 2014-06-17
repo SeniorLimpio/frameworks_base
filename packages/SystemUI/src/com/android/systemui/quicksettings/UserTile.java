@@ -28,7 +28,6 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
-import android.os.Handler;
 import android.os.RemoteException;
 import android.os.UserHandle;
 import android.os.UserManager;
@@ -51,46 +50,30 @@ import com.android.systemui.statusbar.phone.QuickSettingsController;
 public class UserTile extends QuickSettingsTile {
 
     private static final String TAG = "UserTile";
-    private Handler mHandler;
     private Drawable userAvatar;
     private AsyncTask<Void, Void, Pair<String, Drawable>> mUserInfoTask;
 
-    public UserTile(Context context, QuickSettingsController qsc, Handler handler) {
+    public UserTile(Context context, QuickSettingsController qsc) {
         super(context, qsc, R.layout.quick_settings_tile_user);
-        mHandler = handler;
+
         mOnClick = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mQsc.mBar.collapseAllPanels(true);
-                final UserManager um = UserManager.get(mContext);
+                final UserManager um =
+                        (UserManager) mContext.getSystemService(Context.USER_SERVICE);
                 if (um.getUsers(true).size() > 1) {
-                    // Since keyguard and systemui were merged into the same process to save
-                    // memory, they share the same Looper and graphics context.  As a result,
-                    // there's no way to allow concurrent animation while keyguard inflates.
-                    // The workaround is to add a slight delay to allow the animation to finish.
-                    mHandler.postDelayed(new Runnable() {
-                        public void run() {
-                            try {
-                                WindowManagerGlobal.getWindowManagerService().lockNow(null);
-                            } catch (RemoteException e) {
-                                Log.e(TAG, "Couldn't show user switcher", e);
-                            }
-                        }
-                    }, 400); // TODO: ideally this would be tied to the collapse of the panel
-                } else {
-                    final Cursor cursor = mContext.getContentResolver().query(
-                            Profile.CONTENT_URI, null, null, null, null);
-                    if (cursor.moveToNext() && !cursor.isNull(0)) {
-                        Intent intent = ContactsContract.QuickContact.composeQuickContactsIntent(
-                                mContext, v, ContactsContract.Profile.CONTENT_URI,
-                                ContactsContract.QuickContact.MODE_LARGE, null);
-                        mContext.startActivityAsUser(intent, new UserHandle(UserHandle.USER_CURRENT));
-                    } else {
-                        Intent intent = new Intent(Intent.ACTION_INSERT, Contacts.CONTENT_URI);
-                        intent.putExtra(INTENT_EXTRA_NEW_LOCAL_PROFILE, true);
-                        startSettingsActivity(intent);
+                    try {
+                        WindowManagerGlobal.getWindowManagerService().lockNow(
+                                null);
+                    } catch (RemoteException e) {
+                        Log.e(TAG, "Couldn't show user switcher", e);
                     }
-                    cursor.close();
+                } else {
+                    Intent intent = new Intent(Intent.ACTION_VIEW,
+                            ContactsContract.Profile.CONTENT_URI);
+                    startSettingsActivity(intent);
+                }
                 if (isFlipTilesEnabled()) {
                     flipTile(0);
                 }
@@ -153,7 +136,15 @@ public class UserTile extends QuickSettingsTile {
         mUserInfoTask = new AsyncTask<Void, Void, Pair<String, Drawable>>() {
             @Override
             protected Pair<String, Drawable> doInBackground(Void... params) {
-                final UserManager um = UserManager.get(mContext);
+                try {
+                    // The system needs some time to change the picture,
+                    // if we try to load it when we receive the broadcast, we will load the old one
+                    Thread.sleep(50);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                final UserManager um =
+                        (UserManager) mContext.getSystemService(Context.USER_SERVICE);
 
                 // Fall back to the UserManager nickname if we can't read the name from the local
                 // profile below.
