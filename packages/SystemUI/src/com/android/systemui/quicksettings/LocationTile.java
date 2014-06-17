@@ -55,9 +55,6 @@ public class LocationTile extends QuickSettingsTile implements LocationSettingsC
                     flipTile(0);
                 }
             }
-                if (isFlipTilesEnabled()) {
-                    flipTile(0);
-                }
         };
 
         mOnLongClick = new OnLongClickListener() {

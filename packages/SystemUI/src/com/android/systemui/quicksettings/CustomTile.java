@@ -109,11 +109,12 @@ public class CustomTile extends QuickSettingsTile {
             @Override
             public void onClick(View v) {
                 processClick();
-            }
                 if (isFlipTilesEnabled()) {
                     flipTile(0);
                 }
+	    }
         };
+
         mOnLongClick = new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
