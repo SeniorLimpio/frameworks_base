@@ -67,6 +67,7 @@ public class Hover {
     private static final int INSTANT_FADE_OUT_DELAY = 0; // 0 seconds
     private static final int MICRO_FADE_OUT_DELAY = 1250; // 1.25 seconds, enough
     //private static final int LONG_FADE_OUT_DELAY = 5000; // 5 seconds, default show time
+
     private static final int SHORT_FADE_OUT_DELAY = 2500; // 2.5 seconds to show next one
 
     private static final int OVERLAY_NOTIFICATION_OFFSET = 125; // special purpose

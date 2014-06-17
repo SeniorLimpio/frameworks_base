@@ -12435,7 +12435,6 @@ public class PackageManagerService extends IPackageManager.Stub {
     }
 
     @Override
-<<<<<<< HEAD
     public void updateIconMapping(String pkgName) {
         mContext.enforceCallingOrSelfPermission(
                 android.Manifest.permission.CHANGE_CONFIGURATION,
@@ -12484,6 +12483,7 @@ public class PackageManagerService extends IPackageManager.Stub {
         return mIconPackHelper != null ? mIconPackHelper.getComposedIconInfo() : null;
     }
 
+    @Override
     public void setComponentProtectedSetting(ComponentName componentName, boolean newState,
             int userId) {
         enforceCrossUserPermission(Binder.getCallingUid(), userId, false, "set protected");
