@@ -4849,6 +4849,7 @@ public final class Settings {
         public static final String PEEK_STATE = "peek_state";
 
         /**
+<<<<<<< HEAD
          * Whether or not to use the app sidebar
          *
          * @hide
@@ -4909,13 +4910,6 @@ public final class Settings {
          * @hide
          */
         public static final String STATUS_BAR_CUSTOM_HEADER = "status_bar_custom_header";
-
-        /**
-         * Enable Hover, default is 0 (off).
-         *
-         * @hide
-         */
-        public static final String HOVER_ENABLED = "hover_enabled";
 
         /**
          * Hover is active, default is 0 (off).
