@@ -4059,7 +4059,7 @@ public class PackageManagerService extends IPackageManager.Stub {
             for (PackageParser.Package pkg : pkgs) {
                 final PackageParser.Package p = pkg;
                 synchronized (mInstallLock) {
-                    executorService.submit(new Runnable() {
+                    Runnable task = new Runnable() {
                         @Override
                         public void run() {
                             if (!isFirstBoot()) {
@@ -4076,7 +4076,12 @@ public class PackageManagerService extends IPackageManager.Stub {
                                 performDexOptLI(p, false, false, true);
                             }
                         }
-                    });
+                    };
+                    if (!mIsMultiThreaded) {
+                        task.run();
+                    } else {
+                        executorService.submit(task);
+                    }
                 }
             }
             executorService.shutdown();
