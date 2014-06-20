@@ -294,7 +294,7 @@ class WifiConfigStore {
      */
     void enableAllNetworks() {
         if (mContext.getResources().getBoolean(R.bool.wifi_autocon)
-                && !(isWifiAuto() && isDataToWifiAuto())) {
+                && !shouldAutoConnect()) {
             return;
         }
 
