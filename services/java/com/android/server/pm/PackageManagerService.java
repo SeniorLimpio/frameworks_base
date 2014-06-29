@@ -5855,8 +5855,9 @@ public class PackageManagerService extends IPackageManager.Stub {
     }
 
     private byte[] getFileCrC(String path) {
+        ZipFile zfile = null;
         try {
-            ZipFile zfile = new ZipFile(path);
+            zfile = new ZipFile(path);
             ZipEntry entry = zfile.getEntry("META-INF/MANIFEST.MF");
             if (entry == null) {
                 Log.e(TAG, "Unable to get MANIFEST.MF from " + path);
@@ -5867,6 +5868,13 @@ public class PackageManagerService extends IPackageManager.Stub {
             if (crc == -1) Log.e(TAG, "Unable to get CRC for " + path);
             return ByteBuffer.allocate(8).putLong(crc).array();
         } catch (Exception e) {
+        } finally {
+            if (zfile != null)
+                try {
+                    zfile.close();
+                } catch (java.io.IOException ex) {
+                    //well, we tried.
+                }
         }
         return null;
     }
