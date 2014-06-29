@@ -263,4 +263,14 @@
   <java-symbol type="string" name="wildcardProfile" />
   <java-symbol type="xml" name="profile_default" />
 
+  <!-- Button and keyboard backlight -->
+  <java-symbol type="bool" name="config_deviceHasVariableButtonBrightness" />
+  <java-symbol type="integer" name="config_buttonBrightnessSettingDefault" />
+  <java-symbol type="integer" name="config_keyboardBrightnessSettingDefault" />
+
+  <!-- Config.xml entries -->
+  <java-symbol type="bool" name="config_samsung_stk" />
+  <java-symbol type="bool" name="config_smsSamsungCdmaAlternateMessageIDEncoding" />
+  <java-symbol type="string" name="config_legacyUmsLunFile" />
+
 </resources>
