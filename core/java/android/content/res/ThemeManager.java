@@ -125,6 +125,18 @@ public class ThemeManager {
         requestThemeChange(pkgName, components);
     }
 
+    /**
+     * Convenience method. Applies the entire theme.
+     */
+    public void requestThemeChange(String pkgName) {
+        try {
+            List<String> components = ThemeUtils.getSupportedComponents(mContext, pkgName);
+            mService.requestThemeChange(pkgName, components);
+        } catch (RemoteException e) {
+            Log.w(TAG, "Unable to access ThemeService", e);
+        }
+    }
+
     public void requestThemeChange(String pkgName, List<String> components) {
         Map<String, String> componentMap = new HashMap<String, String>(components.size());
         for (String component : components) {
