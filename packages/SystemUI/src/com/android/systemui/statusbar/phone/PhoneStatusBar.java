@@ -299,6 +299,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     private TextView mEmergencyCallLabel;
     private int mNotificationHeaderHeight;
 
+    private View mWeatherHeader;
+    private boolean mWeatherEnabled = false;
+
     // Notification reminder
     private View mReminderHeader;
     private ImageView mSpacer;
@@ -576,6 +579,16 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.HEADS_UP_SHOW_UPDATE), false, this,
                     UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.SYSTEMUI_WEATHER_HEADER_VIEW), false, this,
+                    UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.SYSTEMUI_WEATHER_NOTIFICATION), false, this,
+                    UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.SYSTEMUI_WEATHER_ICON), false, this,
+                    UserHandle.USER_ALL);
+
             update();
         }
 
@@ -807,6 +820,13 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 }
                 enableOrDisableReminder();
             }
+
+            boolean weatherHolder = Settings.System.getBoolean(resolver,
+                Settings.System.SYSTEMUI_WEATHER_HEADER_VIEW, false);
+            if (weatherHolder != mWeatherEnabled) {
+                mWeatherEnabled = weatherHolder;
+                enableOrDisableWeather();
+            }
         }
     }
 
@@ -901,6 +921,16 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             mReminderPortraitWidth = mReminderLandscapeWidth;
         }
         enableOrDisableReminder();
+    }
+
+    private void enableOrDisableWeather() {
+        if (mWeatherEnabled) {
+            mWeatherHeader.setVisibility(View.VISIBLE);
+            mWeatherHeader.setEnabled(true);
+        } else {
+            mWeatherHeader.setVisibility(View.GONE);
+            mWeatherHeader.setEnabled(false);
+        }
     }
 
     private ArrayList<String>splitString(String message, int maxWidth) {
@@ -1273,6 +1303,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
         mNotificationPanelHeader = mStatusBarWindow.findViewById(R.id.header);
 
+        mWeatherHeader = mStatusBarWindow.findViewById(R.id.weather_text);
+
         mReminderHeader = mStatusBarWindow.findViewById(R.id.reminder_header);
         mReminderHeader.setOnClickListener(mReminderButtonListener);
         mReminderHeader.setOnLongClickListener(mReminderLongButtonListener);
@@ -1291,6 +1323,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
         mReminderEnabled = Settings.System.getIntForUser(mContext.getContentResolver(),
                     Settings.System.REMINDER_ALERT_ENABLED, 0, UserHandle.USER_CURRENT) != 0;
+
+        mWeatherEnabled = Settings.System.getBoolean(mContext.getContentResolver(),
+                    Settings.System.SYSTEMUI_WEATHER_HEADER_VIEW, false);
 
         View view = View.inflate(mContext, R.layout.reminder_entry, null);
         mTextHolder = (TextView) view.findViewById(R.id.message_content);
