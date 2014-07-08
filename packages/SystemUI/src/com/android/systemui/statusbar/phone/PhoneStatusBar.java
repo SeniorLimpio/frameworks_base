@@ -2044,6 +2044,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     }
 
     private void addHeadsUpView() {
+        if (mHeadsUpNotificationView != null && mHeadsUpNotificationView.isAttachedToWindow()) {
+            return;
+        }
+
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams(
                 LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT,
                 WindowManager.LayoutParams.TYPE_STATUS_BAR_PANEL, // above the status bar!
@@ -2065,7 +2069,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     }
 
     private void removeHeadsUpView() {
-        mWindowManager.removeView(mHeadsUpNotificationView);
+        if (mHeadsUpNotificationView != null && mHeadsUpNotificationView.isAttachedToWindow()) {
+            mWindowManager.removeView(mHeadsUpNotificationView);
+        }
     }
 
     public void refreshAllStatusBarIcons() {
@@ -4567,11 +4573,13 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
     private void setHeadsUpVisibility(boolean vis) {
         if (DEBUG) Log.v(TAG, (vis ? "showing" : "hiding") + " heads up window");
-        mHeadsUpNotificationView.setVisibility(vis ? View.VISIBLE : View.GONE);
-        if (!vis) {
-            if (DEBUG) Log.d(TAG, "setting heads up entry to null");
-            mInterruptingNotificationEntry = null;
-            mHeadsUpPackageName = null;
+        if (mHeadsUpNotificationView != null && mHeadsUpNotificationView.isAttachedToWindow()) {
+            mHeadsUpNotificationView.setVisibility(vis ? View.VISIBLE : View.GONE);
+            if (!vis) {
+                if (DEBUG) Log.d(TAG, "setting heads up entry to null");
+                mInterruptingNotificationEntry = null;
+                mHeadsUpPackageName = null;
+            }
         }
     }
 
@@ -4617,8 +4625,11 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
     private void recreateStatusBar(boolean recreateNavigationBar) {
         mRecreating = true;
-        mStatusBarContainer.removeAllViews();
+
         removeHeadsUpView();
+
+        mStatusBarContainer.removeAllViews();
+        mStatusBarContainer.clearDisappearingChildren();
 
         // extract icons from the soon-to-be recreated viewgroup.
         int nIcons = mStatusIcons.getChildCount();
