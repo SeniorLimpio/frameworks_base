@@ -105,6 +105,9 @@
     <!-- WallpaperManager -->
     <uses-permission android:name="android.permission.SET_WALLPAPER" />
 
+    <!-- WallpaperManager -->
+    <uses-permission android:name="android.permission.SET_WALLPAPER" />
+
     <application
         android:persistent="true"
         android:allowClearUserData="false"
