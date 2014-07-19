@@ -1525,6 +1525,10 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 mExpandedDesktopStyle = 1;
             }
 
+            // Call in background is no multiuser setting.
+            mCallInBackground = Settings.System.getInt(resolver,
+                    Settings.System.CALL_UI_IN_BACKGROUND, 1) == 1;
+
             // Configure rotation lock.
             int userRotation = Settings.System.getIntForUser(resolver,
                     Settings.System.USER_ROTATION, Surface.ROTATION_0,
