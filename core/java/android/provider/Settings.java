@@ -4823,6 +4823,14 @@ public final class Settings {
         public static final String LOCKSCREEN_NOTIFICATIONS_HEIGHT = "lockscreen_notifications_height";
 
         /**
+         * Whether to show how to reset the "On-The-Spot Preference" on appearance
+         * 0 = not the first run
+         * 1 = first run
+         * @hide
+         */
+        public static final String ON_THE_SPOT_FIRST_TIME = "on_the_spot_first_time";
+
+        /**
          * Changes the offset of the notifications to the top of the screen
          * @hide
          */
