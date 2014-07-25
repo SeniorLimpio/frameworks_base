@@ -199,6 +199,7 @@ public class NotificationViewManager {
                       && showNotification && mTimeCovered == 0
                       && !QuietHoursHelper.inQuietHours(mContext, Settings.System.QUIET_HOURS_DIM)) {
                 wakeDevice();
+                mHostView.showAllNotifications();
             }
         }
         @Override
@@ -209,7 +210,6 @@ public class NotificationViewManager {
         public boolean isValidNotification(final StatusBarNotification sbn) {
             return (!mExcludedApps.contains(sbn.getPackageName()));
         }
-
     }
 
     public NotificationViewManager(Context context, KeyguardViewManager viewManager) {
