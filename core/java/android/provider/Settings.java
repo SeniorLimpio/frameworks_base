@@ -4893,6 +4893,11 @@ public final class Settings {
          */
         public static final String RECENTS_RAM_BAR_ACTIVE_APPS_COLOR = "recents_ram_bar_active_apps_color";
 
+        /**
+         * Disable heads up on the lockscreen when notifications are enabled
+         * @hide
+         */
+        public static final String LOCKSCREEN_NOTIFICATIONS_DISABLE_HEADS_UP = "lockscreen_notifications_disable_heads_up";
 
         /**
          * Show the pending notification counts as overlays on the status bar
