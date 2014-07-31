@@ -5162,6 +5162,13 @@ public final class Settings {
         public static final String HOVER_LONG_FADE_OUT_DELAY = "hover_long_fade_out_delay";
 
         /**
+         * Heads Up in Floating Window
+         *
+         * @hide
+         */
+        public static final String HEADS_UP_FLOATING_WINDOW = "heads_up_floating_window";
+
+        /**
          * Hover: micro fade out delay, default is 1250ms (1,25s).
          *
          * @hide
