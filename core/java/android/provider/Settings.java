@@ -4825,6 +4825,7 @@ public final class Settings {
 
         /**
          * Changes the offset of the notifications to the top of the screen
+        /**
          * @hide
          */
         public static final String LOCKSCREEN_NOTIFICATIONS_OFFSET_TOP = "lockscreen_notifications_offset_top";
