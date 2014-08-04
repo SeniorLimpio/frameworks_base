@@ -53,12 +53,12 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import com.android.internal.telephony.IccCardConstants.State;
-import com.android.internal.util.liquid.AppHelper;
-import com.android.internal.util.liquid.LockscreenTargetUtils;
-import com.android.internal.util.liquid.DeviceUtils;
-import com.android.internal.util.liquid.ImageHelper;
-import com.android.internal.util.liquid.LiquidActions;
-import com.android.internal.util.liquid.TorchConstants;
+import com.android.internal.util.ldroid.AppHelper;
+import com.android.internal.util.ldroid.LockscreenTargetUtils;
+import com.android.internal.util.ldroid.DeviceUtils;
+import com.android.internal.util.ldroid.ImageHelper;
+import com.android.internal.util.ldroid.LiquidActions;
+import com.android.internal.util.ldroid.TorchConstants;
 import com.android.internal.view.RotationPolicy;
 import com.android.internal.widget.LockPatternUtils;
 import com.android.internal.widget.multiwaveview.GlowPadView;

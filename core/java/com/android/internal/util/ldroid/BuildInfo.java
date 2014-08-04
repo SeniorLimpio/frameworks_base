@@ -13,18 +13,20 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package com.android.internal.util.liquid;
+package com.android.internal.util.ldroid;
 
-import android.content.Context;
+import android.os.SystemProperties;
 
-public class Converter {
+public class BuildInfo {
 
-    public static int dpToPx(Context context, int dp) {
-        return (int) ((dp * context.getResources().getDisplayMetrics().density) + 0.5);
+    private static final String BUILD_TYPE_PROP = "ro.ldroid.buildtype";
+    private static final String LDROID_VERSION_PROP = "ro.ldroid.version";
+
+    public static String getLDroidBuildType() {
+        return SystemProperties.get(BUILD_TYPE_PROP, "");
     }
 
-    public static int pxToDp(Context context, int px) {
-        return (int) ((px / context.getResources().getDisplayMetrics().density) + 0.5);
+    public static String getLDroidVersion() {
+        return SystemProperties.get(LDROID_VERSION_PROP, "");
     }
-
 }

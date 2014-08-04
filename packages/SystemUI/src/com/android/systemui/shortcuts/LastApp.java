@@ -20,8 +20,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.android.internal.util.liquid.ButtonsConstants;
-import com.android.internal.util.liquid.LiquidActions;
+import com.android.internal.util.ldroid.ButtonsConstants;
+import com.android.internal.util.ldroid.LiquidActions;
 
 public class LastApp extends Activity  {
 

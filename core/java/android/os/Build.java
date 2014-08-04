@@ -112,11 +112,11 @@ public class Build {
         public static final String CODENAME = getString("ro.build.version.codename");
 
         /**
-         * The current version string that defines the liquid version
+         * The current version string that defines the ldroid version
          * the device is on.
          * @hide
          */
-        public static final String LIQUID = getString("ro.liquid.version");
+        public static final String LDROID = getString("ro.ldroid.version");
 
         /**
          * The SDK version to use when accessing resources.

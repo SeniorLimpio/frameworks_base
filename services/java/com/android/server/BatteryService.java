@@ -99,7 +99,7 @@ public final class BatteryService extends Binder {
     private static final String DUMPSYS_DATA_PATH = "/data/system/";
 
     private static final String UPDATE_QUIET_HOURS_MODES =
-            "com.android.settings.liquid.service.UPDATE_QUIET_HOURS_MODES";
+            "com.android.settings.ldroid.service.UPDATE_QUIET_HOURS_MODES";
 
     // This should probably be exposed in the API, though it's not critical
     private static final int BATTERY_PLUGGED_NONE = 0;

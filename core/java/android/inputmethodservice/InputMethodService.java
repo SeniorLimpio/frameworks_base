@@ -73,7 +73,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import com.android.internal.statusbar.IStatusBarService;
-import com.android.internal.util.liquid.AnimationHelper;
+import com.android.internal.util.ldroid.AnimationHelper;
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 

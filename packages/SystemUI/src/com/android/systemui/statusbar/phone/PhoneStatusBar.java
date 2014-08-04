@@ -106,12 +106,12 @@ import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import com.android.internal.statusbar.StatusBarIcon;
-import com.android.internal.util.liquid.ButtonConfig;
-import com.android.internal.util.liquid.ButtonsConstants;
-import com.android.internal.util.liquid.ButtonsHelper;
-import com.android.internal.util.liquid.DeviceUtils;
-import com.android.internal.util.liquid.ShakeListener;
-import com.android.internal.util.liquid.LiquidActions;
+import com.android.internal.util.ldroid.ButtonConfig;
+import com.android.internal.util.ldroid.ButtonsConstants;
+import com.android.internal.util.ldroid.ButtonsHelper;
+import com.android.internal.util.ldroid.DeviceUtils;
+import com.android.internal.util.ldroid.ShakeListener;
+import com.android.internal.util.ldroid.LiquidActions;
 
 import com.android.systemui.BatteryMeterView;
 import com.android.systemui.BatteryCircleMeterView;

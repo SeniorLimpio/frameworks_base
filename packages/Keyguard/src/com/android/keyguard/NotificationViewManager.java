@@ -37,7 +37,7 @@ import android.service.notification.StatusBarNotification;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.android.internal.util.liquid.QuietHoursHelper;
+import com.android.internal.util.ldroid.QuietHoursHelper;
 
 import java.util.Arrays;
 import java.util.HashSet;

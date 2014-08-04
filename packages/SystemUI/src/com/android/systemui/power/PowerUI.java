@@ -57,7 +57,7 @@ public class PowerUI extends SystemUI {
     static final boolean DEBUG = false;
 
     private static final String UPDATE_QUIET_HOURS_MODES =
-            "com.android.settings.liquid.service.UPDATE_QUIET_HOURS_MODES";
+            "com.android.settings.ldroid.service.UPDATE_QUIET_HOURS_MODES";
 
     Handler mHandler = new Handler();
 

@@ -73,9 +73,9 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RemoteViews.OnClickHandler;
 
-import com.android.internal.util.liquid.ButtonsConstants;
-import com.android.internal.util.liquid.ShakeListener;
-import com.android.internal.util.liquid.LiquidActions;
+import com.android.internal.util.ldroid.ButtonsConstants;
+import com.android.internal.util.ldroid.ShakeListener;
+import com.android.internal.util.ldroid.LiquidActions;
 
 import java.io.File;
 import java.lang.ref.WeakReference;

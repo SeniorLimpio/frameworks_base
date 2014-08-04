@@ -13,20 +13,18 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package com.android.internal.util.liquid;
+package com.android.internal.util.ldroid;
 
-import android.os.SystemProperties;
+import android.content.Context;
 
-public class BuildInfo {
+public class Converter {
 
-    private static final String BUILD_TYPE_PROP = "ro.liquid.buildtype";
-    private static final String LIQUID_VERSION_PROP = "ro.liquid.version";
-
-    public static String getLiquidBuildType() {
-        return SystemProperties.get(BUILD_TYPE_PROP, "");
+    public static int dpToPx(Context context, int dp) {
+        return (int) ((dp * context.getResources().getDisplayMetrics().density) + 0.5);
     }
 
-    public static String getLiquidVersion() {
-        return SystemProperties.get(LIQUID_VERSION_PROP, "");
+    public static int pxToDp(Context context, int px) {
+        return (int) ((px / context.getResources().getDisplayMetrics().density) + 0.5);
     }
+
 }

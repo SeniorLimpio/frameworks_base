@@ -13,7 +13,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package com.android.internal.util.liquid;
+package com.android.internal.util.ldroid;
 
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;

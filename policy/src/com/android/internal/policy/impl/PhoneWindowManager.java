@@ -108,10 +108,10 @@ import com.android.internal.policy.impl.keyguard.KeyguardServiceDelegate;
 import com.android.internal.statusbar.IStatusBarService;
 import com.android.internal.telephony.ITelephony;
 import com.android.internal.util.gesture.EdgeGesturePosition;
-import com.android.internal.util.liquid.ButtonsConstants;
-import com.android.internal.util.liquid.Converter;
-import com.android.internal.util.liquid.HwKeyHelper;
-import com.android.internal.util.liquid.LiquidActions;
+import com.android.internal.util.ldroid.ButtonsConstants;
+import com.android.internal.util.ldroid.Converter;
+import com.android.internal.util.ldroid.HwKeyHelper;
+import com.android.internal.util.ldroid.LiquidActions;
 import com.android.internal.widget.PointerLocationView;
 
 import java.io.File;

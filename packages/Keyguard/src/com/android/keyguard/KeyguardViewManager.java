@@ -75,7 +75,7 @@ import android.view.ViewManager;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 
-import com.android.internal.util.liquid.TorchConstants;
+import com.android.internal.util.ldroid.TorchConstants;
 
 import com.android.internal.policy.IKeyguardShowCallback;
 import com.android.internal.widget.LockPatternUtils;
