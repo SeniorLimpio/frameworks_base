@@ -61,7 +61,7 @@ import com.android.internal.util.ldroid.ButtonsConstants;
 import com.android.internal.util.ldroid.ButtonsHelper;
 import com.android.internal.util.ldroid.ImageHelper;
 import com.android.internal.util.ldroid.DeviceUtils;
-import com.android.internal.util.ldroid.LiquidActions;
+import com.android.internal.util.ldroid.LDroidActions;
 import com.android.internal.widget.multiwaveview.GlowPadView;
 import com.android.internal.widget.multiwaveview.GlowPadView.OnTriggerListener;
 import com.android.internal.widget.multiwaveview.TargetDrawable;
@@ -131,11 +131,11 @@ public class SearchPanelView extends FrameLayout implements
                 if (!mSearchPanelLock) {
                     mLongPress = true;
                     mBar.hideSearchPanel();
-                    if (!LiquidActions.isActionKeyEvent(mLongList.get(mTarget))) {
+                    if (!LDroidActions.isActionKeyEvent(mLongList.get(mTarget))) {
                         performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
                     }
                     sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_LONG_CLICKED);
-                    LiquidActions.processAction(mContext, mLongList.get(mTarget), true);
+                    LDroidActions.processAction(mContext, mLongList.get(mTarget), true);
                     mSearchPanelLock = true;
                  }
             }
@@ -172,14 +172,14 @@ public class SearchPanelView extends FrameLayout implements
             final int resId = mGlowPadView.getResourceIdForTarget(target);
             mTarget = target;
             if (!mLongPress) {
-                if (!LiquidActions.isActionKeyEvent(mIntentList.get(target))) {
+                if (!LDroidActions.isActionKeyEvent(mIntentList.get(target))) {
                     performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
                 }
                 if (!mIntentList.get(target).equals(ButtonsConstants.ACTION_MENU)) {
                     playSoundEffect(SoundEffectConstants.CLICK);
                 }
                 sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_CLICKED);
-                LiquidActions.processAction(mContext, mIntentList.get(target), false);
+                LDroidActions.processAction(mContext, mIntentList.get(target), false);
                 mHandler.removeCallbacks(SetLongPress);
             }
         }

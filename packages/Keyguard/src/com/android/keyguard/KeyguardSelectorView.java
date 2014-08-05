@@ -57,7 +57,7 @@ import com.android.internal.util.ldroid.AppHelper;
 import com.android.internal.util.ldroid.LockscreenTargetUtils;
 import com.android.internal.util.ldroid.DeviceUtils;
 import com.android.internal.util.ldroid.ImageHelper;
-import com.android.internal.util.ldroid.LiquidActions;
+import com.android.internal.util.ldroid.LDroidActions;
 import com.android.internal.util.ldroid.TorchConstants;
 import com.android.internal.view.RotationPolicy;
 import com.android.internal.widget.LockPatternUtils;
@@ -119,7 +119,7 @@ public class KeyguardSelectorView extends LinearLayout implements KeyguardSecuri
                         mCallback.userActivity(0);
                         mCallback.dismiss(false);
                     } else {
-                        LiquidActions.processAction(mContext, targetUri, false);
+                        LDroidActions.processAction(mContext, targetUri, false);
                         mCallback.userActivity(0);
                     }
                 }

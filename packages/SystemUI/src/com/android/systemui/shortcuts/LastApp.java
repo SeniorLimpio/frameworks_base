@@ -21,7 +21,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.android.internal.util.ldroid.ButtonsConstants;
-import com.android.internal.util.ldroid.LiquidActions;
+import com.android.internal.util.ldroid.LDroidActions;
 
 public class LastApp extends Activity  {
 
@@ -33,7 +33,7 @@ public class LastApp extends Activity  {
     @Override
     public void onResume() {
         super.onResume();
-        LiquidActions.processAction(
+        LDroidActions.processAction(
                 this, ButtonsConstants.ACTION_LAST_APP, false);
         this.finish();
     }

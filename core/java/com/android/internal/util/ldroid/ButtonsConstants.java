@@ -19,7 +19,7 @@ package com.android.internal.util.ldroid;
 public class ButtonsConstants {
 
     // key must fit with the values arrays from Settings to use
-    // LiquidActions.java actions
+    // LDroidActions.java actions
     public static final String ACTION_HOME                 = "**home**";
     public static final String ACTION_BACK                 = "**back**";
     public static final String ACTION_SEARCH               = "**search**";

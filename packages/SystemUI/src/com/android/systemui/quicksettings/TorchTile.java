@@ -29,7 +29,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import com.android.internal.util.ldroid.ButtonsConstants;
-import com.android.internal.util.ldroid.LiquidActions;
+import com.android.internal.util.ldroid.LDroidActions;
 import com.android.internal.util.ldroid.TorchConstants;
 
 import com.android.systemui.R;
@@ -46,7 +46,7 @@ public class TorchTile extends QuickSettingsTile {
         mOnClick = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LiquidActions.processAction(mContext, ButtonsConstants.ACTION_TORCH, false);
+                LDroidActions.processAction(mContext, ButtonsConstants.ACTION_TORCH, false);
                 if (isFlipTilesEnabled()) {
                     flipTile(0);
                 }

@@ -75,7 +75,7 @@ import android.widget.RemoteViews.OnClickHandler;
 
 import com.android.internal.util.ldroid.ButtonsConstants;
 import com.android.internal.util.ldroid.ShakeListener;
-import com.android.internal.util.ldroid.LiquidActions;
+import com.android.internal.util.ldroid.LDroidActions;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -585,7 +585,7 @@ public class KeyguardHostView extends KeyguardViewBase {
                     if ("**keyguard_camera**".equals(mShakeEvent[direction])) {
                         launchCamera();
                     } else {
-                        LiquidActions.processAction(mContext, mShakeEvent[direction], false);
+                        LDroidActions.processAction(mContext, mShakeEvent[direction], false);
                     }
                 }
             }

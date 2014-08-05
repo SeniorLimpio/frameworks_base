@@ -38,7 +38,7 @@ import android.view.View;
 import com.android.internal.util.ldroid.AppHelper;
 import com.android.internal.util.ldroid.Converter;
 import com.android.internal.util.ldroid.ImageHelper;
-import com.android.internal.util.ldroid.LiquidActions;
+import com.android.internal.util.ldroid.LDroidActions;
 import com.android.systemui.R;
 import com.android.systemui.statusbar.phone.QuickSettingsContainerView;
 import com.android.systemui.statusbar.phone.QuickSettingsController;
@@ -118,7 +118,7 @@ public class CustomTile extends QuickSettingsTile {
             @Override
             public boolean onLongClick(View v) {
                 if (mState != -1) {
-                    LiquidActions.processActionWithOptions(
+                    LDroidActions.processActionWithOptions(
                             mContext, mLongActions[mState], false, mCollapse);
                 }
                 if (isFlipTilesEnabled()) {
@@ -292,10 +292,10 @@ public class CustomTile extends QuickSettingsTile {
     private void performClickAction() {
         if (mWatchedSetting == null) {
             if (mMatchState && mNumberOfActions >= 1) {
-                LiquidActions.processActionWithOptions(
+                LDroidActions.processActionWithOptions(
                         mContext, mClickActions[mStateMatched], false, mCollapse);
             } else {
-                LiquidActions.processActionWithOptions(
+                LDroidActions.processActionWithOptions(
                         mContext, mClickActions[mState], false, mCollapse);
             }
             updateResources();

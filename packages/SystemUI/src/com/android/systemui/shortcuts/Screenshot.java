@@ -21,7 +21,7 @@ import android.os.Bundle;
 import android.os.Handler;
 
 import com.android.internal.util.ldroid.ButtonsConstants;
-import com.android.internal.util.ldroid.LiquidActions;
+import com.android.internal.util.ldroid.LDroidActions;
 
 public class Screenshot extends Activity  {
 
@@ -37,7 +37,7 @@ public class Screenshot extends Activity  {
         // Allow statusbar to collapse if desired
         handle.postDelayed(new Runnable() {
             public void run() {
-                LiquidActions.processActionWithOptions(Screenshot.this,
+                LDroidActions.processActionWithOptions(Screenshot.this,
                         ButtonsConstants.ACTION_SCREENSHOT, false, false);
                 Screenshot.this.finish();
             }

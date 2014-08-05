@@ -28,7 +28,7 @@ import android.view.View;
 import android.view.View.OnLongClickListener;
 
 import com.android.internal.util.ldroid.ButtonsConstants;
-import com.android.internal.util.ldroid.LiquidActions;
+import com.android.internal.util.ldroid.LDroidActions;
 
 import com.android.systemui.R;
 import com.android.systemui.statusbar.phone.QuickSettingsContainerView;
@@ -48,7 +48,7 @@ public class ThemeTile extends QuickSettingsTile {
         mOnClick = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LiquidActions.processAction(mContext, ButtonsConstants.ACTION_THEME_SWITCH, false);
+                LDroidActions.processAction(mContext, ButtonsConstants.ACTION_THEME_SWITCH, false);
                 if (isFlipTilesEnabled()) {
                     flipTile(0);
                 }

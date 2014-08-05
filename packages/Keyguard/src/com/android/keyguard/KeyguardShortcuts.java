@@ -42,7 +42,7 @@ import com.android.internal.util.ldroid.ButtonsHelper;
 import com.android.internal.util.ldroid.ButtonConfig;
 import com.android.internal.util.ldroid.DeviceUtils;
 import com.android.internal.util.ldroid.LockscreenTargetUtils;
-import com.android.internal.util.ldroid.LiquidActions;
+import com.android.internal.util.ldroid.LDroidActions;
 import com.android.internal.widget.LockPatternUtils;
 
 import java.net.URISyntaxException;
@@ -117,7 +117,7 @@ public class KeyguardShortcuts extends LinearLayout {
                     @Override
                     public boolean onLongClick(View v) {
                         doHapticKeyClick(HapticFeedbackConstants.LONG_PRESS);
-                        LiquidActions.processAction(mContext, action, true);
+                        LDroidActions.processAction(mContext, action, true);
                         return true;
                     }
                 });
@@ -126,7 +126,7 @@ public class KeyguardShortcuts extends LinearLayout {
                     @Override
                     public void onClick(View v) {
                         doHapticKeyClick(HapticFeedbackConstants.VIRTUAL_KEY);
-                        LiquidActions.processAction(mContext, action, false);
+                        LDroidActions.processAction(mContext, action, false);
                     }
                 });
             }

@@ -112,7 +112,7 @@ import com.android.internal.util.ldroid.ButtonsConstants;
 import com.android.internal.util.ldroid.ButtonsHelper;
 import com.android.internal.util.ldroid.DeviceUtils;
 import com.android.internal.util.ldroid.ShakeListener;
-import com.android.internal.util.ldroid.LiquidActions;
+import com.android.internal.util.ldroid.LDroidActions;
 
 import com.android.systemui.BatteryMeterView;
 import com.android.systemui.BatteryCircleMeterView;
@@ -1736,16 +1736,13 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 mQS.setService(this);
                 mQS.setBar(mStatusBarView);
                 mQS.setupQuickSettings();
-            } else {
-                mQS = null; // fly away, be free
-            }
 
                 if (mHoverButton != null) {
                     mHoverButton.setImageDrawable(null);
                     mHoverButton.setImageResource(mHoverActive ?
                             R.drawable.ic_notify_hover_pressed : R.drawable.ic_notify_hover_normal);
                 }
-            } else {
+	    } else {
                 mQS = null; // fly away, be free
             }
 
@@ -2861,7 +2858,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     UserHandle.USER_CURRENT);
             if (event != null && !event.equals(ButtonsConstants.ACTION_NULL)) {
                 customButtonVibrate();
-                LiquidActions.processAction(mContext, event, false);
+                LDroidActions.processAction(mContext, event, false);
             }
         }
     }
@@ -4682,14 +4679,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     mContext.getResources().getConfiguration()
                             .orientation == Configuration.ORIENTATION_LANDSCAPE
                     && mNavigationBarCanMove);
-        }
-
-        int sidebarPosition = Settings.System.getInt(resolver,
-                Settings.System.APP_SIDEBAR_POSITION, 
-                AppSidebar.SIDEBAR_POSITION_LEFT);
-        if (sidebarPosition != mSidebarPosition) {
-            mSidebarPosition = sidebarPosition;
-            mWindowManager.updateViewLayout(mAppSidebar, getAppSidebarLayoutParams(sidebarPosition));
         }
     }
 

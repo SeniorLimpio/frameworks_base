@@ -44,7 +44,7 @@ import android.widget.ImageView;
 
 import com.android.internal.statusbar.IStatusBarService;
 import com.android.internal.util.ldroid.ButtonsConstants;
-import com.android.internal.util.ldroid.LiquidActions;
+import com.android.internal.util.ldroid.LDroidActions;
 
 import com.android.systemui.R;
 
@@ -82,7 +82,7 @@ public class KeyButtonView extends ImageView {
             if (isPressed()) {
                 sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_LONG_CLICKED);
                 if (mLongpressAction != null
-                    && LiquidActions.isActionKeyEvent(mLongpressAction)) {
+                    && LDroidActions.isActionKeyEvent(mLongpressAction)) {
                     setHapticFeedbackEnabled(false);
                 }
                 performLongClick();
@@ -333,7 +333,7 @@ public class KeyButtonView extends ImageView {
                 if (!mIsLongpressed) {
                     if (isPressed()) {
                         if (mClickAction != null
-                            && !LiquidActions.isActionKeyEvent(mClickAction)) {
+                            && !LDroidActions.isActionKeyEvent(mClickAction)) {
                             performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
                         }
                         performClick();
@@ -357,7 +357,7 @@ public class KeyButtonView extends ImageView {
                     && !mClickAction.equals(ButtonsConstants.ACTION_RECENTS)) {
                 cancelPreloadRecentApps();
             }
-            LiquidActions.processAction(mContext, mClickAction, false);
+            LDroidActions.processAction(mContext, mClickAction, false);
             return;
         }
     };
@@ -369,7 +369,7 @@ public class KeyButtonView extends ImageView {
                     && !mLongpressAction.equals(ButtonsConstants.ACTION_RECENTS)) {
                 cancelPreloadRecentApps();
             }
-            LiquidActions.processAction(mContext, mLongpressAction, true);
+            LDroidActions.processAction(mContext, mLongpressAction, true);
             return true;
         }
     };

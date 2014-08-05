@@ -69,7 +69,7 @@ import com.android.internal.util.ldroid.ButtonsConstants;
 import com.android.internal.util.ldroid.ButtonsHelper;
 import com.android.internal.util.ldroid.Converter;
 import com.android.internal.util.ldroid.ImageHelper;
-import com.android.internal.util.ldroid.LiquidActions;
+import com.android.internal.util.ldroid.LDroidActions;
 import com.android.systemui.R;
 import com.android.systemui.statusbar.BaseStatusBar;
 import com.android.systemui.statusbar.phone.NavigationBarOverlay;
@@ -831,24 +831,24 @@ public class PieController implements BaseStatusBar.NavigationBarCallback, PieVi
     @Override
     public void onLongClick(PieItem item) {
         String type = (String) item.longTag;
-        if (!LiquidActions.isActionKeyEvent(type)) {
+        if (!LDroidActions.isActionKeyEvent(type)) {
             mPieContainer.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
         }
         mPieContainer.sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_LONG_CLICKED);
-        LiquidActions.processAction(mContext, type, true);
+        LDroidActions.processAction(mContext, type, true);
     }
 
     @Override
     public void onClick(PieItem item) {
         String type = (String) item.tag;
-        if (!LiquidActions.isActionKeyEvent(type)) {
+        if (!LDroidActions.isActionKeyEvent(type)) {
             mPieContainer.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
         }
         if (!type.equals(ButtonsConstants.ACTION_MENU)) {
             mPieContainer.playSoundEffect(SoundEffectConstants.CLICK);
         }
         mPieContainer.sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_CLICKED);
-        LiquidActions.processAction(mContext, type, false);
+        LDroidActions.processAction(mContext, type, false);
     }
 
     private void doHapticTriggerFeedback() {

@@ -27,7 +27,7 @@ import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 
 import com.android.internal.util.ldroid.ButtonsConstants;
-import com.android.internal.util.ldroid.LiquidActions;
+import com.android.internal.util.ldroid.LDroidActions;
 
 import com.android.systemui.R;
 import com.android.systemui.statusbar.phone.QuickSettingsController;
@@ -51,7 +51,7 @@ public class SleepScreenTile extends QuickSettingsTile {
 
             @Override
             public boolean onLongClick(View v) {
-                LiquidActions.processAction(mContext, ButtonsConstants.ACTION_POWER_MENU, true);
+                LDroidActions.processAction(mContext, ButtonsConstants.ACTION_POWER_MENU, true);
                 return true;
             }
         };

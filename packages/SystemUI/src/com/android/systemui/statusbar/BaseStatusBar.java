@@ -262,13 +262,6 @@ public abstract class BaseStatusBar extends SystemUI implements
     protected ImageView mHoverButton;
     protected HoverCling mHoverCling;
 
-    private Runnable mPanelCollapseRunnable = new Runnable() {
-        @Override
-        public void run() {
-            animateCollapsePanels(CommandQueue.FLAG_EXCLUDE_NONE);
-        }
-    };
-
     // UI-specific methods
 
     /**
