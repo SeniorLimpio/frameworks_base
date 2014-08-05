@@ -5213,6 +5213,29 @@ public final class Settings {
         public static final int STATUS_BAR_COLLAPSE_IF_NO_CLEARABLE = 2;
 
         /**
+         * Give SMS notifications a breathing effect
+         * @hide
+         */
+        public static final String KEY_SMS_BREATH = "sms_breath";
+
+        /**
+         * Give Missed call notifications a breathing effect
+         * @hide
+         */
+        public static final String KEY_MISSED_CALL_BREATH = "missed_call_breath";
+
+        /**
+         * Give Voicemail notifications a breathing effect
+         * @hide
+         */
+        public static final String KEY_VOICEMAIL_BREATH = "voicemail_breath";
+
+       /**
+         * @hide
+         */
+        public static final String SMART_PHONE_CALLER = "smart_phone_caller";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
