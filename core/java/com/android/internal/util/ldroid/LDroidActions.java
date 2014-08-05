@@ -50,7 +50,7 @@ import com.android.internal.statusbar.IStatusBarService;
 
 import java.net.URISyntaxException;
 
-public class LiquidActions {
+public class LDroidActions {
 
     private static final int MSG_INJECT_KEY_DOWN = 1066;
     private static final int MSG_INJECT_KEY_UP = 1067;
@@ -301,7 +301,7 @@ public class LiquidActions {
                     }
                 startActivity(context, windowManagerService, isKeyguardShowing, intent);
                 } catch (ActivityNotFoundException e) {
-                    Log.e("LiquidActions:", "No activity to handle assist long press action.", e);
+                    Log.e("LDroidActions:", "No activity to handle assist long press action.", e);
                 }
                 return;
             } else if (action.equals(ButtonsConstants.ACTION_VIB)) {
@@ -390,7 +390,7 @@ public class LiquidActions {
                 try {
                     intent = Intent.parseUri(action, 0);
                 } catch (URISyntaxException e) {
-                    Log.e("LiquidActions:", "URISyntaxException: [" + action + "]");
+                    Log.e("LDroidActions:", "URISyntaxException: [" + action + "]");
                     return;
                 }
                 startActivity(context, windowManagerService, isKeyguardShowing, intent);

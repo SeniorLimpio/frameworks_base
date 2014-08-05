@@ -111,7 +111,7 @@ import com.android.internal.util.gesture.EdgeGesturePosition;
 import com.android.internal.util.ldroid.ButtonsConstants;
 import com.android.internal.util.ldroid.Converter;
 import com.android.internal.util.ldroid.HwKeyHelper;
-import com.android.internal.util.ldroid.LiquidActions;
+import com.android.internal.util.ldroid.LDroidActions;
 import com.android.internal.widget.PointerLocationView;
 
 import java.io.File;
@@ -3046,7 +3046,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         // Reset the check flag for preloading to give it free
         // for next preload call.
         mPreloadedRecentApps = false;
-        LiquidActions.processAction(mContext, action, false);
+        LDroidActions.processAction(mContext, action, false);
     }
 
     /** {@inheritDoc} */
