@@ -31,6 +31,7 @@ import static com.android.server.am.ActivityStackSupervisor.HOME_STACK_ID;
 import android.app.AppOpsManager;
 import android.appwidget.AppWidgetManager;
 import android.content.pm.ThemeUtils;
+import android.content.res.ThemeConfig;
 import android.util.ArrayMap;
 import com.android.internal.R;
 import com.android.internal.annotations.GuardedBy;
@@ -126,9 +127,7 @@ import android.content.pm.ResolveInfo;
 import android.content.pm.ServiceInfo;
 import android.content.res.CompatibilityInfo;
 import android.content.res.Configuration;
-import android.content.res.CustomTheme;
 import android.graphics.Bitmap;
-import android.graphics.Typeface;
 import android.net.Proxy;
 import android.net.ProxyProperties;
 import android.net.Uri;
@@ -203,7 +202,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
-import dalvik.system.Zygote;
 
 public final class ActivityManagerService extends ActivityManagerNative
         implements Watchdog.Monitor, BatteryStatsImpl.BatteryCallback {
@@ -1820,12 +1818,7 @@ public final class ActivityManagerService extends ActivityManagerNative
 
             ServiceManager.addService(Context.ACTIVITY_SERVICE, m, true);
             ServiceManager.addService(ProcessStats.SERVICE_NAME, m.mProcessStats);
-            ServiceManager.addService("meminfo", new MemBinder(m));
-            ServiceManager.addService("gfxinfo", new GraphicsBinder(m));
-            ServiceManager.addService("dbinfo", new DbBinder(m));
-            if (MONITOR_CPU_USAGE) {
-                ServiceManager.addService("cpuinfo", new CpuBinder(m));
-            }
+            ServiceManager.addService("stateinfo", new InfoBinder(m));
             ServiceManager.addService("permission", new PermissionController(m));
 
             ApplicationInfo info =
@@ -1955,9 +1948,9 @@ public final class ActivityManagerService extends ActivityManagerNative
         }
     }
 
-    static class MemBinder extends Binder {
+    static class InfoBinder extends Binder {
         ActivityManagerService mActivityManagerService;
-        MemBinder(ActivityManagerService activityManagerService) {
+        InfoBinder(ActivityManagerService activityManagerService) {
             mActivityManagerService = activityManagerService;
         }
 
@@ -1965,76 +1958,33 @@ public final class ActivityManagerService extends ActivityManagerNative
         protected void dump(FileDescriptor fd, PrintWriter pw, String[] args) {
             if (mActivityManagerService.checkCallingPermission(android.Manifest.permission.DUMP)
                     != PackageManager.PERMISSION_GRANTED) {
+                if (MONITOR_CPU_USAGE) {
+                    pw.println("Permission Denial: can't dump cpuinfo from from pid="
+                            + Binder.getCallingPid() + ", uid=" + Binder.getCallingUid()
+                            + " without permission " + android.Manifest.permission.DUMP);
+                }
+                pw.println("Permission Denial: can't dump dbinfo from from pid="
+                        + Binder.getCallingPid() + ", uid=" + Binder.getCallingUid()
+                        + " without permission " + android.Manifest.permission.DUMP);
+                pw.println("Permission Denial: can't dump gfxinfo from from pid="
+                        + Binder.getCallingPid() + ", uid=" + Binder.getCallingUid()
+                        + " without permission " + android.Manifest.permission.DUMP);
                 pw.println("Permission Denial: can't dump meminfo from from pid="
                         + Binder.getCallingPid() + ", uid=" + Binder.getCallingUid()
                         + " without permission " + android.Manifest.permission.DUMP);
                 return;
             }
 
-            mActivityManagerService.dumpApplicationMemoryUsage(fd, pw, "  ", args, false, null);
-        }
-    }
-
-    static class GraphicsBinder extends Binder {
-        ActivityManagerService mActivityManagerService;
-        GraphicsBinder(ActivityManagerService activityManagerService) {
-            mActivityManagerService = activityManagerService;
-        }
-
-        @Override
-        protected void dump(FileDescriptor fd, PrintWriter pw, String[] args) {
-            if (mActivityManagerService.checkCallingPermission(android.Manifest.permission.DUMP)
-                    != PackageManager.PERMISSION_GRANTED) {
-                pw.println("Permission Denial: can't dump gfxinfo from from pid="
-                        + Binder.getCallingPid() + ", uid=" + Binder.getCallingUid()
-                        + " without permission " + android.Manifest.permission.DUMP);
-                return;
-            }
-
-            mActivityManagerService.dumpGraphicsHardwareUsage(fd, pw, args);
-        }
-    }
-
-    static class DbBinder extends Binder {
-        ActivityManagerService mActivityManagerService;
-        DbBinder(ActivityManagerService activityManagerService) {
-            mActivityManagerService = activityManagerService;
-        }
-
-        @Override
-        protected void dump(FileDescriptor fd, PrintWriter pw, String[] args) {
-            if (mActivityManagerService.checkCallingPermission(android.Manifest.permission.DUMP)
-                    != PackageManager.PERMISSION_GRANTED) {
-                pw.println("Permission Denial: can't dump dbinfo from from pid="
-                        + Binder.getCallingPid() + ", uid=" + Binder.getCallingUid()
-                        + " without permission " + android.Manifest.permission.DUMP);
-                return;
-            }
-
             mActivityManagerService.dumpDbInfo(fd, pw, args);
-        }
-    }
+            mActivityManagerService.dumpGraphicsHardwareUsage(fd, pw, args);
+            mActivityManagerService.dumpApplicationMemoryUsage(fd, pw, "  ", args, false, null);
 
-    static class CpuBinder extends Binder {
-        ActivityManagerService mActivityManagerService;
-        CpuBinder(ActivityManagerService activityManagerService) {
-            mActivityManagerService = activityManagerService;
-        }
-
-        @Override
-        protected void dump(FileDescriptor fd, PrintWriter pw, String[] args) {
-            if (mActivityManagerService.checkCallingPermission(android.Manifest.permission.DUMP)
-                    != PackageManager.PERMISSION_GRANTED) {
-                pw.println("Permission Denial: can't dump cpuinfo from from pid="
-                        + Binder.getCallingPid() + ", uid=" + Binder.getCallingUid()
-                        + " without permission " + android.Manifest.permission.DUMP);
-                return;
-            }
-
-            synchronized (mActivityManagerService.mProcessCpuThread) {
-                pw.print(mActivityManagerService.mProcessCpuTracker.printCurrentLoad());
-                pw.print(mActivityManagerService.mProcessCpuTracker.printCurrentState(
-                        SystemClock.uptimeMillis()));
+            if (MONITOR_CPU_USAGE) {
+                synchronized (mActivityManagerService.mProcessCpuThread) {
+                    pw.print(mActivityManagerService.mProcessCpuTracker.printCurrentLoad());
+                    pw.print(mActivityManagerService.mProcessCpuTracker.printCurrentState(
+                            SystemClock.uptimeMillis()));
+                }
             }
         }
     }
@@ -2917,6 +2867,7 @@ public final class ActivityManagerService extends ActivityManagerNative
             app.setPid(startResult.pid);
             app.usingWrapper = startResult.usingWrapper;
             app.removed = false;
+            app.killedByAm = false;
             synchronized (mPidsSelfLocked) {
                 this.mPidsSelfLocked.put(startResult.pid, app);
                 Message msg = mHandler.obtainMessage(PROC_START_TIMEOUT_MSG);
@@ -8844,6 +8795,23 @@ public final class ActivityManagerService extends ActivityManagerNative
         }
     }
 
+    public boolean isHeadsUpEnabledForProcess(int pid) {
+        ProcessRecord proc;
+        synchronized (mPidsSelfLocked) {
+            proc = mPidsSelfLocked.get(pid);
+        }
+        if (proc == null) {
+            return false;
+        }
+        try {
+            return AppGlobals.getPackageManager().getHeadsUpSetting(
+                    proc.info.packageName, proc.userId);
+        } catch (RemoteException e) {
+            Log.e(TAG, e.getMessage(), e);
+        }
+        return false;
+    }
+
     public void registerProcessObserver(IProcessObserver observer) {
         enforceCallingPermission(android.Manifest.permission.SET_ACTIVITY_WATCHER,
                 "registerProcessObserver()");
@@ -10220,9 +10188,15 @@ public final class ActivityManagerService extends ActivityManagerNative
                     int pid = r != null ? r.pid : Binder.getCallingPid();
                     if (!mController.appCrashed(name, pid,
                             shortMsg, longMsg, timeMillis, crashInfo.stackTrace)) {
-                        Slog.w(TAG, "Force-killing crashed app " + name
-                                + " at watcher's request");
-                        Process.killProcess(pid);
+                        if ("1".equals(SystemProperties.get(SYSTEM_DEBUGGABLE, "0"))
+                                && "Native crash".equals(crashInfo.exceptionClassName)) {
+                            Slog.w(TAG, "Skip killing native crashed app " + name
+                                    + "(" + pid + ") during testing");
+                        } else {
+                            Slog.w(TAG, "Force-killing crashed app " + name
+                                    + " at watcher's request");
+                            Process.killProcess(pid);
+                        }
                         return;
                     }
                 } catch (RemoteException e) {
@@ -12584,6 +12558,7 @@ public final class ActivityManagerService extends ActivityManagerNative
         app.resetPackageList(mProcessStats);
         app.unlinkDeathRecipient();
         app.makeInactive(mProcessStats);
+        app.waitingToKill = null;
         app.forcingToForeground = null;
         app.foregroundServices = false;
         app.foregroundActivities = false;
@@ -14163,8 +14138,8 @@ public final class ActivityManagerService extends ActivityManagerNative
         Configuration ci;
         synchronized(this) {
             ci = new Configuration(mConfiguration);
-            if (ci.customTheme == null) {
-                ci.customTheme = CustomTheme.getBootTheme(mContext.getContentResolver());
+            if (ci.themeConfig == null) {
+                ci.themeConfig = ThemeConfig.getBootTheme(mContext.getContentResolver());
             }
         }
         return ci;
@@ -14240,9 +14215,9 @@ public final class ActivityManagerService extends ActivityManagerNative
                                      values.userSetLocale);
                 }
 
-                if (values.customTheme != null) {
-                    saveThemeResourceLocked(values.customTheme,
-                            !values.customTheme.equals(mConfiguration.customTheme));
+                if (values.themeConfig != null) {
+                    saveThemeResourceLocked(values.themeConfig,
+                            !values.themeConfig.equals(mConfiguration.themeConfig));
                 }
 
                 mConfigurationSeq++;
@@ -14394,12 +14369,10 @@ public final class ActivityManagerService extends ActivityManagerNative
         return srec.launchedFromPackage;
     }
 
-    private void saveThemeResourceLocked(CustomTheme t, boolean isDiff){
+    private void saveThemeResourceLocked(ThemeConfig t, boolean isDiff){
         if(isDiff) {
-            Settings.Secure.putString(mContext.getContentResolver(), Configuration.THEME_PACKAGE_NAME_PERSISTENCE_PROPERTY, t.getThemePackageName());
-            Settings.Secure.putString(mContext.getContentResolver(), Configuration.THEME_SYSTEMUI_PACKAGE_NAME_PERSISTENCE_PROPERTY, t.getSystemUiPackageName());
-            Settings.Secure.putString(mContext.getContentResolver(), Configuration.THEME_ICONPACK_PACKAGE_NAME_PERSISTENCE_PROPERTY, t.getIconPackPkgName());
-            Settings.Secure.putString(mContext.getContentResolver(), Configuration.THEME_FONT_PACKAGE_NAME_PERSISTENCE_PROPERTY, t.getFontPackPkgName());
+            Settings.Secure.putString(mContext.getContentResolver(),
+                    Configuration.THEME_PKG_CONFIGURATION_PERSISTENCE_PROPERTY, t.toJson());
         }
     }
 

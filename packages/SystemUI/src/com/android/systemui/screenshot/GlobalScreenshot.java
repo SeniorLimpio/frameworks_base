@@ -43,7 +43,9 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.os.Process;
+import android.os.UserHandle;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -244,16 +246,24 @@ class SaveImageInBackgroundTask extends AsyncTask<SaveImageInBackgroundData, Voi
                      PendingIntent.FLAG_CANCEL_CURRENT));
 
             outStream = resolver.openOutputStream(uri);
-            image.compress(Bitmap.CompressFormat.PNG, 100, outStream);
+            boolean success = image.compress(Bitmap.CompressFormat.PNG, 100, outStream);
 
-            // update file size in the database
-            values.clear();
-            values.put(MediaStore.Images.ImageColumns.SIZE, new File(mImageFilePath).length());
-            resolver.update(uri, values, null, null);
+            if (!success) {
+                resolver.delete(uri, null, null);
+                File file = new File(mImageFilePath);
+                file.delete();
+                params[0].clearImage();
+                params[0].result = 1;
+            } else {
+                // update file size in the database
+                values.clear();
+                values.put(MediaStore.Images.ImageColumns.SIZE, new File(mImageFilePath).length());
+                resolver.update(uri, values, null, null);
 
-            params[0].imageUri = uri;
-            params[0].image = null;
-            params[0].result = 0;
+                params[0].imageUri = uri;
+                params[0].image = null;
+                params[0].result = 0;
+            }
         } catch (IOException e) {
             // may be thrown if external storage is not mounted
             params[0].result = 1;
@@ -542,8 +552,15 @@ class GlobalScreenshot {
         mScreenshotLayout.post(new Runnable() {
             @Override
             public void run() {
-                // Play the shutter sound to notify that we've taken a screenshot
-                mCameraSound.play(MediaActionSound.SHUTTER_CLICK);
+                // Play the shutter sound to notify that we've taken a screenshot, but only if
+                // we aren't in quiet hours
+                // The reason behind this code is added here and not in MediaActionSound is for
+                // legal considerations (take a photo or record with the camera cannot be silence),
+                // but take a screenshot of the current has no legal considerations.
+                if (Settings.System.getIntForUser(mContext.getContentResolver(),
+                        Settings.System.QUIET_HOURS_MUTE, 0, UserHandle.USER_CURRENT_OR_SELF) != 2) {
+                    mCameraSound.play(MediaActionSound.SHUTTER_CLICK);
+                }
 
                 mScreenshotView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
                 mScreenshotView.buildLayer();

@@ -79,6 +79,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -517,10 +518,12 @@ public class LockWallpaperPickerActivity extends WallpaperCropActivity {
                     if (mImageFromAsset) {
                         AssetManager am = mResources.getAssets();
                         String[] pathImages = am.list(mInFilePath);
-                        if (pathImages == null || pathImages.length == 0) {
-                            throw new IOException("did not find any images in path: " + mInFilePath);
+                        String pathImage = Utilities.getFirstNonEmptyString(pathImages);
+                        if (pathImage == null) {
+                            throw new IOException("did not find any images in path: "
+                                    + mInFilePath);
                         }
-                        InputStream is = am.open(mInFilePath + File.separator + pathImages[0]);
+                        InputStream is = am.open(mInFilePath + File.separator + pathImage);
                         mInStream = new BufferedInputStream(is);
                     } else if (mInUri != null) {
                         mInStream = new BufferedInputStream(
@@ -875,20 +878,46 @@ public class LockWallpaperPickerActivity extends WallpaperCropActivity {
         setWallpaperItemPaddingToZero(clearImageTile);
         masterWallpaperList.addView(clearImageTile, 0);
 
-        // theme LOCKSCREEN wallpapers
-        ArrayList<ThemeLockWallpaperInfo> themeLockWallpapers = findThemeLockWallpapers();
-        ThemeLockWallpapersAdapter tla = new ThemeLockWallpapersAdapter(this, themeLockWallpapers);
-        populateWallpapersFromAdapter(mWallpapersView, tla, false, true);
-
-        // theme wallpapers
-        ArrayList<ThemeWallpaperInfo> themeWallpapers = findThemeWallpapers();
-        ThemeWallpapersAdapter ta = new ThemeWallpapersAdapter(this, themeWallpapers);
-        populateWallpapersFromAdapter(mWallpapersView, ta, false, true);
+        // Populate the built-in wallpapers
+        ArrayList<ResourceWallpaperInfo> wallpapers = findBundledWallpapers();
+        BuiltInWallpapersAdapter ia = new BuiltInWallpapersAdapter(this, wallpapers);
+        populateWallpapersFromAdapter(mWallpapersView, ia, false, true);
 
         // Populate the saved wallpapers
         mSavedImages = new SavedWallpaperImages(this);
         mSavedImages.loadThumbnailsAndImageIdList();
-        populateWallpapersFromAdapter(mWallpapersView, mSavedImages, true, true);
+        populateWallpapersFromAdapter(mWallpapersView, mSavedImages, true, false);
+
+        // populate lockscreen wallpapers
+        new AsyncTask<Void, Void, ArrayList<ThemeLockWallpaperInfo>>() {
+            @Override
+            protected ArrayList<ThemeLockWallpaperInfo> doInBackground(Void... params) {
+                return findThemeLockWallpapers();
+            }
+
+            @Override
+            protected void onPostExecute(ArrayList<ThemeLockWallpaperInfo>
+                                                 themeLockWallpaperInfos) {
+                ThemeLockWallpapersAdapter tla = new ThemeLockWallpapersAdapter(
+                        LockWallpaperPickerActivity.this, themeLockWallpaperInfos);
+                populateWallpapersFromAdapter(mWallpapersView, tla, false, true);
+            }
+        }.execute((Void) null);
+
+        // populate wallpapers
+        new AsyncTask<Void, Void, ArrayList<ThemeWallpaperInfo>>() {
+            @Override
+            protected ArrayList<ThemeWallpaperInfo> doInBackground(Void... params) {
+                return findThemeWallpapers();
+            }
+
+            @Override
+            protected void onPostExecute(ArrayList<ThemeWallpaperInfo> themeWallpaperInfos) {
+                ThemeWallpapersAdapter ta = new ThemeWallpapersAdapter(
+                        LockWallpaperPickerActivity.this, themeWallpaperInfos);
+                populateWallpapersFromAdapter(mWallpapersView, ta, false, false);
+            }
+        }.execute((Void) null);
 
         // Make its background the last photo taken on external storage
         Bitmap lastPhoto = getThumbnailOfLastPhoto();
@@ -927,7 +956,7 @@ public class LockWallpaperPickerActivity extends WallpaperCropActivity {
         // Action bar
         // Show the custom action bar view
         final ActionBar actionBar = getActionBar();
-        actionBar.setCustomView(R.layout.actionbar_set_wallpaper);
+        actionBar.setCustomView(R.layout.actionbar_set_lockscreen_wallpaper);
         actionBar.getCustomView().setOnClickListener(
                 new OnClickListener() {
                     @Override
@@ -1103,7 +1132,7 @@ public class LockWallpaperPickerActivity extends WallpaperCropActivity {
             boolean addLongPressHandler, boolean selectFirstTile) {
         for (int i = 0; i < adapter.getCount(); i++) {
             FrameLayout thumbnail = (FrameLayout) adapter.getView(i, null, parent);
-            parent.addView(thumbnail, i);
+            parent.addView(thumbnail);
             WallpaperTileInfo info = (WallpaperTileInfo) adapter.getItem(i);
             thumbnail.setTag(info);
             info.setView(thumbnail);
@@ -1246,6 +1275,54 @@ public class LockWallpaperPickerActivity extends WallpaperCropActivity {
 
     private void addLongPressHandler(View v) {
         v.setOnLongClickListener(mLongClickListener);
+    }
+
+    private ArrayList<ResourceWallpaperInfo> findBundledWallpapers() {
+        ArrayList<ResourceWallpaperInfo> bundledWallpapers =
+                new ArrayList<ResourceWallpaperInfo>(1);
+
+        // Add an entry for the default wallpaper (stored in system resources)
+        ResourceWallpaperInfo defaultWallpaperInfo = getDefaultWallpaperInfo();
+        if (defaultWallpaperInfo != null) {
+            bundledWallpapers.add(0, defaultWallpaperInfo);
+        }
+        return bundledWallpapers;
+    }
+
+    private ResourceWallpaperInfo getDefaultWallpaperInfo() {
+        Resources sysRes = Resources.getSystem();
+        int resId = sysRes.getIdentifier("default_wallpaper", "drawable", "android");
+
+        File defaultThumbFile = new File(getFilesDir(), "default_thumb.jpg");
+        Bitmap thumb = null;
+        boolean defaultWallpaperExists = false;
+        if (defaultThumbFile.exists()) {
+            thumb = BitmapFactory.decodeFile(defaultThumbFile.getAbsolutePath());
+            defaultWallpaperExists = true;
+        } else {
+            Resources res = getResources();
+            Point defaultThumbSize = Utilities.getDefaultThumbnailSize(res);
+            int rotation = WallpaperCropActivity.getRotationFromExif(res, resId);
+            thumb = createThumbnail(
+                    defaultThumbSize, this, null, null, sysRes, resId, rotation, false);
+            if (thumb != null) {
+                try {
+                    defaultThumbFile.createNewFile();
+                    FileOutputStream thumbFileStream =
+                            openFileOutput(defaultThumbFile.getName(), Context.MODE_PRIVATE);
+                    thumb.compress(Bitmap.CompressFormat.JPEG, 95, thumbFileStream);
+                    thumbFileStream.close();
+                    defaultWallpaperExists = true;
+                } catch (IOException e) {
+                    Log.e(TAG, "Error while writing default wallpaper thumbnail to file " + e);
+                    defaultThumbFile.delete();
+                }
+            }
+        }
+        if (defaultWallpaperExists) {
+            return new ResourceWallpaperInfo(sysRes, resId, new BitmapDrawable(thumb));
+        }
+        return null;
     }
 
     private ArrayList<ThemeWallpaperInfo> findThemeWallpapers() {
@@ -1393,6 +1470,36 @@ public class LockWallpaperPickerActivity extends WallpaperCropActivity {
         }
 
         public ThemeWallpaperInfo getItem(int position) {
+            return mWallpapers.get(position);
+        }
+
+        public long getItemId(int position) {
+            return position;
+        }
+
+        public View getView(int position, View convertView, ViewGroup parent) {
+            Drawable thumb = mWallpapers.get(position).mThumb;
+            if (thumb == null) {
+                Log.e(TAG, "Error decoding thumbnail for wallpaper #" + position);
+            }
+            return createImageTileView(mLayoutInflater, position, convertView, parent, thumb);
+        }
+    }
+
+    private static class BuiltInWallpapersAdapter extends BaseAdapter implements ListAdapter {
+        private LayoutInflater mLayoutInflater;
+        private ArrayList<ResourceWallpaperInfo> mWallpapers;
+
+        BuiltInWallpapersAdapter(Activity activity, ArrayList<ResourceWallpaperInfo> wallpapers) {
+            mLayoutInflater = activity.getLayoutInflater();
+            mWallpapers = wallpapers;
+        }
+
+        public int getCount() {
+            return mWallpapers.size();
+        }
+
+        public ResourceWallpaperInfo getItem(int position) {
             return mWallpapers.get(position);
         }
 

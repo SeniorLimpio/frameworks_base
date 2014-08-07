@@ -2624,18 +2624,20 @@ public abstract class PackageManager {
             throws NameNotFoundException;
 
     /** @hide */
-    public abstract Resources getThemedResourcesForApplication(ApplicationInfo app,
-                                                               String themePkgName)
+    public abstract Resources getResourcesForApplicationAsUser(String appPackageName, int userId)
             throws NameNotFoundException;
+
+    /** @hide */
+    public abstract Resources getThemedResourcesForApplication(ApplicationInfo app,
+            String themePkgName) throws NameNotFoundException;
 
     /** @hide */
     public abstract Resources getThemedResourcesForApplication(String appPackageName,
-                                                               String themePkgName)
-            throws NameNotFoundException;
+            String themePkgName) throws NameNotFoundException;
 
     /** @hide */
-    public abstract Resources getResourcesForApplicationAsUser(String appPackageName, int userId)
-            throws NameNotFoundException;
+    public abstract Resources getThemedResourcesForApplicationAsUser(String appPackageName,
+            String themePkgName, int userId) throws NameNotFoundException;
 
     /**
      * Retrieve overall information about an application package defined
@@ -3210,6 +3212,22 @@ public abstract class PackageManager {
      * @throws IllegalArgumentException if the named package does not exist.
      */
     public abstract int getApplicationEnabledSetting(String packageName);
+
+    /**
+     * @param packageName
+     * @return
+     *
+     * @hide
+     */
+    public abstract boolean getHeadsUpSetting(String packageName);
+
+    /**
+     * @param packageName
+     * @param enabled
+     *
+     * @hide
+     */
+    public abstract void setHeadsUpSetting(String packageName, boolean enabled);
 
     /**
      * Puts the package in a blocked state, which is almost like an uninstalled state,

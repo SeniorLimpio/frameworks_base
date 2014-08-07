@@ -2932,17 +2932,27 @@ public final class Settings {
         public static final String HALO_HIDE = "halo_hide";
 
         /**
-         * HALO pause activities?, defaults to 0 (no, do not pause) on devices which isLargeRAM() == true
-         * otherwise it defaults to 1 (yes, do pause)
-         * @hide
-         */
-        public static final String HALO_PAUSE = "halo_pause";
-
-        /**
          * HALO size fraction, default is 1.0f (normal)
          * @hide
          */
         public static final String HALO_SIZE = "halo_size";
+
+        /**
+         *
+         * @hide
+         */
+        public static final String SYSTEMUI_WEATHER_HEADER_VIEW = "cfx_systemui_header_weather_view";
+
+        /**
+         * @hide
+         */
+        public static final String SYSTEMUI_WEATHER_NOTIFICATION = "cfx_weather_notification";
+
+        /**
+         *
+         * @hide
+         */
+        public static final String SYSTEMUI_WEATHER_ICON = "cfx_weather_icon";
 
         /**
          * HALO color, default is 0xff33b5e5 (normal)
@@ -3883,6 +3893,49 @@ public final class Settings {
                 "notification_shortcuts_color_mode";
 
         /**
+         * Whether heads up notification is shown on the bottom of the screen (default = disabled)
+         *
+         * @hide
+         */
+        public static final String HEADS_UP_GRAVITY_BOTTOM = "heads_up_gravity_bottom";
+
+        /**
+         * Whether heads up notification is expanded by default (default = disabled)
+         *
+         * @hide
+         */
+        public static final String HEADS_UP_EXPANDED = "heads_up_expanded";
+
+        /**
+         * Time where heads up is disabled by user interaction (default = 5 minutes)
+         *
+         * @hide
+         */
+        public static final String HEADS_UP_SNOOZE_TIME = "heads_up_snooze_time";
+
+        /**
+         * Time how long heads up will show till it is automatically hidden.
+         * If time = 0 notifications stays till the user interacts with it.
+         *
+         * @hide
+         */
+        public static final String HEADS_UP_NOTIFCATION_DECAY = "heads_up_notifcation_decay";
+
+        /**
+         * Whether notification updates from background notifications should be shown as heads up.
+         *
+         * @hide
+         */
+        public static final String HEADS_UP_SHOW_UPDATE = "heads_up_show_update";
+
+        /**
+         * Heads Up in Floating Window
+         *
+         * @hide
+         */
+        public static final String HEADS_UP_FLOATING_WINDOW = "heads_up_floating_window";
+
+        /**
          * Sensitivity of all system shake events
          * @hide
          */
@@ -3912,54 +3965,162 @@ public final class Settings {
 
         /**
          * Whether to enable quiet hours.
+         * 0 = Setting disabled
+         * 1 = Setting enabled but inactive
+         * 2 = Timout ignored and active
+         * 3 = Timeout enabled and active
+         * 4 = Timeout enabled and waiting on charging/wifi connected
          * @hide
          */
         public static final String QUIET_HOURS_ENABLED = "quiet_hours_enabled";
 
         /**
          * Whether quiet hours will enable or disable themselves on volume change
+         * 0 = Setting disabled
+         * 1 = When device is silenced
+         * 2 = When device is set to vibrate or silent
          * @hide
          */
         public static final String QUIET_HOURS_AUTOMATIC = "quiet_hours_automatic";
 
         /**
-         * Sets when quiet hours starts. This is stored in minutes from the start of the day.
+         * Whether to enable quiet hours.
+         * 0 = Setting disabled
+         * 1 = Setting enabled but inactive
+         * 2 = Setting enabled and power connected
+         * @hide
+         */
+        public static final String QUIET_HOURS_REQUIRE_CHARGING = "quiet_hours_require_charging";
+
+        /**
+         * Whether to enable quiet hours.
+         * 0 = Setting disabled
+         * 1 = Setting enabled but inactive
+         * 2 = Setting enabled and wifi connected
+         * @hide
+         */
+        public static final String QUIET_HOURS_REQUIRE_WIFI = "quiet_hours_require_wifi";
+
+        /**
+         * If we do or do not use daily time-range preferences
+         * @hide
+         */
+        public static final String QUIET_HOURS_DAILY = "quiet_hours_daily";
+
+        /**
+         * Holding cartridge for start times if single day preference is enabled
          * @hide
          */
         public static final String QUIET_HOURS_START = "quiet_hours_start";
 
         /**
-         * Sets when quiet hours end. This is stored in minutes from the start of the day.
+         * Holding cartridge for end times if single day preference is enabled
          * @hide
          */
         public static final String QUIET_HOURS_END = "quiet_hours_end";
 
         /**
+         * Sets when quiet hours starts for each day.  Parsed as a split string
+         * by a single controller to update all settings values simultaneiously.
+         * This is stored in minutes from the start of the day.
+         * 0 - 6 are parsed and compared to Sunday (1) through Saturday (7)
+         * 7 - 13 are parsed and compared to Sunday through Saturday
+         * for additional day times (work/weekend-scheduling/etc).
+         * @hide
+         */
+        public static final String[] QUIET_HOURS_START_TIMES = new String[] {
+            "quiet_hours_start_times_sun",
+            "quiet_hours_start_times_mon",
+            "quiet_hours_start_times_tues",
+            "quiet_hours_start_times_wed",
+            "quiet_hours_start_times_thurs",
+            "quiet_hours_start_times_fri",
+            "quiet_hours_start_times_sat",
+            "quiet_hours_start_times_sun_extra",
+            "quiet_hours_start_times_mon_extra",
+            "quiet_hours_start_times_tues_extra",
+            "quiet_hours_start_times_wed_extra",
+            "quiet_hours_start_times_thurs_extra",
+            "quiet_hours_start_times_fri_extra",
+            "quiet_hours_start_times_sat_extra"
+        };
+
+        /**
+         * Sets when quiet hours end for each day.  Parsed as a split string
+         * by a single controller to update all settings values simultaneiously.
+         * This is stored in minutes from the start of the day.
+         * 0 - 6 are parsed and compared to Sunday (1) through Saturday (7)
+         * 7 - 13 are parsed and compared to Sunday through Saturday
+         * for additional day times (work/weekend-scheduling/etc).
+         * @hide
+         */
+        public static final String[] QUIET_HOURS_END_TIMES = new String[] {
+            "quiet_hours_end_times_sun",
+            "quiet_hours_end_times_mon",
+            "quiet_hours_end_times_tues",
+            "quiet_hours_end_times_wed",
+            "quiet_hours_end_times_thurs",
+            "quiet_hours_end_times_fri",
+            "quiet_hours_end_times_sat",
+            "quiet_hours_end_times_sun_extra",
+            "quiet_hours_end_times_mon_extra",
+            "quiet_hours_end_times_tues_extra",
+            "quiet_hours_end_times_wed_extra",
+            "quiet_hours_end_times_thurs_extra",
+            "quiet_hours_end_times_fri_extra",
+            "quiet_hours_end_times_sat_extra"
+        };
+
+        /**
          * Whether to remove the sound from phone ringing during quiet hours.
+         * 0 = Setting disabled
+         * 1 = Setting enabled but inactive
+         * 2 = Setting enabled and active
          * @hide
          */
         public static final String QUIET_HOURS_RINGER = "quiet_hours_ringer";
 
         /**
          * Whether to remove the sound from outgoing notifications during quiet hours.
+         * 0 = Setting disabled
+         * 1 = Setting enabled but inactive
+         * 2 = Setting enabled and active
          * @hide
          */
         public static final String QUIET_HOURS_MUTE = "quiet_hours_mute";
 
         /**
          * Whether to disable haptic feedback during quiet hours.
+         * 0 = Setting disabled
+         * 1 = Setting enabled but inactive
+         * 2 = Setting enabled and active
          * @hide
          */
         public static final String QUIET_HOURS_HAPTIC = "quiet_hours_haptic";
 
         /**
+         * Whether to disable system sounds during quiet hours.
+         * 0 = Setting disabled
+         * 1 = Setting enabled but inactive
+         * 2 = Setting enabled and active
+         * @hide
+         */
+        public static final String QUIET_HOURS_SYSTEM = "quiet_hours_system";
+
+        /**
          * Whether to remove the vibration from outgoing notifications during quiet hours.
+         * 0 = Setting disabled
+         * 1 = Setting enabled but inactive
+         * 2 = Setting enabled and active
          * @hide
          */
         public static final String QUIET_HOURS_STILL = "quiet_hours_still";
 
         /**
          * Whether to attempt to dim the LED color during quiet hours.
+         * 0 = Setting disabled
+         * 1 = Setting enabled but inactive
+         * 2 = Setting enabled and active
          * @hide
          */
         public static final String QUIET_HOURS_DIM = "quiet_hours_dim";
@@ -3998,6 +4159,13 @@ public final class Settings {
          * @hide
          */
         public static final String DIALPAD_STATE = "dialpad_state";
+
+        /**
+         * Whether incomming call UI stays in background and shows as heads up notification
+         *
+         * @hide
+         */
+        public static final String CALL_UI_AS_HEADS_UP = "call_ui_as_heads_up";
 
         /**
          * Whether flip action during incomming call should mute or dismiss
@@ -4175,18 +4343,18 @@ public final class Settings {
          * Custom System Animations
          * @hide
          */
-        public static final String[] ACTIVITY_ANIMATION_CONTROLS = new String[] {  
+        public static final String[] ACTIVITY_ANIMATION_CONTROLS = new String[] {
                 "activity_open",
                 "activity_close",
-                "task_open",  
-                "task_close",  
+                "task_open",
+                "task_close",
                 "task_to_front",
-                "task_to_back",  
-                "wallpaper_open",  
-                "wallpaper_close",  
-                "wallpaper_intra_open",  
-                "wallpaper_intra_close",  
-        };  
+                "task_to_back",
+                "wallpaper_open",
+                "wallpaper_close",
+                "wallpaper_intra_open",
+                "wallpaper_intra_close",
+        };
         public static final String ANIMATION_CONTROLS_DURATION = "animation_controls_duration";
 
         /**
@@ -4648,7 +4816,16 @@ public final class Settings {
         public static final String LOCKSCREEN_NOTIFICATIONS_HEIGHT = "lockscreen_notifications_height";
 
         /**
+         * Whether to show how to reset the "On-The-Spot Preference" on appearance
+         * 0 = not the first run
+         * 1 = first run
+         * @hide
+         */
+        public static final String ON_THE_SPOT_FIRST_TIME = "on_the_spot_first_time";
+
+        /**
          * Changes the offset of the notifications to the top of the screen
+        /**
          * @hide
          */
         public static final String LOCKSCREEN_NOTIFICATIONS_OFFSET_TOP = "lockscreen_notifications_offset_top";
@@ -4724,6 +4901,11 @@ public final class Settings {
          */
         public static final String RECENTS_RAM_BAR_ACTIVE_APPS_COLOR = "recents_ram_bar_active_apps_color";
 
+        /**
+         * Disable heads up on the lockscreen when notifications are enabled
+         * @hide
+         */
+        public static final String LOCKSCREEN_NOTIFICATIONS_DISABLE_HEADS_UP = "lockscreen_notifications_disable_heads_up";
 
         /**
          * Show the pending notification counts as overlays on the status bar
@@ -4816,6 +4998,34 @@ public final class Settings {
         public static final String WHITELIST_APP_CIRCLE_BAR = "whitelist_app_circle_bar";
 
         /**
+         * Width of the app circle bar trigger
+         *
+         * @hide
+         */
+        public static final String APP_CIRCLE_BAR_TRIGGER_WIDTH = "app_circle_bar_trigger_width";
+
+        /**
+         * Position of app circle bar trigger
+         *
+         * @hide
+         */
+        public static final String APP_CIRCLE_BAR_TRIGGER_TOP = "app_circle_bar_trigger_top";
+
+        /**
+         * Height of the app circle bar trigger
+         *
+         * @hide
+         */
+        public static final String APP_CIRCLE_BAR_TRIGGER_HEIGHT = "app_circle_bar_trigger_height";
+
+        /**
+         * Whether to display the trigger region or not
+         *
+         * @hide
+         */
+        public static final String APP_CIRCLE_BAR_SHOW_TRIGGER = "app_circle_bar_show_trigger";
+
+        /**
          * Network traffic indicator, goes from least to greatest significant bitwise
          * 0 = Display up-stream traffic if set
          * 1 = Display down-stream traffic if set
@@ -4854,7 +5064,19 @@ public final class Settings {
         public static final String PEEK_STATE = "peek_state";
 
         /**
-<<<<<<< HEAD
+         * Time to show notification
+         * 300ms = default
+         * @hide
+         */
+        public static final String PEEK_TIME = "peek_time";
+
+        /**
+         * Set the timeout of peek when pikcing up the device
+         * @hide
+         */
+        public static final String PEEK_PICKUP_TIMEOUT = "peek_pickup_timeout";
+
+        /**
          * Whether or not to use the app sidebar
          *
          * @hide
@@ -4966,20 +5188,6 @@ public final class Settings {
          */
         public static final String HOVER_EXCLUDE_TOPMOST = "hover_exclude_topmost";
 
-         /**
-         * Hover: long fade out delay, default is 5000ms (5s).
-         *
-         * @hide
-         */
-        public static final String HOVER_LONG_FADE_OUT_DELAY = "hover_long_fade_out_delay";
-
-        /**
-         * Recent panel: Show topmost task
-         *
-         * @hide
-         */
-        public static final String RECENT_PANEL_SHOW_TOPMOST = "recent_panel_show_topmost";
-
         /**
          * Show the pending notification counts as overlays on the status bar
          * @hide
@@ -5005,6 +5213,24 @@ public final class Settings {
          * @hide
          */
         public static final String RECENT_PANEL_SHOW_TOPMOST = "recent_panel_show_topmost";
+
+        /**
+         * Recent panel background color
+         *
+         * @hide
+         */
+        public static final String RECENT_PANEL_BG_COLOR = "recent_panel_bg_color";
+
+        /**
+         * @hide
+         */
+        public static final String PROXIMITY_ON_WAKE = "proximity_on_wake";
+
+        /**
+         * Disable ads (HFM)
+         * @hide
+         */
+        public static final String HFM_DISABLE_ADS = "hfm_disable_ads";
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
@@ -5371,7 +5597,7 @@ public final class Settings {
             MOVED_TO_LOCK_SETTINGS.add(Secure.LOCK_PATTERN_VISIBLE);
             MOVED_TO_LOCK_SETTINGS.add(Secure.LOCK_PATTERN_TACTILE_FEEDBACK_ENABLED);
             MOVED_TO_LOCK_SETTINGS.add(Secure.LOCK_GESTURE_ENABLED);
-            MOVED_TO_LOCK_SETTINGS.add(Secure.LOCK_GESTURE_VISIBLE);	    
+            MOVED_TO_LOCK_SETTINGS.add(Secure.LOCK_GESTURE_VISIBLE);
 
             MOVED_TO_GLOBAL = new HashSet<String>();
             MOVED_TO_GLOBAL.add(Settings.Global.ADB_ENABLED);
@@ -7251,13 +7477,6 @@ public final class Settings {
         public static final String DEFAULT_THEME_COMPONENTS = "default_theme_components";
 
         /**
-         * Whether the default theme was applied on the first boot.
-         * @hide
-         */
-        public static final String DEFAULT_THEME_APPLIED_ON_FIRST_BOOT =
-                "default_theme_applied_on_first_boot";
-
-        /**
          * Whether to display the 'Wipe data' and 'Force close' options in the notification
          * area and in the recent app list
          * @hide
@@ -9023,6 +9242,13 @@ public final class Settings {
          * @hide
          */
         public static final String LOW_BATTERY_SOUND_TIMEOUT = "low_battery_sound_timeout";
+
+        /**
+         * Enable the QuickBoot feature
+         *
+         * @hide
+         */
+        public static final String ENABLE_QUICKBOOT = "enable_quickboot";
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings

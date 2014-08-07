@@ -153,7 +153,14 @@
     <string name="setting_confirmation_ask_me_later">Ask later</string>
     <string name="setting_confirmation_yes">Yes</string>
     <string name="setting_confirmation_no">No</string>
-	
+    <string name="setting_reset_hint_title">To reset preferences:</string>
+    <string name="setting_reset_hint_message">
+        <![CDATA[
+        <p>Open <b>Settings</b><br/>
+        Below Personal divider: <b>Backup & Reset</b><br/>
+        Below Personalization divider: <b>Reset preferences</b></p>
+        ]]></string>
+
     <!-- The title of the profile picker dialog. -->
     <string name="profile_picker_title">Profiles</string>
 
@@ -183,9 +190,18 @@
     <!-- Description of an application permission, listed so the user can choose whether they want to allow the application to do this. -->
     <string name="permdesc_useHardwareFramework">Allows an app access to the CM hardware framework.</string>
 
+    <!-- Heads up -->
+    <string name="permlab_changeHeadsUpState">enable or disable heads up</string>
+    <string name="permdesc_changeHeadsUpState">Allows the application to change whether another application is allowed to show normal notifications as heads up notification.</string>
+
     <!-- Permission: Intercept SMS -->
     <string name="permlab_interceptSmsSent">intercept outgoing SMS</string>
     <!-- Permission: Description for the Intercept SMS permission used by VoicePlus -->
     <string name="permdesc_interceptSmsSent">Allows the app to intercept an outgoing SMS. Malicious apps may use this to prevent outgoing SMS messages.</string>
+
+    <!-- [CHAR LIMIT=NONE] Title of an application permission, listed so the user can choose whether they want to allow the application to do this. -->
+    <string name="permlab_resetBatteryStats">reset battery statistics</string>
+    <!-- [CHAR LIMIT=NONE] Description of an application permission, listed so the user can choose whether they want to allow the application to do this. -->
+    <string name="permdesc_resetBatteryStats">Allows an application to reset the current low-level battery use data.</string>
 
 </resources>

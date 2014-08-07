@@ -2427,6 +2427,15 @@ public abstract class Context {
     public static final String USER_SERVICE = "user";
 
     /**
+     * Determine whether the application or calling application has
+     * heads up notification enabled. Non system applications and content providers
+     * can check this value if they wish to honor the heads up feature.
+     *
+     * @hide
+     */
+    public abstract boolean isHeadsUpEnabled();
+
+    /**
      * Use with {@link #getSystemService} to retrieve a
      * {@link android.app.AppOpsManager} for tracking application operations
      * on the device.
@@ -2485,6 +2494,16 @@ public abstract class Context {
      * @hide
      */
     public static final String BATTERY_SERVICE = "battery";
+
+    /**
+     * Use with {@link #getSystemService} to retrieve a
+     * {@link com.android.server.TorchService} for accessing torch service.
+     *
+     * @see #getSystemService
+     * @see com.android.server.TorchService
+     * @hide
+     */
+    public static final String TORCH_SERVICE = "torch";
 
     /**
      * Determine whether the given permission is allowed for a particular
@@ -2897,6 +2916,18 @@ public abstract class Context {
      */
     public abstract Context createPackageContextAsUser(
             String packageName, int flags, UserHandle user)
+            throws PackageManager.NameNotFoundException;
+
+    /**
+     * Similar to {@link #createPackageContext(String, int)}, but with a
+     * different {@link UserHandle}. For example, {@link #getContentResolver()}
+     * will open any {@link Uri} as the given user.  A theme package can be
+     * specified which will be used when adding resources to this context
+     *
+     * @hide
+     */
+    public abstract Context createPackageContextAsUser(
+            String packageName, String themePackageName, int flags, UserHandle user)
             throws PackageManager.NameNotFoundException;
 
     /**

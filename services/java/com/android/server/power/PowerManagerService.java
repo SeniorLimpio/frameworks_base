@@ -29,6 +29,7 @@ import com.android.server.display.DisplayManagerService;
 import com.android.server.dreams.DreamManagerService;
 
 import android.Manifest;
+import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -37,6 +38,9 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.database.ContentObserver;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.hardware.SystemSensorManager;
 import android.net.Uri;
@@ -69,6 +73,7 @@ import java.util.ArrayList;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 
 import libcore.util.Objects;
 
@@ -91,6 +96,7 @@ public final class PowerManagerService extends IPowerManager.Stub
     private static final int MSG_SCREEN_ON_BLOCKER_RELEASED = 3;
     // Message: Sent to poll whether the boot animation has terminated.
     private static final int MSG_CHECK_IF_BOOT_ANIMATION_FINISHED = 4;
+    private static final int MSG_WAKE_UP = 5;
 
     // Dirty bit: mWakeLocks changed
     private static final int DIRTY_WAKE_LOCKS = 1 << 0;
@@ -174,6 +180,11 @@ public final class PowerManagerService extends IPowerManager.Stub
 
     // Max time (microseconds) to allow a CPU boost for
     private static final int MAX_CPU_BOOST_TIME = 5000000;
+
+    // Max time allowed for proximity check
+    private static final int MAX_PROXIMITY_WAIT = 200;
+
+    private static final float PROXIMITY_NEAR_THRESHOLD = 5.0f;
 
     private Context mContext;
     private LightsService mLightsService;
@@ -416,6 +427,10 @@ public final class PowerManagerService extends IPowerManager.Stub
     private static native void nativeCpuBoost(int duration);
     private boolean mKeyboardVisible = false;
 
+    private SensorManager mSensorManager;
+    private Sensor mProximitySensor;
+    private boolean mProximityWake;
+
     public PowerManagerService() {
         synchronized (mLock) {
             mWakeLockSuspendBlocker = createSuspendBlockerLocked("PowerManagerService.WakeLocks");
@@ -448,6 +463,8 @@ public final class PowerManagerService extends IPowerManager.Stub
         mHandlerThread = new HandlerThread(TAG);
         mHandlerThread.start();
         mHandler = new PowerManagerHandler(mHandlerThread.getLooper());
+        mSensorManager = (SensorManager) mContext.getSystemService(Context.SENSOR_SERVICE);
+        mProximitySensor = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
 
         Watchdog.getInstance().addMonitor(this);
         Watchdog.getInstance().addThread(mHandler, mHandlerThread.getName());
@@ -574,6 +591,9 @@ public final class PowerManagerService extends IPowerManager.Stub
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.WAKELOCK_BLOCKING_LIST),
                     false, mSettingsObserver, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.PROXIMITY_ON_WAKE),
+                    false, mSettingsObserver, UserHandle.USER_ALL);
 
             // Go.
             readConfigurationLocked();
@@ -620,11 +640,11 @@ public final class PowerManagerService extends IPowerManager.Stub
                 UserHandle.USER_CURRENT);
         mStayOnWhilePluggedInSetting = Settings.Global.getInt(resolver,
                 Settings.Global.STAY_ON_WHILE_PLUGGED_IN, BatteryManager.BATTERY_PLUGGED_AC);
-
         mElectronBeamMode = Settings.System.getIntForUser(resolver,
                 Settings.System.SYSTEM_POWER_CRT_MODE,
                 1, UserHandle.USER_CURRENT);
-
+        mProximityWake = Settings.System.getInt(resolver,
+                Settings.System.PROXIMITY_ON_WAKE, 0) == 1;
         mWakeLockBlockingEnabled = Settings.System.getIntForUser(resolver,
                 Settings.System.WAKELOCK_BLOCKING_ENABLED,
                 0, UserHandle.USER_CURRENT);
@@ -1056,6 +1076,24 @@ public final class PowerManagerService extends IPowerManager.Stub
         }
     }
 
+    private boolean isQuickBootCall() {
+
+        ActivityManager activityManager = (ActivityManager) mContext
+                .getSystemService(Context.ACTIVITY_SERVICE);
+
+        List<ActivityManager.RunningAppProcessInfo> runningList = activityManager
+                .getRunningAppProcesses();
+        int callingPid = Binder.getCallingPid();
+        for (ActivityManager.RunningAppProcessInfo processInfo : runningList) {
+            if (processInfo.pid == callingPid) {
+                String process = processInfo.processName;
+                if ("com.qapp.quickboot".equals(process))
+                    return true;
+            }
+        }
+        return false;
+    }
+
     @Override // Binder call
     public void userActivity(long eventTime, int event, int flags) {
         final long now = SystemClock.uptimeMillis();
@@ -1170,25 +1208,104 @@ public final class PowerManagerService extends IPowerManager.Stub
         }
     }
 
-    @Override // Binder call
-    public void wakeUp(long eventTime) {
+    /**
+     * @hide
+     */
+    private void wakeUp(final long eventTime, boolean checkProximity) {
         if (eventTime > SystemClock.uptimeMillis()) {
             throw new IllegalArgumentException("event time must not be in the future");
         }
 
+        // check wakeup caller under QuickBoot mode
+        if (SystemProperties.getInt("sys.quickboot.enable", 0) == 1) {
+            if (!isQuickBootCall()) {
+                    Slog.d(TAG, "ignore wakeup request under QuickBoot");
+                    return;
+                }
+        }
+
         mContext.enforceCallingOrSelfPermission(android.Manifest.permission.DEVICE_POWER, null);
 
-        final long ident = Binder.clearCallingIdentity();
-        try {
-            wakeUpInternal(eventTime);
-        } finally {
-            Binder.restoreCallingIdentity(ident);
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                final long ident = Binder.clearCallingIdentity();
+                try {
+                    wakeUpInternal(eventTime);
+                } finally {
+                    Binder.restoreCallingIdentity(ident);
+                }
+            }
+        };
+        if (checkProximity) {
+            runWithProximityCheck(r);
+        } else {
+            r.run();
         }
     }
 
+    private void runWithProximityCheck(Runnable r) {
+        if (mHandler.hasMessages(MSG_WAKE_UP)) {
+            // There is already a message queued;
+            return;
+        }
+        if (mProximityWake && mProximitySensor != null) {
+            Message msg = mHandler.obtainMessage(MSG_WAKE_UP);
+            msg.obj = r;
+            mHandler.sendMessageDelayed(msg, MAX_PROXIMITY_WAIT);
+            runPostProximityCheck(r);
+        } else {
+            r.run();
+        }
+    }
+
+    private void runPostProximityCheck(final Runnable r) {
+        if (mSensorManager == null) {
+            r.run();
+            return;
+        }
+        mSensorManager.registerListener(new SensorEventListener() {
+            @Override
+            public void onSensorChanged(SensorEvent event) {
+                mSensorManager.unregisterListener(this);
+                if (!mHandler.hasMessages(MSG_WAKE_UP)) {
+                    Slog.w(TAG, "The proximity sensor took too long, wake event already triggered!");
+                    return;
+                }
+                mHandler.removeMessages(MSG_WAKE_UP);
+
+                float distance = event.values[0];
+                if (distance >= PROXIMITY_NEAR_THRESHOLD
+                        || distance >= mProximitySensor.getMaximumRange()) {
+                    r.run();
+                }
+            }
+
+            @Override
+            public void onAccuracyChanged(Sensor sensor, int accuracy) {}
+
+        }, mProximitySensor, SensorManager.SENSOR_DELAY_FASTEST);
+    }
+
+    @Override // Binder call
+    public void wakeUpWithProximityCheck(long eventTime) {
+        wakeUp(eventTime, true);
+    }
+
+    @Override // Binder call
+    public void wakeUp(long eventTime) {
+        wakeUp(eventTime, false);
+    }
+
     // Called from native code.
-    private void wakeUpFromNative(long eventTime) {
-        wakeUpInternal(eventTime);
+    private void wakeUpFromNative(final long eventTime) {
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                wakeUpInternal(eventTime);
+            }
+        };
+        runWithProximityCheck(r);
     }
 
     private void wakeUpInternal(long eventTime) {
@@ -1231,6 +1348,17 @@ public final class PowerManagerService extends IPowerManager.Stub
         userActivityNoUpdateLocked(
                 eventTime, PowerManager.USER_ACTIVITY_EVENT_OTHER, 0, Process.SYSTEM_UID);
         return true;
+    }
+
+    private void enableQbCharger(boolean enable) {
+        if (SystemProperties.getInt("sys.quickboot.enable", 0) == 1 &&
+                SystemProperties.getInt("sys.quickboot.poweroff", 0) != 1) {
+            // only handle "charged" event, native charger will handle
+            // "uncharged" event itself
+            if (enable && mIsPowered && !isScreenOn()) {
+                SystemProperties.set("sys.qbcharger.enable", "true");
+            }
+        }
     }
 
     @Override // Binder call
@@ -1435,6 +1563,7 @@ public final class PowerManagerService extends IPowerManager.Stub
                         + ", mBatteryLevel=" + mBatteryLevel);
             }
 
+            enableQbCharger(mIsPowered);
             if (wasPowered != mIsPowered || oldPlugType != mPlugType) {
                 mDirty |= DIRTY_IS_POWERED;
 
@@ -1468,6 +1597,10 @@ public final class PowerManagerService extends IPowerManager.Stub
             boolean wasPowered, int oldPlugType, boolean dockedOnWirelessCharger) {
         // Don't wake when powered unless configured to do so.
         if (!mWakeUpWhenPluggedOrUnpluggedConfig) {
+            return false;
+        }
+
+       if (SystemProperties.getInt("sys.quickboot.enable", 0) == 1) {
             return false;
         }
 
@@ -2787,6 +2920,9 @@ public final class PowerManagerService extends IPowerManager.Stub
                     break;
                 case MSG_CHECK_IF_BOOT_ANIMATION_FINISHED:
                     checkIfBootAnimationFinished();
+                    break;
+                case MSG_WAKE_UP:
+                    ((Runnable) msg.obj).run();
                     break;
             }
         }

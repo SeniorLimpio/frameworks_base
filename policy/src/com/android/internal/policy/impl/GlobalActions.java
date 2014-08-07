@@ -27,14 +27,17 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Profile;
 import android.app.ProfileManager;
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.content.pm.ThemeUtils;
 import android.content.pm.UserInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.ContentObserver;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -257,6 +260,18 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         }
         mItems = new ArrayList<Action>();
 
+        int quickbootAvailable = 1;
+        final PackageManager pm = mContext.getPackageManager();
+        try {
+            pm.getPackageInfo("com.qapp.quickboot", PackageManager.GET_META_DATA);
+        } catch (NameNotFoundException e) {
+            quickbootAvailable = 0;
+        }
+
+        final boolean quickbootEnabled = Settings.Global.getInt(
+                mContext.getContentResolver(), Settings.Global.ENABLE_QUICKBOOT,
+                quickbootAvailable) == 1;
+
         // bug report, if enabled
         if (Settings.Global.getInt(mContext.getContentResolver(),
                 Settings.Global.BUGREPORT_IN_POWER_MENU, 0) != 0 && isCurrentUserOwner()) {
@@ -315,8 +330,14 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                             config.getClickActionDescription()) {
 
                         public void onPress() {
-                            // shutdown by making sure radio and power are handled accordingly.
-                            mWindowManagerFuncs.shutdown(true);
+                        // goto quickboot mode
+                        if (quickbootEnabled) {
+                            startQuickBoot();
+                            return;
+                        }
+
+                        // shutdown by making sure radio and power are handled accordingly.
+                        mWindowManagerFuncs.shutdown(true);
                         }
 
                         public boolean showDuringKeyguard() {
@@ -1406,6 +1427,16 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                             ServiceManager.getService("edgegestureservice"));
             }
             return mEdgeGestureService;
+        }
+    }
+
+    private void startQuickBoot() {
+
+        Intent intent = new Intent("org.codeaurora.action.QUICKBOOT");
+        intent.putExtra("mode", 0);
+        try {
+            mContext.startActivityAsUser(intent,UserHandle.CURRENT);
+        } catch (ActivityNotFoundException e) {
         }
     }
 

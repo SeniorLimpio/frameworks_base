@@ -37,6 +37,7 @@ import android.os.Message;
 import android.os.Process;
 import android.os.RemoteException;
 import android.os.SystemClock;
+import android.os.SystemProperties;
 import android.os.UserHandle;
 import android.util.EventLog;
 import android.util.Log;
@@ -134,6 +135,7 @@ public final class BroadcastQueue {
      */
     int mPendingBroadcastRecvIndex;
 
+    static ArrayList<String> quickbootWhiteList = null;
     static final int BROADCAST_INTENT_MSG = ActivityManagerService.FIRST_BROADCAST_QUEUE_MSG;
     static final int BROADCAST_TIMEOUT_MSG = ActivityManagerService.FIRST_BROADCAST_QUEUE_MSG + 1;
 
@@ -420,11 +422,16 @@ public final class BroadcastQueue {
             Intent intent, int resultCode, String data, Bundle extras,
             boolean ordered, boolean sticky, int sendingUser) throws RemoteException {
         // Send the intent to the receiver asynchronously using one-way binder calls.
-        if (app != null && app.thread != null) {
-            // If we have an app thread, do the call through that so it is
-            // correctly ordered with other one-way calls.
-            app.thread.scheduleRegisteredReceiver(receiver, intent, resultCode,
-                    data, extras, ordered, sticky, sendingUser, app.repProcState);
+        if (app != null) {
+            if (app.thread != null) {
+                // If we have an app thread, do the call through that so it is
+                // correctly ordered with other one-way calls.
+                app.thread.scheduleRegisteredReceiver(receiver, intent, resultCode,
+                        data, extras, ordered, sticky, sendingUser, app.repProcState);
+            } else {
+                // Application has died. Receiver doesn't exist.
+                throw new RemoteException("app.thread must not be null");
+            }
         } else {
             receiver.performReceive(intent, resultCode, data, extras, ordered,
                     sticky, sendingUser);
@@ -673,6 +680,7 @@ public final class BroadcastQueue {
                             // (local and remote) isn't kept in the mBroadcastHistory.
                             r.resultTo = null;
                         } catch (RemoteException e) {
+                            r.resultTo = null;
                             Slog.w(TAG, "Failure ["
                                     + mQueueName + "] sending broadcast result of "
                                     + r.intent, e);
@@ -919,7 +927,10 @@ public final class BroadcastQueue {
             if (DEBUG_BROADCAST)  Slog.v(TAG,
                     "Need to start app ["
                     + mQueueName + "] " + targetProcess + " for broadcast " + r);
-            if ((r.curApp=mService.startProcessLocked(targetProcess,
+            if ((SystemProperties.getInt("sys.quickboot.enable", 0) == 1 &&
+                        SystemProperties.getInt("sys.quickboot.poweron", 0) == 0 &&
+                       !getWhiteList().contains(info.activityInfo.applicationInfo.packageName))
+                || (r.curApp=mService.startProcessLocked(targetProcess,
                     info.activityInfo.applicationInfo, true,
                     r.intent.getFlags() | Intent.FLAG_FROM_BACKGROUND,
                     "broadcast", r.curComponent,
@@ -942,6 +953,16 @@ public final class BroadcastQueue {
             mPendingBroadcast = r;
             mPendingBroadcastRecvIndex = recIdx;
         }
+    }
+
+    private ArrayList<String> getWhiteList() {
+        if (quickbootWhiteList == null) {
+            quickbootWhiteList = new ArrayList();
+            // allow legacy alarm app to be launched
+            quickbootWhiteList.add("com.android.deskclock");
+            quickbootWhiteList.add("com.qapp.quickboot");
+        }
+        return quickbootWhiteList;
     }
 
     final void setBroadcastTimeoutLocked(long timeoutTime) {

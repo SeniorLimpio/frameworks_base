@@ -458,6 +458,12 @@ public class MockContext extends Context {
         throw new UnsupportedOperationException();
     }
 
+    /** @hide */
+    @Override
+    public boolean isHeadsUpEnabled() {
+        throw new UnsupportedOperationException();
+    }
+
     @Override
     public int checkPermission(String permission, int pid, int uid) {
         throw new UnsupportedOperationException();
@@ -554,6 +560,13 @@ public class MockContext extends Context {
     @Override
     public Context createPackageContextAsUser(String packageName, int flags, UserHandle user)
             throws PackageManager.NameNotFoundException {
+        throw new UnsupportedOperationException();
+    }
+
+    /** {@hide} */
+    @Override
+    public Context createPackageContextAsUser(String packageName, String themePackageName,
+            int flags, UserHandle user) throws PackageManager.NameNotFoundException {
         throw new UnsupportedOperationException();
     }
 

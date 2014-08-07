@@ -19,16 +19,25 @@ package android.util;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.pm.ThemeUtils;
 import android.graphics.drawable.Drawable;
+import android.provider.Settings;
+import android.text.Html;
+import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
-import android.provider.Settings;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.internal.R;
 
+/**
+ * Hide from public API
+ * @hide
+ */
 public class SettingConfirmationHelper {
 
     private static final int NOT_SET = 0;
@@ -36,28 +45,45 @@ public class SettingConfirmationHelper {
     private static final int DISABLED = 2;
     private static final int ASK_LATER = 3;
 
+    private static Context mUiContext; /* theme engine context for getting just resources */
+
+    /**
+     * @hide
+     */
     public static interface OnSelectListener {
         void onSelect(boolean enabled);
     }
 
+    /**
+     * @hide
+     */
     public static void showConfirmationDialogForSetting(final Context mContext, String title, String msg, Drawable hint,
                                                         final String setting, final OnSelectListener mListener) {
-        int mCurrentStatus = Settings.System.getInt(mContext.getContentResolver(), setting, NOT_SET);
+        mUiContext = ThemeUtils.createUiContext(mContext); // avoid package mismatch
+
+        int mCurrentStatus = Settings.System.getInt(/*use system context to read*/mContext.getContentResolver(), setting, NOT_SET);
         if (mCurrentStatus == ENABLED || mCurrentStatus == DISABLED) return;
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-        LayoutInflater layoutInflater = LayoutInflater.from(mContext);
+        AlertDialog.Builder builder = new AlertDialog.Builder(mUiContext);
+        LayoutInflater layoutInflater = LayoutInflater.from(mUiContext);
         View dialogLayout = layoutInflater.inflate(R.layout.setting_confirmation_dialog, null);
         final ImageView visualHint = (ImageView)
                 dialogLayout.findViewById(R.id.setting_confirmation_dialog_visual_hint);
         visualHint.setImageDrawable(hint);
-        builder.setView(dialogLayout, 10, 10, 10, 20);
+        final TextView resetHintTitle =  (TextView)
+                dialogLayout.findViewById(R.id.setting_confirmation_dialog_how_to_reset_hint_title);
+        resetHintTitle.setText(mContext.getString(R.string.setting_reset_hint_title));
+        final TextView resetHintMessage =  (TextView)
+                dialogLayout.findViewById(R.id.setting_confirmation_dialog_how_to_reset_hint_message);
+        Spanned formattedResetHintMessageText = Html.fromHtml(mContext.getString(R.string.setting_reset_hint_message));
+        resetHintMessage.setText(formattedResetHintMessageText);
+        builder.setView(dialogLayout, 10, 10, 10, 10);
         builder.setTitle(title);
         builder.setMessage(msg);
         builder.setPositiveButton(R.string.setting_confirmation_yes,
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        Settings.System.putInt(mContext.getContentResolver(), setting, ENABLED);
+                        Settings.System.putInt(/*use system context to write*/mContext.getContentResolver(), setting, ENABLED);
                         if (mListener == null) return;
                         mListener.onSelect(true);
                     }
@@ -66,7 +92,7 @@ public class SettingConfirmationHelper {
         builder.setNeutralButton(R.string.setting_confirmation_ask_me_later,
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        Settings.System.putInt(mContext.getContentResolver(), setting, ASK_LATER);
+                        Settings.System.putInt(/*use system context to write*/mContext.getContentResolver(), setting, ASK_LATER);
                         if (mListener == null) return;
                         mListener.onSelect(false);
                     }
@@ -75,7 +101,7 @@ public class SettingConfirmationHelper {
         builder.setNegativeButton(R.string.setting_confirmation_no,
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        Settings.System.putInt(mContext.getContentResolver(), setting, DISABLED);
+                        Settings.System.putInt(/*use system context to write*/mContext.getContentResolver(), setting, DISABLED);
                         if (mListener == null) return;
                         mListener.onSelect(false);
                     }

@@ -39,6 +39,7 @@ import com.android.internal.app.IMediaContainerService;
 import com.android.internal.app.ResolverActivity;
 import com.android.internal.content.NativeLibraryHelper;
 import com.android.internal.content.PackageHelper;
+import com.android.internal.policy.impl.PhoneWindowManager;
 import com.android.internal.util.FastPrintWriter;
 import com.android.internal.util.FastXmlSerializer;
 import com.android.internal.util.XmlUtils;
@@ -138,6 +139,7 @@ import android.util.SparseArray;
 import android.util.Xml;
 import android.view.Display;
 import android.view.WindowManager;
+import android.view.WindowManagerPolicy;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
@@ -605,6 +607,9 @@ public class PackageManagerService extends IPackageManager.Stub {
 
     // Stores a list of users whose package restrictions file needs to be updated
     private HashSet<Integer> mDirtyUsers = new HashSet<Integer>();
+
+    WindowManager mWindowManager;
+    private final WindowManagerPolicy mPolicy; // to set packageName
 
     final private DefaultContainerConnection mDefContainerConn =
             new DefaultContainerConnection();
@@ -1207,8 +1212,9 @@ public class PackageManagerService extends IPackageManager.Stub {
 
         mInstaller = installer;
 
-        WindowManager wm = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
-        Display d = wm.getDefaultDisplay();
+        mWindowManager = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
+        Display d = mWindowManager.getDefaultDisplay();
+        mPolicy = new PhoneWindowManager();
         d.getMetrics(mMetrics);
 
         File frameworkDir;
@@ -4065,6 +4071,14 @@ public class PackageManagerService extends IPackageManager.Stub {
                             if (!isFirstBoot()) {
                                 i.getAndIncrement();
                                 try {
+                                    // give the packagename to the PhoneWindowManager
+                                    ApplicationInfo ai;
+                                    try {
+                                        ai = mContext.getPackageManager().getApplicationInfo(p.packageName, 0);
+                                    } catch (Exception e) {
+                                        ai = null;
+                                    }
+                                    mPolicy.setPackageName((String) (ai != null ? mContext.getPackageManager().getApplicationLabel(ai) : p.packageName));
                                     ActivityManagerNative.getDefault().showBootMessage(
                                         mContext.getResources().getString(
                                             com.android.internal.R.string.android_upgrading_apk,
@@ -5841,8 +5855,9 @@ public class PackageManagerService extends IPackageManager.Stub {
     }
 
     private byte[] getFileCrC(String path) {
+        ZipFile zfile = null;
         try {
-            ZipFile zfile = new ZipFile(path);
+            zfile = new ZipFile(path);
             ZipEntry entry = zfile.getEntry("META-INF/MANIFEST.MF");
             if (entry == null) {
                 Log.e(TAG, "Unable to get MANIFEST.MF from " + path);
@@ -5853,6 +5868,13 @@ public class PackageManagerService extends IPackageManager.Stub {
             if (crc == -1) Log.e(TAG, "Unable to get CRC for " + path);
             return ByteBuffer.allocate(8).putLong(crc).array();
         } catch (Exception e) {
+        } finally {
+            if (zfile != null)
+                try {
+                    zfile.close();
+                } catch (java.io.IOException ex) {
+                    //well, we tried.
+                }
         }
         return null;
     }
@@ -10400,6 +10422,7 @@ public class PackageManagerService extends IPackageManager.Stub {
                         false, //installed
                         true,  //stopped
                         true,  //notLaunched
+                        false, //heads up
                         false, //blocked
                         null, null, null, null, null);
                 if (!isSystemApp(ps)) {
@@ -11037,6 +11060,55 @@ public class PackageManagerService extends IPackageManager.Stub {
                 ? null
                 : new ComponentName(preferred.activityInfo.packageName,
                         preferred.activityInfo.name);
+    }
+
+    @Override
+    public void setHeadsUpSetting(String appPackageName,
+            boolean enabled, int userId) {
+        if (!sUserManager.exists(userId)) return;
+        setHeadsUp(appPackageName, enabled, userId);
+    }
+
+    @Override
+    public boolean getHeadsUpSetting(String packageName, int userId) {
+        if (!sUserManager.exists(userId)) return false;
+        int uid = Binder.getCallingUid();
+        enforceCrossUserPermission(uid, userId, false, "get heads up setting");
+        // reader
+        synchronized (mPackages) {
+            return mSettings.getHeadsUpSettingLPr(packageName, userId);
+        }
+    }
+
+    private void setHeadsUp(final String packageName,
+            final boolean enabled, final int userId) {
+        PackageSetting pkgSetting;
+        final int uid = Binder.getCallingUid();
+        final int permission = mContext.checkCallingPermission(
+                android.Manifest.permission.CHANGE_HEADS_UP_STATE);
+        final boolean allowedByPermission = (permission == PackageManager.PERMISSION_GRANTED);
+        enforceCrossUserPermission(uid, userId, false, "set heads up setting");
+
+        synchronized (mPackages) {
+            pkgSetting = mSettings.mPackages.get(packageName);
+            if (pkgSetting == null) {
+                throw new IllegalArgumentException(
+                        "Unknown package: " + packageName);
+            }
+            // Allow root and verify that userId is not being specified by a different user
+            if (!allowedByPermission && !UserHandle.isSameApp(uid, pkgSetting.appId)) {
+                throw new SecurityException(
+                        "Permission Denial: attempt to change heads up state from pid="
+                        + Binder.getCallingPid()
+                        + ", uid=" + uid + ", package uid=" + pkgSetting.appId);
+            }
+            if (pkgSetting.isHeadsUp(userId) == enabled) {
+                // Nothing to do
+                return;
+            }
+            pkgSetting.setHeadsUp(enabled, userId);
+            mSettings.writePackageRestrictionsLPr(userId);
+        }
     }
 
     @Override
@@ -12385,6 +12457,7 @@ public class PackageManagerService extends IPackageManager.Stub {
     /** Called by UserManagerService */
     void createNewUserLILPw(int userHandle, File path) {
         if (mInstaller != null) {
+            mInstaller.createUserConfig(userHandle);
             mSettings.createNewUserLILPw(this, mInstaller, userHandle, path);
         }
     }

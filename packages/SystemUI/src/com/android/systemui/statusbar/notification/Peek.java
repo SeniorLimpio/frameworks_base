@@ -71,10 +71,11 @@ public class Peek implements SensorActivityHandler.SensorChangedCallback {
     public final static boolean DEBUG = false;
 
     private static final float ICON_LOW_OPACITY = 0.3f;
-    private static final int NOTIFICATION_PEEK_TIME = 7000; // 7 secs
-    private static final int PARTIAL_WAKELOCK_TIME = 15000; // 15 secs
+    private static final int NOTIFICATION_PEEK_TIME = 5000; // 5 secs
     private static final long SCREEN_ON_START_DELAY = 300; // 300 ms
     private static final long REMOVE_VIEW_DELAY = 300; // 300 ms
+
+    private int mPeekPickupTimeout;
 
     private BaseStatusBar mStatusBar;
 
@@ -321,6 +322,10 @@ public class Peek implements SensorActivityHandler.SensorChangedCallback {
     private void scheduleTasks() {
         mHandler.removeCallbacksAndMessages(null);
 
+        int mTime = 5000;
+        mTime = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.PEEK_TIME, 5000);
+
         // turn on screen task
         mHandler.postDelayed(new Runnable() {
             @Override
@@ -339,7 +344,7 @@ public class Peek implements SensorActivityHandler.SensorChangedCallback {
                     mPowerManager.goToSleep(SystemClock.uptimeMillis());
                 }
             }
-        }, SCREEN_ON_START_DELAY + NOTIFICATION_PEEK_TIME);
+        }, SCREEN_ON_START_DELAY + mTime);
 
         // remove view task (make sure screen is off by delaying a bit)
         mHandler.postDelayed(new Runnable() {
@@ -347,7 +352,7 @@ public class Peek implements SensorActivityHandler.SensorChangedCallback {
             public void run() {
                 dismissNotification();
             }
-        }, SCREEN_ON_START_DELAY + (NOTIFICATION_PEEK_TIME * (long) 1.3));
+        }, SCREEN_ON_START_DELAY + (mTime * (long) 1.3));
     }
 
     public void showNotification(StatusBarNotification n, boolean update) {
@@ -398,7 +403,9 @@ public class Peek implements SensorActivityHandler.SensorChangedCallback {
                 }
 
                 mWakeLockHandler.removeCallbacks(mPartialWakeLockRunnable);
-                mWakeLockHandler.postDelayed(mPartialWakeLockRunnable, PARTIAL_WAKELOCK_TIME);
+                mPeekPickupTimeout = Settings.Secure.getIntForUser(mContext.getContentResolver(),
+                        Settings.System.PEEK_PICKUP_TIMEOUT, 0, UserHandle.USER_CURRENT);
+                mWakeLockHandler.postDelayed(mPartialWakeLockRunnable, mPeekPickupTimeout);
 
                 mNextNotification = n;
                 return;
@@ -622,7 +629,7 @@ public class Peek implements SensorActivityHandler.SensorChangedCallback {
 
         canvas.clipPath(path);
         Bitmap sourceBitmap = scaleBitmapImage;
-        canvas.drawBitmap(sourceBitmap, 
+        canvas.drawBitmap(sourceBitmap,
                 new Rect(0, 0, sourceBitmap.getWidth(), sourceBitmap.getHeight()),
                 new Rect(0, 0, targetWidth, targetHeight), null);
         return targetBitmap;

@@ -211,10 +211,6 @@
     <color name="power_menu_icon_default_color">#ffffffff</color>
     <color name="power_menu_text_default_color">#ffffffff</color>
 
-    <!-- TRDS colors -->
-    <color name="trds_background">#ffffffff</color>
-    <color name="trds_text">#ff000000</color>
-
     <!-- Progress bar color -->
     <integer-array name="pgcolors">
         <item>@color/holo_blue_dark</item>
@@ -238,5 +234,15 @@
 
     <color name="holo_yellow_dark">#ff8800</color>
     <color name="holo_purple_dark">#9933cc</color>
+
+    <!-- TRDS colors -->
+    <color name="trds_background">#ffffffff</color>
+    <color name="trds_text">#ff000000</color>
+
+    <!-- Volume panel -->
+    <color name="volume_panel_bg">#cc111111</color>
+
+    <!-- Action(s) list background used on expanded notifications -->
+    <drawable name="notification_action_list_bg">#00000000</drawable>
 
 </resources>

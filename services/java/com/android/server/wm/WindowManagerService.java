@@ -53,6 +53,7 @@ import android.app.IActivityManager;
 import android.app.StatusBarManager;
 import android.app.admin.DevicePolicyManager;
 import android.animation.ValueAnimator;
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -89,6 +90,7 @@ import android.os.StrictMode;
 import android.os.SystemClock;
 import android.os.SystemProperties;
 import android.os.Trace;
+import android.os.UserHandle;
 import android.os.WorkSource;
 import android.provider.Settings;
 import android.util.DisplayMetrics;
@@ -5247,10 +5249,12 @@ public class WindowManagerService extends IWindowManager.Stub
                 InputManagerService.SW_LID);
         if (sw > 0) {
             // Switch state: AKEY_STATE_DOWN or AKEY_STATE_VIRTUAL.
-            return LID_CLOSED;
+            sw = InputManagerService.SW_LID_INVERT ? LID_OPEN : LID_CLOSED;
+            return sw;
         } else if (sw == 0) {
             // Switch state: AKEY_STATE_UP.
-            return LID_OPEN;
+            sw = InputManagerService.SW_LID_INVERT ? LID_CLOSED : LID_OPEN;
+            return sw;
         } else {
             // Switch state: AKEY_STATE_UNKNOWN.
             return LID_ABSENT;
@@ -5478,10 +5482,23 @@ public class WindowManagerService extends IWindowManager.Stub
             mInputMonitor.setEventDispatchingLw(mEventDispatchingEnabled);
         }
 
+        // start QuickBoot to check if need restore from exception
+        if (SystemProperties.getBoolean("persist.sys.quickboot_ongoing", false))
+            checkQuickBootException();
+
         mPolicy.enableScreenAfterBoot();
 
         // Make sure the last requested orientation has been applied.
         updateRotationUnchecked(false, false);
+    }
+
+    private void checkQuickBootException() {
+        Intent intent = new Intent("org.codeaurora.action.QUICKBOOT");
+        intent.putExtra("mode", 2);
+        try {
+            mContext.startActivityAsUser(intent,UserHandle.CURRENT);
+        } catch (ActivityNotFoundException e) {
+        }
     }
 
     public void showBootMessage(final CharSequence msg, final boolean always) {

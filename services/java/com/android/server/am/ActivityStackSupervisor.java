@@ -64,6 +64,7 @@ import android.os.ParcelFileDescriptor;
 import android.os.PowerManager;
 import android.os.Process;
 import android.os.RemoteException;
+import android.os.ServiceManager;
 import android.os.SystemClock;
 import android.os.UserHandle;
 import android.util.EventLog;
@@ -72,6 +73,7 @@ import android.util.SparseIntArray;
 
 import com.android.internal.app.HeavyWeightSwitcherActivity;
 import com.android.internal.os.TransferPipe;
+import com.android.internal.statusbar.IStatusBarService;
 import com.android.server.am.ActivityManagerService.PendingActivityLaunch;
 import com.android.server.am.ActivityStack.ActivityState;
 import com.android.server.wm.StackBox;
@@ -113,6 +115,7 @@ public final class ActivityStackSupervisor {
     static final boolean VALIDATE_WAKE_LOCK_CALLER = false;
 
     final ActivityManagerService mService;
+    IStatusBarService mStatusBarService;
     final Context mContext;
     final Looper mLooper;
 
@@ -207,6 +210,11 @@ public final class ActivityStackSupervisor {
     SparseIntArray mUserStackInFront = new SparseIntArray(2);
 
     /**
+     * Is heads up currently enabled? Shared between ActivityStacks
+     */
+    String mHeadsUpPackageName = null;
+
+    /**
      * Is the privacy guard currently enabled? Shared between ActivityStacks
      */
     String mPrivacyGuardPackageName = null;
@@ -239,6 +247,26 @@ public final class ActivityStackSupervisor {
             mDismissKeyguardOnNextActivity = false;
             mWindowManager.dismissKeyguard();
         }
+    }
+
+    void hideHeadsUpCandidate(String packageName) {
+        try {
+            IStatusBarService statusbar = getStatusBarService();
+            if (statusbar != null) {
+                statusbar.hideHeadsUpCandidate(packageName);
+            }
+        } catch (RemoteException e) {
+            // re-acquire status bar service next time it is needed.
+            mStatusBarService = null;
+        }
+    }
+
+    IStatusBarService getStatusBarService() {
+        if (mStatusBarService == null) {
+            mStatusBarService = IStatusBarService.Stub.asInterface(
+                    ServiceManager.getService("statusbar"));
+        }
+        return mStatusBarService;
     }
 
     ActivityStack getFocusedStack() {
@@ -1724,7 +1752,7 @@ public final class ActivityStackSupervisor {
             TaskRecord sourceTask = sourceRecord.task;
             targetStack = sourceTask.stack;
             moveHomeStack(targetStack.isHomeStack());
-            mWindowManager.moveTaskToTop(sourceTask.taskId);
+            mWindowManager.moveTaskToTop(targetStack.topTask().taskId);
             if (!addingToTask &&
                     (launchFlags&Intent.FLAG_ACTIVITY_CLEAR_TOP) != 0) {
                 // In this case, we are adding the activity to an existing

@@ -2048,6 +2048,15 @@ public abstract class ActivityManagerNative extends Binder implements IActivityM
             reply.writeNoException();
             return true;
         }
+
+        case IS_HEADS_UP_ENABLED_TRANSACTION: {
+            data.enforceInterface(IActivityManager.descriptor);
+            int pid = data.readInt();
+            boolean res = isHeadsUpEnabledForProcess(pid);
+            reply.writeNoException();
+            reply.writeInt(res ? 1 : 0);
+            return true;
+        }
         }
 
         return super.onTransact(code, data, reply, flags);
@@ -2074,6 +2083,8 @@ public abstract class ActivityManagerNative extends Binder implements IActivityM
 
 class ActivityManagerProxy implements IActivityManager
 {
+    static final String TAG_TIMELINE = "Timeline";
+
     public ActivityManagerProxy(IBinder remote)
     {
         mRemote = remote;
@@ -2092,7 +2103,7 @@ class ActivityManagerProxy implements IActivityManager
         Parcel reply = Parcel.obtain();
 
         if (intent.getComponent() != null) {
-            Log.i("ActivityManager", "Timeline: Activity_launch_request id:"
+            Log.i(TAG_TIMELINE, "Timeline: Activity_launch_request id:"
                     + intent.getComponent().getPackageName() + " time:"
                     + SystemClock.uptimeMillis());
         }
@@ -2446,7 +2457,7 @@ class ActivityManagerProxy implements IActivityManager
     public void activityIdle(IBinder token, Configuration config, boolean stopProfiling)
             throws RemoteException
     {
-        Log.i("ActivityManager", "Timeline: Activity_idle id: " + token + " time:"
+        Log.i(TAG_TIMELINE, "Timeline: Activity_idle id: " + token + " time:"
                 + SystemClock.uptimeMillis());
         Parcel data = Parcel.obtain();
         Parcel reply = Parcel.obtain();
@@ -4714,6 +4725,19 @@ class ActivityManagerProxy implements IActivityManager
         reply.readException();
         data.recycle();
         reply.recycle();
+    }
+
+    public boolean isHeadsUpEnabledForProcess(int pid) throws RemoteException {
+        Parcel data = Parcel.obtain();
+        Parcel reply = Parcel.obtain();
+        data.writeInterfaceToken(IActivityManager.descriptor);
+        data.writeInt(pid);
+        mRemote.transact(IS_HEADS_UP_ENABLED_TRANSACTION, data, reply, 0);
+        reply.readException();
+        int res = reply.readInt();
+        data.recycle();
+        reply.recycle();
+        return res == 1;
     }
 
     private IBinder mRemote;

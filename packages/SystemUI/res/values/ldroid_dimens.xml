@@ -99,4 +99,7 @@
     <dimen name="default_notification_row_max_height">260dp</dimen>
     <dimen name="hover_tablet_width">478dp</dimen>
 
+    <!-- Heads up -->
+    <dimen name="heads_up_bottom_gap">5dp</dimen>
+
 </resources>

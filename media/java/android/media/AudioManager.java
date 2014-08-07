@@ -146,6 +146,13 @@ public class AudioManager {
         "android.media.MASTER_MUTE_CHANGED_ACTION";
 
     /**
+     * @hide Broadcast intent when a2dp routing changes
+     */
+    @SdkConstant(SdkConstantType.BROADCAST_INTENT_ACTION)
+    public static final String A2DP_ROUTE_CHANGED_ACTION =
+        "android.media.A2DP_ROUTE_CHANGED_ACTION";
+
+    /**
      * The new vibrate setting for a particular type.
      *
      * @see #VIBRATE_SETTING_CHANGED_ACTION
@@ -263,13 +270,13 @@ public class AudioManager {
         4,  // STREAM_VOICE_CALL
         7,  // STREAM_SYSTEM
         5,  // STREAM_RING
-        11, // STREAM_MUSIC
+        22, // STREAM_MUSIC
         6,  // STREAM_ALARM
         5,  // STREAM_NOTIFICATION
-        7,  // STREAM_BLUETOOTH_SCO
+        14, // STREAM_BLUETOOTH_SCO
         7,  // STREAM_SYSTEM_ENFORCED
-        11, // STREAM_DTMF
-        11, // STREAM_TTS
+        22, // STREAM_DTMF
+        22, // STREAM_TTS
         4   // STREAM_INCALL_MUSIC
     };
 
@@ -1888,7 +1895,10 @@ public class AudioManager {
      * Settings has an in memory cache, so this is fast.
      */
     private boolean querySoundEffectsEnabled() {
-        return Settings.System.getInt(mContext.getContentResolver(), Settings.System.SOUND_EFFECTS_ENABLED, 0) != 0;
+        return Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.SOUND_EFFECTS_ENABLED, 0) != 0
+                && Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.QUIET_HOURS_SYSTEM, 0) != 2;
     }
 
 

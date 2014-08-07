@@ -208,6 +208,21 @@ class WifiConfigStore {
         enableAllNetworks();
     }
 
+	String getDisabledHiddenAPList() {
+		int count = 0;
+		String scan_ap = "";
+		for(WifiConfiguration config : mConfiguredNetworks.values()) {
+			if(config != null && config.status == WifiConfiguration.Status.DISABLED
+					&& config.hiddenSSID) {
+				scan_ap += String.valueOf(config.networkId) + ",";
+				count++;
+			}
+		}
+		if (count > 0)
+			scan_ap = " scan_id=" + scan_ap.substring(0, scan_ap.length() - 1);
+
+		return scan_ap;
+	}
     /**
      * Fetch the list of currently configured networks
      * @return List of networks
@@ -1172,21 +1187,21 @@ class WifiConfigStore {
 
         setVariables: {
 
-            if (config.SSID != null &&
-                    !mWifiNative.setNetworkVariable(
-                        netId,
-                        WifiConfiguration.ssidVarName,
-                        config.SSID)) {
-                loge("failed to set SSID: "+config.SSID);
-                break setVariables;
-            }
-
             if (config.BSSID != null &&
                     !mWifiNative.setNetworkVariable(
                         netId,
                         WifiConfiguration.bssidVarName,
                         config.BSSID)) {
                 loge("failed to set BSSID: "+config.BSSID);
+                break setVariables;
+            }
+
+            if (config.SSID != null &&
+                    !mWifiNative.setNetworkVariable(
+                        netId,
+                        WifiConfiguration.ssidVarName,
+                        config.SSID)) {
+                loge("failed to set SSID: "+config.SSID);
                 break setVariables;
             }
 
