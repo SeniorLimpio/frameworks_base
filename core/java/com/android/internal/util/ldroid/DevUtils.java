@@ -1,4 +1,4 @@
-package com.android.internal.util.liquid;
+package com.android.internal.util.ldroid;
 
 import android.graphics.Color;
 

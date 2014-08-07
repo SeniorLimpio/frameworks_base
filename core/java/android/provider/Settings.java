@@ -5453,6 +5453,18 @@ public final class Settings {
         public static final String PA_PIE_CHEVRON_RIGHT = "pa_pie_chevron_right";
 
         /**
+         * Carrier Label Custom Color
+         * @hide
+         */
+        public static final String STATUS_BAR_CARRIER_COLOR = "status_bar_carrier_color";
+
+        /**
+         * show carrier in statusbar. The value is
+         * boolean (1 or 0).
+         */
+        public static final String STATUS_BAR_CARRIER = "status_bar_carrier";
+
+        /**
          * Whether to disable the navigation bar when in immersive mode and IME is showing
          *
          * @hide

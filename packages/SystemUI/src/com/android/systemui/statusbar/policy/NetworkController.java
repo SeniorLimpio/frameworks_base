@@ -39,6 +39,7 @@ import android.telephony.PhoneStateListener;
 import android.telephony.ServiceState;
 import android.telephony.SignalStrength;
 import android.telephony.TelephonyManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -249,6 +250,7 @@ public class NetworkController extends BroadcastReceiver implements DemoMode {
 
         // broadcasts
         IntentFilter filter = new IntentFilter();
+        filter.addAction(Intent.ACTION_CUSTOM_CARRIER_LABEL_CHANGED);
         filter.addAction("com.android.settings.LABEL_CHANGED");
         filter.addAction(WifiManager.RSSI_CHANGED_ACTION);
         filter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
@@ -462,6 +464,8 @@ public class NetworkController extends BroadcastReceiver implements DemoMode {
             updateConnectivity(intent);
             refreshViews();
         } else if (action.equals("com.android.settings.LABEL_CHANGED")) {
+            refreshViews();
+        } else if (action.equals(Intent.ACTION_CUSTOM_CARRIER_LABEL_CHANGED)) {
             refreshViews();
         } else if (action.equals(Intent.ACTION_CONFIGURATION_CHANGED)) {
             refreshLocale();
@@ -1145,6 +1149,10 @@ public class NetworkController extends BroadcastReceiver implements DemoMode {
         int N;
         final boolean emergencyOnly = isEmergencyOnly();
 
+        final String customCarrierLabel = Settings.System.getStringForUser
+                (mContext.getContentResolver(), Settings.System.NOTIFICATION_CUSTOM_CARRIER_LABEL,
+                UserHandle.USER_CURRENT);
+
         if (!mHasMobileDataFeature) {
             mDataSignalIconId = mPhoneSignalIconId = 0;
             mQSPhoneSignalIconId = 0;
@@ -1311,11 +1319,9 @@ public class NetworkController extends BroadcastReceiver implements DemoMode {
         final String customLabel = Settings.System.getString(mContext.getContentResolver(),
                 Settings.System.NOTIFICATION_CUSTOM_CARRIER_LABEL);
 
-        if (customLabel != null && customLabel.length() > 0) {
-            if (combinedLabel.equals(mobileLabel)) {
-                combinedLabel = customLabel;
-            }
-            mobileLabel = customLabel;
+        if (!TextUtils.isEmpty(customCarrierLabel)) {
+            combinedLabel = customCarrierLabel;
+            mobileLabel = customCarrierLabel;
         }
 
         if (DEBUG) {
