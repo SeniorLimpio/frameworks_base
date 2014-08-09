@@ -3376,6 +3376,12 @@ public final class Settings {
         public static final String QUICK_SETTINGS_TILES_FLIP = "quick_settings_tiles_flip";
 
         /**
+         * Pie trigger sensitivity
+         * @hide
+         */
+        public static final String PIE_TRIGGER_SENSITIVITY = "pie_trigger_sensitivity";
+
+        /**
          * QuickSettings configuration
          * @hide
          */
