@@ -171,12 +171,6 @@ public class WallpaperCropActivity extends Activity {
         }
     }
 
-    @Override
-    protected void onDestroy(){
-        super.onDestroy();
-        mCropView.destroy();
-    }
-
     protected void init() {
         setContentView(R.layout.wallpaper_cropper);
 
@@ -602,15 +596,8 @@ public class WallpaperCropActivity extends Activity {
             regenerateInputStream();
             if (mInStream != null) {
                 BitmapFactory.Options options = new BitmapFactory.Options();
-                //inSampleSize - decreases height/width of image to be loaded by a factor of 4
-                //inPurgeable - pixels can be purged if system needs to reclaim memory
-                //inInputShareable - bitmap keeps a shallow reference to input
                 options.inJustDecodeBounds = true;
-                options.inSampleSize = 4;
-                options.inInputShareable = true;
-                options.inPurgeable = true;
                 BitmapFactory.decodeStream(mInStream, null, options);
-                Utils.closeSilently(mInStream);
                 if (options.outWidth != 0 && options.outHeight != 0) {
                     return new Point(options.outWidth, options.outHeight);
                 }
@@ -678,10 +665,9 @@ public class WallpaperCropActivity extends Activity {
                 }
 
                 // See how much we're reducing the size of the image
-                //This is a hard coded optimization
-                //No apparent degradation in quality but major reduction in amt of memory consumed.
-                int scaleDownSampleSize = Math.max(4, Math.min(roundedTrueCrop.width() / mOutWidth,
-                        roundedTrueCrop.height() / mOutHeight));
+                int scaleDownSampleSize = Math.min(roundedTrueCrop.width() / mOutWidth,
+                        roundedTrueCrop.height() / mOutHeight);
+
                 // Attempt to open a region decoder
                 BitmapRegionDecoder decoder = null;
                 try {
@@ -694,8 +680,6 @@ public class WallpaperCropActivity extends Activity {
                 if (decoder != null) {
                     // Do region decoding to get crop bitmap
                     BitmapFactory.Options options = new BitmapFactory.Options();
-                    options.inPurgeable = true;
-                    options.inInputShareable = true;
                     if (scaleDownSampleSize > 1) {
                         options.inSampleSize = scaleDownSampleSize;
                     }
@@ -707,11 +691,8 @@ public class WallpaperCropActivity extends Activity {
                     // BitmapRegionDecoder has failed, try to crop in-memory
                     regenerateInputStream();
                     Bitmap fullSize = null;
-
                     if (mInStream != null) {
                         BitmapFactory.Options options = new BitmapFactory.Options();
-                        options.inPurgeable = true;
-                        options.inInputShareable = true;
                         if (scaleDownSampleSize > 1) {
                             options.inSampleSize = scaleDownSampleSize;
                         }
@@ -724,10 +705,9 @@ public class WallpaperCropActivity extends Activity {
                         mCropBounds.right /= scaleDownSampleSize;
                         mCropBounds.roundOut(roundedTrueCrop);
 
-                        crop = Bitmap.createScaledBitmap(fullSize, roundedTrueCrop.width(),
-                                 roundedTrueCrop.height(), false);
-                        fullSize.recycle();
-                        fullSize = null;
+                        crop = Bitmap.createBitmap(fullSize, roundedTrueCrop.left,
+                                roundedTrueCrop.top, roundedTrueCrop.width(),
+                                roundedTrueCrop.height());
                     }
                 }
 
@@ -777,10 +757,6 @@ public class WallpaperCropActivity extends Activity {
                         Paint p = new Paint();
                         p.setFilterBitmap(true);
                         c.drawBitmap(crop, m, p);
-                        if (crop != null) {
-                            crop.recycle();
-                            crop = null;
-                        }
                         crop = tmp;
                     }
                 }
@@ -812,11 +788,6 @@ public class WallpaperCropActivity extends Activity {
                 } else {
                     Log.w(LOGTAG, "cannot compress bitmap");
                     failure = true;
-                }
-                try {
-                    tmpOut.close();
-                } catch (IOException e) {
-                    Log.w(LOGTAG, "Error closing ByteArray");
                 }
             }
             return !failure; // True if any of the operations failed
