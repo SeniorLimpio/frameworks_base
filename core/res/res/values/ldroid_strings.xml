@@ -206,4 +206,7 @@
     <!-- [CHAR LIMIT=NONE] Description of an application permission, listed so the user can choose whether they want to allow the application to do this. -->
     <string name="permdesc_resetBatteryStats">Allows an application to reset the current low-level battery use data.</string>
 
+    <!-- USB OTG notification message -->
+    <string name="usb_storage_notification_manage_message">Tap to manage</string>
+
 </resources>
