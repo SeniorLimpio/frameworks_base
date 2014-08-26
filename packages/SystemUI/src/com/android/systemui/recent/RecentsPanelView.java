@@ -911,6 +911,35 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
         }
         mPopup = popup;
         popup.getMenuInflater().inflate(R.menu.recent_popup_menu, popup.getMenu());
+
+        final ContentResolver cr = mContext.getContentResolver();
+        if (Settings.Secure.getInt(cr,
+            Settings.Secure.DEVELOPMENT_SHORTCUT, 0) == 0) {
+            popup.getMenu().findItem(R.id.recent_force_stop).setVisible(false);
+            popup.getMenu().findItem(R.id.recent_wipe_app).setVisible(false);
+        } else {
+            ViewHolder viewHolder = (ViewHolder) selectedView.getTag();
+            if (viewHolder != null) {
+                final TaskDescription ad = viewHolder.taskDescription;
+                try {
+                    PackageManager pm = (PackageManager) mContext.getPackageManager();
+                    ApplicationInfo mAppInfo = pm.getApplicationInfo(ad.packageName, 0);
+                    DevicePolicyManager mDpm = (DevicePolicyManager) mContext.
+                            getSystemService(Context.DEVICE_POLICY_SERVICE);
+                    if ((mAppInfo.flags&(ApplicationInfo.FLAG_SYSTEM
+                          | ApplicationInfo.FLAG_ALLOW_CLEAR_USER_DATA))
+                          == ApplicationInfo.FLAG_SYSTEM
+                          || mDpm.packageHasActiveAdmins(ad.packageName)) {
+                        popup.getMenu()
+                        .findItem(R.id.notification_inspect_item_wipe_app).setEnabled(false);
+                    } else {
+                        Log.d(TAG, "Not a 'special' application");
+                    }
+                } catch (NameNotFoundException ex) {
+                    Log.e(TAG, "Failed looking up ApplicationInfo for " + ad.packageName, ex);
+                }
+            }
+        }
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
                 if (item.getItemId() == R.id.recent_remove_item) {
@@ -925,6 +954,29 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
                         throw new IllegalStateException("Oops, no tag on view " + selectedView);
                     }
                 } else if (item.getItemId() == R.id.recent_force_stop) {
+                    ViewHolder viewHolder = (ViewHolder) selectedView.getTag();
+                    if (viewHolder != null) {
+                        final TaskDescription ad = viewHolder.taskDescription;
+                        ActivityManager am = (ActivityManager)mContext.getSystemService(
+                                Context.ACTIVITY_SERVICE);
+                        am.forceStopPackage(ad.packageName);
+                        ((ViewGroup) mRecentsContainer).removeViewInLayout(selectedView);
+                    } else {
+                        throw new IllegalStateException("Oops, no tag on view " + selectedView);
+                    }
+                } else if (item.getItemId() == R.id.recent_wipe_app) {
+                    ViewHolder viewHolder = (ViewHolder) selectedView.getTag();
+                    if (viewHolder != null) {
+                        final TaskDescription ad = viewHolder.taskDescription;
+                        ActivityManager am = (ActivityManager) mContext.
+                                getSystemService(Context.ACTIVITY_SERVICE);
+                        am.clearApplicationUserData(ad.packageName,
+                                new FakeClearUserDataObserver());
+                        ((ViewGroup) mRecentsContainer).removeViewInLayout(selectedView);
+                    } else {
+                        throw new IllegalStateException("Oops, no tag on view " + selectedView);
+                    }
+                } else if (item.getItemId() == R.id.recent_launch_floating) {
                     ViewHolder viewHolder = (ViewHolder) selectedView.getTag();
                     if (viewHolder != null) {
                         final TaskDescription ad = viewHolder.taskDescription;
@@ -954,26 +1006,7 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
                                 mContext.startActivity(intent);
                             }
                         });
-                        ActivityManager am = (ActivityManager)mContext.getSystemService(
-                                Context.ACTIVITY_SERVICE);
-                        am.forceStopPackage(ad.packageName);
-                        ((ViewGroup) mRecentsContainer).removeViewInLayout(selectedView);
-                    } else {
-                        throw new IllegalStateException("Oops, no tag on view " + selectedView);
                     }
-                } else if (item.getItemId() == R.id.recent_wipe_app) {
-                    ViewHolder viewHolder = (ViewHolder) selectedView.getTag();
-                    if (viewHolder != null) {
-                        final TaskDescription ad = viewHolder.taskDescription;
-                        ActivityManager am = (ActivityManager) mContext.
-                                getSystemService(Context.ACTIVITY_SERVICE);
-                        am.clearApplicationUserData(ad.packageName,
-                                new FakeClearUserDataObserver());
-                        ((ViewGroup) mRecentsContainer).removeViewInLayout(selectedView);
-                    } else {
-                        throw new IllegalStateException("Oops, no tag on view " + selectedView);
-                    }
-                } else if (item.getItemId() == R.id.recent_launch_floating) {
                     launchFloating(selectedView);
                 } else {
                     return false;
