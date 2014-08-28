@@ -1231,6 +1231,7 @@
   <java-symbol type="xml" name="sms_short_codes" />
   <java-symbol type="xml" name="audio_assets" />
   <java-symbol type="xml" name="global_keys" />
+  <java-symbol type="xml" name="vendors" />
 
   <java-symbol type="raw" name="accessibility_gestures" />
   <java-symbol type="raw" name="incognito_mode_start_page" />
@@ -1799,4 +1800,7 @@
 
   <!-- Proximity check timeout -->
   <java-symbol type="integer" name="config_proximityCheckTimeout" />
+
+  <!-- Wifi tethering-->
+  <java-symbol type="plurals" name="tethered_clients_connected" />
 </resources>
