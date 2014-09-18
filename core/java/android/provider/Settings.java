@@ -5165,6 +5165,12 @@ public final class Settings {
         public static final String APP_SIDEBAR_TRIGGER_WIDTH = "app_sidebar_trigger_width";
 
         /**
+         * Carrier Logo toggle
+         * @hide
+         */
+        public static final String TOGGLE_CARRIER_LOGO = "toggle_carrier_logo";
+
+        /**
          * Position of appbar trigger
          *
          * @hide
