@@ -81,6 +81,7 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import com.android.internal.policy.IKeyguardShowCallback;
 import com.android.internal.widget.LockPatternUtils;
+import com.android.internal.util.omni.ColorUtils;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;

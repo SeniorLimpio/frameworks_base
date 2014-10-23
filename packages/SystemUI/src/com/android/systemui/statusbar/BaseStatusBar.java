@@ -54,10 +54,12 @@ import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
 import android.graphics.PorterDuff.Mode;
-import android.graphics.drawable.BitmapDrawable;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.ColorMatrixColorFilter;
+import android.graphics.ColorMatrix;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
@@ -343,6 +345,29 @@ public abstract class BaseStatusBar extends SystemUI implements
         return mOnClickHandler;
     }
 
+    private static Drawable GrayscaleDrawable (Context context, Drawable drawable) {
+        int width = drawable.getIntrinsicWidth();
+        width = width > 0 ? width : 1;
+        int height = drawable.getIntrinsicHeight();
+        height = height > 0 ? height : 1;
+        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Bitmap bitmap_gray = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        Canvas canvas_gray = new Canvas(bitmap_gray);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+        Paint paint = new Paint();
+        ColorMatrix colormatrix = new ColorMatrix();
+        colormatrix.setSaturation(0);
+        ColorMatrixColorFilter filter = new ColorMatrixColorFilter(colormatrix);
+        paint.setAntiAlias(true);
+        paint.setColorFilter(filter);
+        canvas_gray.drawBitmap(bitmap, 0, 0, paint);
+        Drawable drawable_gray = new BitmapDrawable(context.getResources(), bitmap_gray);
+
+        return drawable_gray;
+    }
+
     private ContentObserver mProvisioningObserver = new ContentObserver(mHandler) {
         @Override
         public void onChange(boolean selfChange) {
@@ -459,7 +484,7 @@ public abstract class BaseStatusBar extends SystemUI implements
         mBarService = IStatusBarService.Stub.asInterface(
                 ServiceManager.getService(Context.STATUS_BAR_SERVICE));
 
-        mCustomRecent = Settings.System.getBoolean(mContext.getContentResolver(), 
+        mCustomRecent = Settings.System.getBoolean(mContext.getContentResolver(),
                 Settings.System.CUSTOM_RECENT_TOGGLE, false);
 
         stockRecents = getComponent(RecentsComponent.class);
@@ -563,7 +588,7 @@ public abstract class BaseStatusBar extends SystemUI implements
 
         pieOnStart();
 
-    // Listen for status bar icon color changes
+        // Listen for status bar icon color changes
         mContext.getContentResolver().registerContentObserver(
                Settings.System.getUriFor(Settings.System.SYSTEM_ICON_COLOR), false, new ContentObserver(new Handler()) {
             @Override
@@ -577,7 +602,6 @@ public abstract class BaseStatusBar extends SystemUI implements
         settingsObserver.observe();
 
         // Listen for HALO enabled
-
         mContext.getContentResolver().registerContentObserver(
                 Settings.System.getUriFor(Settings.System.HALO_ENABLED), false, new ContentObserver(new Handler()) {
             @Override
@@ -642,7 +666,7 @@ public abstract class BaseStatusBar extends SystemUI implements
             }
         });
     }
-
+    //FixedEM
     private void updateIconColor() {
         ContentResolver resolver = mContext.getContentResolver();
 
@@ -654,12 +678,11 @@ public abstract class BaseStatusBar extends SystemUI implements
         if (mStatusIcons != null) {
             for(int i = 0; i < mStatusIcons.getChildCount(); i++) {
             Drawable iconDrawable = ((ImageView)mStatusIcons.getChildAt(i)).getDrawable();
-            if (mCustomColor) {
-                iconDrawable.setColorFilter(systemColor, PorterDuff.Mode.SRC_ATOP);
-            } else {
-                iconDrawable.clearColorFilter();
-            }
+                if (mCustomColor) {
+                    iconDrawable=GrayscaleDrawable(mContext,iconDrawable);
+                    iconDrawable.setColorFilter(systemColor, Mode.MULTIPLY);
                 }
+            }
         }
     }
 
@@ -799,7 +822,6 @@ public abstract class BaseStatusBar extends SystemUI implements
             mHoverButton.setImageResource(mHoverActive ?
                     R.drawable.ic_notify_hover_pressed : R.drawable.ic_notify_hover_normal);
         }
-
         mHover.setHoverActive(mHoverActive);
     }
 
@@ -972,7 +994,7 @@ public abstract class BaseStatusBar extends SystemUI implements
                 if(hideIconCheck != null) {
                     hideIconCheck.setChecked(isIconHiddenByUser(packageNameF));
                     if (packageNameF.equals("android")) {
-                        // cannot set it, no one likes a liar 
+                        // cannot set it, no one likes a liar
                         hideIconCheck.setVisible(false);
                     }
                 }
