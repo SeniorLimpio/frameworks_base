@@ -680,13 +680,6 @@ public abstract class BaseStatusBar extends SystemUI implements
         return mHover;
     }
 
-    public void setHaloTaskerActive(boolean haloTaskerActive, boolean updateNotificationIcons) {
-        mHaloTaskerActive = haloTaskerActive;
-        if (updateNotificationIcons) {
-            updateNotificationIcons();
-        }
-    }
-
     protected void updateHaloButton() {
         if (!mHaloEnabled) {
             mHaloButtonVisible = false;
