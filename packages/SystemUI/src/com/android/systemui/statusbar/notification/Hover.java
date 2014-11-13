@@ -661,7 +661,6 @@ public class Hover {
         try {
             final String packageName = entry.notification.getPackageName();
             allowed = mStatusBar.getNotificationManager().isPackageAllowedForHover(packageName);
-            isforeground = !entry.notification.getPackageName().equals(mNotificationHelper.getForegroundPackageName());
         } catch (android.os.RemoteException ex) {
             // System is dead
         }
