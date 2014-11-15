@@ -267,8 +267,6 @@ public abstract class BaseStatusBar extends SystemUI implements
     // Hover
     protected Hover mHover;
     protected boolean mHoverActive;
-    protected boolean mHoverHideButton;
-    protected ImageView mHoverButton;
     protected HoverCling mHoverCling;
 
     private Runnable mPanelCollapseRunnable = new Runnable() {
@@ -802,26 +800,9 @@ public abstract class BaseStatusBar extends SystemUI implements
         return mPowerManager;
     }
 
-    protected void updateHoverButton(boolean shouldBeVisible) {
-        mHoverButton.setVisibility((shouldBeVisible && !mHoverHideButton) ? View.VISIBLE : View.GONE);
-    }
-
-    protected void updateHoverButton() {
-        updateHoverButton(true);
-    }
-
     public void updateHoverActive() {
         mHoverActive = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.HOVER_ACTIVE, 0) == 1;
-
-        mHoverHideButton = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.HOVER_HIDE_BUTTON, 0) == 1;
-
-        updateHoverButton();
-        if (!mHoverHideButton) {
-            mHoverButton.setImageResource(mHoverActive ?
-                    R.drawable.ic_notify_hover_pressed : R.drawable.ic_notify_hover_normal);
-        }
         mHover.setHoverActive(mHoverActive);
     }
 
