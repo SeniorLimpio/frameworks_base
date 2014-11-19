@@ -62,7 +62,6 @@ import android.util.AttributeSet;
 import android.util.EventLog;
 import android.util.Log;
 import android.util.PrintWriterPrinter;
-import android.util.TypedValue;
 import android.util.Slog;
 import android.util.SparseArray;
 import android.view.ActionMode;
@@ -5010,10 +5009,6 @@ public class Activity extends ContextThemeWrapper
         } else {
             mParent.finishFromChild(this);
         }
-    }
-
-    public void finishFloating() {
-        mMainThread.performFinishFloating();
     }
 
     /**
