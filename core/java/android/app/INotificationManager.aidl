@@ -53,7 +53,6 @@ interface INotificationManager
     StatusBarNotification[] getActiveNotificationsFromSystemListener(in INotificationListener token);
     void cancelNotificationFromSystemListener(in INotificationListener token, String pkg, String tag, int id);
 
-    boolean isPackageAllowedForHalo(String pkg);
     void setPeekBlacklistStatus(String pkg, boolean status);
     void setFloatingModeBlacklistStatus(String pkg, boolean status);
     void setHoverBlacklistStatus(String pkg, boolean status);

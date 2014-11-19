@@ -3476,6 +3476,12 @@ public final class Settings {
         public static final String EXPANDED_RING_MODE = "expanded_ring_mode";
 
         /**
+         * floating windows or not
+         * @hide
+         */
+        public static final String FLOATING_MODE = "floating_mode";
+
+        /**
          * option for tinted statusbar
          * 0 = disabled
          * 1 = follow actionbar

@@ -43,6 +43,7 @@ import android.content.res.ThemeConfig;
 import android.database.ContentObserver;
 import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.content.ServiceConnection;
 import android.database.ContentObserver;
 import android.graphics.drawable.Drawable;
@@ -101,6 +102,7 @@ import android.widget.Toast;
 import com.android.internal.statusbar.IStatusBarService;
 import com.android.internal.statusbar.StatusBarIcon;
 import com.android.internal.statusbar.StatusBarIconList;
+import com.android.systemui.statusbar.phone.Ticker;
 import com.android.internal.widget.SizeAdaptiveLayout;
 import com.android.internal.util.ldroid.ButtonConfig;
 import com.android.internal.util.ldroid.DeviceUtils;
@@ -1254,24 +1256,12 @@ public abstract class BaseStatusBar extends SystemUI implements
         if (contentView == null) {
             return false;
         }
-        if (mHeadsUpTextColor != 0) {
-            if (contentView != null) {
-                contentView.setTextColor(com.android.internal.R.id.title, mHeadsUpTextColor);
-                contentView.setTextColor(com.android.internal.R.id.text, mHeadsUpTextColor);
-                contentView.setTextColor(com.android.internal.R.id.big_text, mHeadsUpTextColor);
-                contentView.setTextColor(com.android.internal.R.id.time, mHeadsUpTextColor);
-//                contentView.setTextColor(com.android.internal.R.id.action0, mHeadsUpTextColor);
-                contentView.setTextColor(com.android.internal.R.id.text2, mHeadsUpTextColor);
-                contentView.setTextColor(com.android.internal.R.id.info, mHeadsUpTextColor);
-            }
-            if (bigContentView != null) {
-                bigContentView.setTextColor(com.android.internal.R.id.title, mHeadsUpTextColor);
-                bigContentView.setTextColor(com.android.internal.R.id.text, mHeadsUpTextColor);
-                bigContentView.setTextColor(com.android.internal.R.id.big_text, mHeadsUpTextColor);
-                bigContentView.setTextColor(com.android.internal.R.id.time, mHeadsUpTextColor);
-//                bigContentView.setTextColor(com.android.internal.R.id.action0, mHeadsUpTextColor);
-                bigContentView.setTextColor(com.android.internal.R.id.text2, mHeadsUpTextColor);
-                bigContentView.setTextColor(com.android.internal.R.id.info, mHeadsUpTextColor);
+
+        // apply custom text color to heads up notifications ONLY
+        if (mHeadsUpTextColor != 0) { // if it's 0, then text color is default
+            if (mHeadsUpTextColor != -1) { //if it's -1, then it's a regular notification
+                setHeadsUpTextColor(contentView, mHeadsUpTextColor);
+                setHeadsUpTextColor(bigContentView, mHeadsUpTextColor);
             }
         }
 
@@ -1357,6 +1347,18 @@ public abstract class BaseStatusBar extends SystemUI implements
         entry.setBigContentView(bigContentViewLocal);
 
         return true;
+    }
+
+    private void setHeadsUpTextColor(RemoteViews view, int color) {
+        if (view != null) {
+            view.setInt(com.android.internal.R.id.title, "setTextColor", color);
+            view.setInt(com.android.internal.R.id.text, "setTextColor", color);
+            view.setInt(com.android.internal.R.id.big_text, "setTextColor", color);
+            view.setInt(com.android.internal.R.id.time, "setTextColor", color);
+//            view.setInt(com.android.internal.R.id.action0, "setTextColor", color);
+            view.setInt(com.android.internal.R.id.text2, "setTextColor", color);
+            view.setInt(com.android.internal.R.id.info, "setTextColor", color);
+        }
     }
 
     public NotificationClicker makeClicker(PendingIntent intent, String pkg, String tag, int id) {
@@ -1559,9 +1561,10 @@ public abstract class BaseStatusBar extends SystemUI implements
             handleNotificationError(key, notification, "Couldn't create icon: " + ic);
             return null;
         }
+
         // Construct the expanded view.
         NotificationData.Entry entry = new NotificationData.Entry(key, notification, iconView);
-        if (!inflateViews(entry, mPile)) {
+        if (!inflateViews(entry, mPile, 0)) {
             handleNotificationError(key, notification, "Couldn't expand RemoteViews for: "
                     + notification);
             return null;
@@ -1702,7 +1705,7 @@ public abstract class BaseStatusBar extends SystemUI implements
                 && notification.getScore() == oldNotification.getScore();
                 // score now encompasses/supersedes isOngoing()
 
-        boolean updateTicker = notification.getNotification().tickerText != null
+        boolean updateTicker = (notification.getNotification().tickerText != null
                 && !TextUtils.equals(notification.getNotification().tickerText,
                         oldEntry.notification.getNotification().tickerText)) && !mHoverActive;
         boolean isTopAnyway = isTopNotification(rowParent, oldEntry);
@@ -1798,7 +1801,7 @@ public abstract class BaseStatusBar extends SystemUI implements
         if (bigContentView != null && entry.getBigContentView() != null) {
             bigContentView.reapply(mContext, entry.getBigContentView(), mOnClickHandler);
         }
-        // update the contentIntent
+        // update contentIntent
         final PendingIntent contentIntent = notification.getNotification().contentIntent;
         if (contentIntent != null) {
             final View.OnClickListener listener =
