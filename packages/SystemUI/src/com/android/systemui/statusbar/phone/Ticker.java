@@ -48,15 +48,6 @@ public abstract class Ticker {
     private TextSwitcher mTextSwitcher;
     private float mIconScale;
     private PhoneStatusBar mStatusBar;
-    private TickerCallback mEvent;
-
-    public interface TickerCallback {
-        public void updateTicker(StatusBarNotification notification, String text);
-    }
-
-    public void setUpdateEvent(TickerCallback event) {
-        mEvent = event;
-    }
 
     public static boolean isGraphicOrEmoji(char c) {
         int gc = Character.getType(c);
