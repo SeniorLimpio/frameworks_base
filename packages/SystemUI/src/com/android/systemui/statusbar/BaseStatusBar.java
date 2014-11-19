@@ -1675,7 +1675,16 @@ public abstract class BaseStatusBar extends SystemUI implements
         NotificationData.Entry entry = new NotificationData.Entry(key, notification, iconView);
         prepareHaloNotification(entry, notification, false);
         entry.hide = entry.notification.getPackageName().equals("com.paranoid.halo");
-        if (!inflateViews(entry, mPile, 0)) {
+
+        final PendingIntent contentIntent = notification.getNotification().contentIntent;
+        if (contentIntent != null) {
+            entry.floatingIntent = makeClicker(contentIntent,
+                    notification.getPackageName(), notification.getTag(), notification.getId());
+            entry.floatingIntent.makeFloating(true);
+        }
+
+        // Construct the expanded view.
+        if (!inflateViews(entry, mPile)) {
             handleNotificationError(key, notification, "Couldn't expand RemoteViews for: "
                     + notification);
             return null;
@@ -1994,14 +2003,18 @@ public abstract class BaseStatusBar extends SystemUI implements
         if (bigContentView != null && entry.getBigContentView() != null) {
             bigContentView.reapply(mContext, entry.getBigContentView(), mOnClickHandler);
         }
-        // update contentIntent
+        // update contentIntent and floatingIntent
         final PendingIntent contentIntent = notification.getNotification().contentIntent;
         if (contentIntent != null) {
             final View.OnClickListener listener =
                     mNotificationHelper.getNotificationClickListener(entry, headsUp, false);
             entry.content.setOnClickListener(listener);
+            entry.floatingIntent = makeClicker(contentIntent,
+                    notification.getPackageName(), notification.getTag(), notification.getId());
+            entry.floatingIntent.makeFloating(true);
         } else {
             entry.content.setOnClickListener(null);
+            entry.floatingIntent = null;
         }
         // Update the roundIcon
         prepareHaloNotification(entry, notification, true);
