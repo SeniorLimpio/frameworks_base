@@ -5127,21 +5127,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
         checkBarModes();
 
-        updateHalo();
-
         mRecreating = false;
-        // Stop the command queue until the new status bar container settles and has a layout pass
-        mCommandQueue.pause();
-        mStatusBarContainer.requestLayout();
-        mStatusBarContainer.getViewTreeObserver().addOnGlobalLayoutListener(
-                new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                mStatusBarContainer.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                mCommandQueue.resume();
-                mRecreating = false;
-            }
-        });
+
+        updateHalo();
     }
 
     private void removeAllViews(ViewGroup parent) {
